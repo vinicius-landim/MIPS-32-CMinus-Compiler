@@ -1,0 +1,91 @@
+# .gitignore para compilador C- (C++) e pasta de desenvolvimento LaTeX
+
+# Flex/Bison
+# lex.yy.c
+# *.tab.c
+# *.tab.h
+# *.output
+
+# Diretórios de build/artefatos
+/build/
+/bin/
+/out/
+/dist/
+/cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile.user
+
+# Arquivos binários/obj/etc
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.dylib
+*.exe
+*.out
+*.elf
+*.app
+*.gch
+*.pch
+*.lo
+*.la
+
+# Instrumentação/coverage
+*.gcno
+*.gcda
+.coverage
+coverage/
+
+# IDEs / editores
+.vscode/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.sln
+*.vcxproj*
+*.db
+
+# Arquivos temporários de editores
+*~
+*.swp
+*.swo
+.#*
+#*#
+*.bak
+
+# Logs gerais
+*.log
+
+# Arquivos auxiliares do LaTeX (mantém .tex)
+**/*.aux
+**/*.log
+**/*.toc
+**/*.out
+**/*.lof
+**/*.lot
+**/*.fls
+**/*.fdb_latexmk
+**/*.synctex.gz
+**/*.bbl
+**/*.blg
+**/*.nav
+**/*.snm
+**/*.run.xml
+**/*.brf
+**/*.idx
+**/*.ilg
+**/*.ind
+
+*.pdf
+**/*.pdf
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+desktop.ini
