@@ -18,6 +18,7 @@ cmake_install.cmake
 compile_commands.json
 Makefile.user
 
+
 # Arquivos binários/obj/etc
 *.o
 *.obj
