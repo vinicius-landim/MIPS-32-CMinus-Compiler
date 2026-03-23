@@ -1,0 +1,79 @@
+digraph AST {
+  rankdir=TB;
+  node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Consolas"];
+  edge [fontname="Consolas"];
+  node000001FFD779F140 [label="FUN: gcd\n(type=int)\n(line=6)\n[scope: gcd]"];
+  node000001FFD779F140 -> node000001FFD779F2D0 [label="c0"];
+  node000001FFD779F2D0 [label="PARAM: u\n(type=int)\n(line=2)\n[scope: gcd]"];
+  node000001FFD779F2D0 -> node000001FFD779F0F0 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD779F2D0; node000001FFD779F0F0; }
+  node000001FFD779F0F0 [label="PARAM: v\n(type=int)\n(line=2)\n[scope: gcd]"];
+  node000001FFD779F140 -> node000001FFD779ED30 [label="c1"];
+  node000001FFD779ED30 [label="COMPOUND\n(line=6)\n[scope: gcd]"];
+  node000001FFD779ED30 -> node000001FFD779F0A0 [label="c1"];
+  node000001FFD779F0A0 [label="IF\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F0A0 -> node000001FFD779F000 [label="c0"];
+  node000001FFD779F000 [label="OP: ==\n(type=void)\n(line=3)\n[scope: gcd]"];
+  node000001FFD779F000 -> node000001FFD779EF10 [label="c0"];
+  node000001FFD779EF10 [label="ID: v\n(type=void)\n(line=3)\n[scope: gcd]"];
+  node000001FFD779F000 -> node000001FFD779EEC0 [label="c1"];
+  node000001FFD779EEC0 [label="CONST: 0\n(type=void)\n(line=3)\n[scope: gcd]"];
+  node000001FFD779F0A0 -> node000001FFD779F370 [label="c1"];
+  node000001FFD779F370 [label="RETURN\n(line=3)\n[scope: gcd]"];
+  node000001FFD779F370 -> node000001FFD779F280 [label="c0"];
+  node000001FFD779F280 [label="ID: u\n(type=void)\n(line=3)\n[scope: gcd]"];
+  node000001FFD779F0A0 -> node000001FFD779F050 [label="c2"];
+  node000001FFD779F050 [label="RETURN\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F050 -> node000001FFD779F410 [label="c0"];
+  node000001FFD779F410 [label="CALL: gcd\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F410 -> node000001FFD779EDD0 [label="c0"];
+  node000001FFD779EDD0 [label="ID: v\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779EDD0 -> node000001FFD779F3C0 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD779EDD0; node000001FFD779F3C0; }
+  node000001FFD779F3C0 [label="OP: -\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F3C0 -> node000001FFD779EE20 [label="c0"];
+  node000001FFD779EE20 [label="ID: u\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F3C0 -> node000001FFD779F230 [label="c1"];
+  node000001FFD779F230 [label="OP: *\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F230 -> node000001FFD779F320 [label="c0"];
+  node000001FFD779F320 [label="OP: /\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F320 -> node000001FFD779EF60 [label="c0"];
+  node000001FFD779EF60 [label="ID: u\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F320 -> node000001FFD779EE70 [label="c1"];
+  node000001FFD779EE70 [label="ID: v\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F230 -> node000001FFD779F1E0 [label="c1"];
+  node000001FFD779F1E0 [label="ID: v\n(type=void)\n(line=4)\n[scope: gcd]"];
+  node000001FFD779F140 -> node000001FFD77A7180 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD779F140; node000001FFD77A7180; }
+  node000001FFD77A7180 [label="FUN: main\n(type=void)\n(line=12)\n[scope: main]"];
+  node000001FFD77A7180 -> node000001FFD77A6730 [label="c1"];
+  node000001FFD77A6730 [label="COMPOUND\n(type=void)\n(line=12)\n[scope: main]"];
+  node000001FFD77A6730 -> node000001FFD779ECE0 [label="c0"];
+  node000001FFD779ECE0 [label="VAR DECL: x\n(type=int)\n(line=9)\n[scope: main]"];
+  node000001FFD779ECE0 -> node000001FFD779F190 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD779ECE0; node000001FFD779F190; }
+  node000001FFD779F190 [label="VAR DECL: y\n(type=int)\n(line=9)\n[scope: main]"];
+  node000001FFD77A6730 -> node000001FFD77A74F0 [label="c1"];
+  node000001FFD77A74F0 [label="ASSIGN\n(type=void)\n(line=10)\n[scope: main]"];
+  node000001FFD77A74F0 -> node000001FFD77A6640 [label="c0"];
+  node000001FFD77A6640 [label="ID: x\n(type=void)\n(line=10)\n[scope: main]"];
+  node000001FFD77A74F0 -> node000001FFD77A6E60 [label="c1"];
+  node000001FFD77A6E60 [label="CALL: input\n(type=void)\n(line=10)\n[scope: main]"];
+  node000001FFD77A74F0 -> node000001FFD77A6C30 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD77A74F0; node000001FFD77A6C30; }
+  node000001FFD77A6C30 [label="ASSIGN\n(type=void)\n(line=10)\n[scope: main]"];
+  node000001FFD77A6C30 -> node000001FFD77A6FF0 [label="c0"];
+  node000001FFD77A6FF0 [label="ID: y\n(type=void)\n(line=10)\n[scope: main]"];
+  node000001FFD77A6C30 -> node000001FFD77A67D0 [label="c1"];
+  node000001FFD77A67D0 [label="CALL: input\n(type=void)\n(line=10)\n[scope: main]"];
+  node000001FFD77A6C30 -> node000001FFD77A6BE0 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD77A6C30; node000001FFD77A6BE0; }
+  node000001FFD77A6BE0 [label="CALL: output\n(type=void)\n(line=11)\n[scope: main]"];
+  node000001FFD77A6BE0 -> node000001FFD77A68C0 [label="c0"];
+  node000001FFD77A68C0 [label="CALL: gcd\n(type=void)\n(line=11)\n[scope: main]"];
+  node000001FFD77A68C0 -> node000001FFD77A6B90 [label="c0"];
+  node000001FFD77A6B90 [label="ID: x\n(type=void)\n(line=11)\n[scope: main]"];
+  node000001FFD77A6B90 -> node000001FFD77A6DC0 [style=dashed, color=gray40, label="sib"];
+  { rank=same; node000001FFD77A6B90; node000001FFD77A6DC0; }
+  node000001FFD77A6DC0 [label="ID: y\n(type=void)\n(line=11)\n[scope: main]"];
+}

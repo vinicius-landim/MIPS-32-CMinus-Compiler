@@ -1,26 +1,31 @@
 %option noyywrap
+%option yylineno
 
 %{
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "globals.h"
+#include "util.h"
+#include "parser.tab.h"
 
-    #include "parser.tab.h"
-
-    // Variável global para contagem de linhas
-    int linha = 1;
-
+/* Mantemos a contagem de linhas sincronizada com o globals.h */
+extern int lineNo;
 %}
 
+/* Definições Auxiliares */
 DIGITO  [0-9]
 LETRA   [a-zA-Z]
+ID      {LETRA}+
+NUM     {DIGITO}+
+ESPACO  [ \t\r]+
 
- /* Para lidar com comentários multilinha /* ... */
+/* Estado para Comentários Multilinha */
 %x COMENTARIO
 
 %%
 
- /* PALAVRAS-CHAVE (devem ser listadas antes de ID para garantir prioridade) */
+ /* --- Palavras-Reservadas --- */
 "if"            { return IF; }
 "else"          { return ELSE; }
 "int"           { return INT; }
@@ -28,15 +33,15 @@ LETRA   [a-zA-Z]
 "void"          { return VOID; }
 "while"         { return WHILE; }
 
- /* SÍMBOLOS ESPECIAIS */
-"\+"             { return SOMA; }
+ /* --- Operadores e Símbolos --- */
+"+"             { return SOMA; }
 "-"             { return SUB; }
-"\*"             { return MUL; }
+"*"             { return MUL; }
 "/"             { return DIV; }
-"<"             { return MENOR; }
 "<="            { return MENOR_IGUAL; }
-">"             { return MAIOR; }
+"<"             { return MENOR; }
 ">="            { return MAIOR_IGUAL; }
+">"             { return MAIOR; }
 "=="            { return IGUAL_IGUAL; }
 "!="            { return DIFERENTE; }
 "="             { return ATRIBUICAO; }
@@ -49,43 +54,30 @@ LETRA   [a-zA-Z]
 "{"             { return ABRE_CHAVE; }
 "}"             { return FECHA_CHAVE; }
 
- /* NÚMEROS */
-{DIGITO}+       {   
-                    /* atoi(yytext): Converte a string lida (yytext) para inteiro real.
-                       yylval.val: Guarda esse valor na variável de comunicação com o Parser.
-                       Sem isso, o Parser saberia que é um número, mas não saberia QUAL número. */
-                    yylval.val = (int)atoi(yytext);
-                    return NUM;
+ /* --- Identificadores e Números --- */
+{ID}            { 
+                  yylval.name = copyString(yytext); 
+                  return ID; 
+                }
+{NUM}           { 
+                  yylval.val = atoi(yytext); 
+                  return NUM; 
                 }
 
- /* IDENTIFICADORES */
-{LETRA}+        {
-                    /* strdup(yytext): Duplica a string lida (yytext) para alocar memória separada.
-                       yylval.id: Guarda esse valor na variável de comunicação com o Parser. Envia para a Tabela de Símbolos.
-                       Sem isso, o Parser saberia que é um identificador, mas não saberia QUAL identificador. */
-                    yylval.id = strdup(yytext);
-                    return ID; 
-                }
+ /* --- Gerenciamento de Espaços e Linhas --- */
+\n              { lineNo++; }
+{ESPACO}        { /* ignora */ }
 
- /* ESPAÇOS EM BRANCO: */
- /* Ignora espaços e tabs */
-[ \t]+          { /* ignora */ }
-
- /* Quebras de linha incrementam o contador de linhas */
-\n              { linha++; }
-
- /* COMENTÁRIOS */
- /* Usa start conditions (%x) para lidar com aninhamento e quebras de linha */
-"/*"             { BEGIN(COMENTARIO); }
+ /* --- Tratamento de Comentários (/* ... */) --- */
+"/*"            { BEGIN(COMENTARIO); }
 <COMENTARIO>"*/" { BEGIN(INITIAL); }
-<COMENTARIO>\n   { linha++; }
-<COMENTARIO>.    { /* ignora conteúdo dentro do comentário */ }
+<COMENTARIO>\n   { lineNo++; }
+<COMENTARIO>.    { /* ignora conteúdo */ }
 
- /* TRATAMENTO DE ERROS (Requisito do PDF) */
- /* '.' casa com qualquer coisa que não casou acima */
-. { 
-    fprintf(stderr, "ERRO LEXICO: ''%s'' - LINHA: %d\n", yytext, linha); 
-    return ERROR;
-}
+ /* --- Erros Léxicos --- */
+.               { 
+                  fprintf(stderr, "ERRO LEXICO: '%s' na linha %d\n", yytext, lineNo); 
+                  /* Opcional: retornar um token de erro ou apenas ignorar */
+                }
 
 %%

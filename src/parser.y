@@ -6,7 +6,7 @@
 #include "util.h"
 
 extern FILE *yyin;
-extern int linha;
+extern int lineNo;
 extern int yylex(void); // Chamada do scanner
 extern char *yytext;
 
@@ -37,7 +37,7 @@ TreeNode *AST = NULL;
 %token ABRE_COLCHETE FECHA_COLCHETE
 %token ABRE_CHAVE FECHA_CHAVE
 
-/* %token ERROR */
+%token ERROR
 
 // Declaração de tipos para não-terminais (tipagem de retorno $$)
 %type <val> relacional soma mult
@@ -117,7 +117,7 @@ declaracao_lista:
 //3. declaração -> var-declaração | fun-declaração
 declaracao: 
       var_declaracao {$$ = $1;}
-    | fun_declaracao {$$ = $1};
+    | fun_declaracao {$$ = $1;}
 ;
 //4. var-declaração -> tipo-especificador ID ; | tipo-especificador ID [ NUM ] ;
 var_declaracao: 
@@ -144,14 +144,17 @@ tipo_especificador:
 ;
 //6. fun-declaração -> tipo-especificador ID ( params ) composto-decl
 fun_declaracao: 
-      tipo_especificador ID ABRE_PARENTESE params FECHA_PARENTESE composto_decl {
+      tipo_especificador ID{
+            strncpy(currentScope, $2, 255); //Parâmetros terão escopo de nome 'ID'
+      } ABRE_PARENTESE params FECHA_PARENTESE composto_decl {
             //Nó raíz da função
-            $$ = newExpNode(FunctK);
-            $$->type = $1
+            $$ = newStmtNode(FunctDeclK);
+            $$->type = $1;
             $$->attr.name = copyString($2);
             //Nós filhos: Lista de parâmetros (Esq) e o Corpo da função (Dir)
-            $$->child[0] = $4;
-            $$->child[1] = $6;
+            $$->child[0] = $5;
+            $$->child[1] = $7;
+            strcpy(currentScope, "global");
       }
 ;
 //7. params -> param-lista | void 
@@ -166,6 +169,8 @@ param_lista:
             if (t != NULL){
                   while (t->sibling != NULL)
                         t = t->sibling;
+                  t->sibling = $3;
+                  $$ = $1;
             } else {
                   $$ = $3;
             }
@@ -205,7 +210,7 @@ local_declaracoes:
       local_declaracoes var_declaracao {
             TreeNode *t = $1;
             if (t!=NULL){
-                  while (t->siblings != NULL)
+                  while (t->sibling != NULL)
                         t = t->sibling;
                   t->sibling = $2;
                   $$ = $1;
@@ -229,7 +234,7 @@ statement_lista:
                   $$ = $2;
             }
       }
-    | /* vazio */ {$$ = NULL};
+    | /* vazio */ {$$ = NULL;}
 ;
 
 //13. statement -> expressão-decl | composto-decl | seleção-decl | iteração-decl | retorno-decl 
@@ -244,7 +249,7 @@ statement:
 //14. expressão-decl -> expressão ; | ; 
 expressao_decl: 
       expressao PONTO_VIRGULA {$$ = $1;} //A subárvore foi criada em 'expressao'
-    | PONTO_VIRGULA {$$ = NULL};
+    | PONTO_VIRGULA {$$ = NULL;}
 ;
 
 //15. seleção-decl -> if ( expressão ) statement | if ( expressão ) statement else statement 
@@ -343,7 +348,7 @@ soma_expressao:
             $$->child[0] = $1;
             $$->child[1] = $3;
       }
-    | termo {$$ = $1};
+    | termo {$$ = $1;}
 ;
 
 //23. soma -> + | - 
@@ -417,5 +422,5 @@ arg_lista:
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "ERRO SINTATICO: token inesperado '%s' - LINHA: %d\n", yytext, linha);
+    fprintf(stderr, "ERRO SINTATICO: token inesperado '%s' - lineNo: %d\n", yytext, lineNo);
 }

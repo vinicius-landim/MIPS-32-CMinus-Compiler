@@ -65,7 +65,8 @@
      ABRE_COLCHETE = 281,
      FECHA_COLCHETE = 282,
      ABRE_CHAVE = 283,
-     FECHA_CHAVE = 284
+     FECHA_CHAVE = 284,
+     ERROR = 285
    };
 #endif
 
@@ -86,7 +87,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 90 "parser.tab.h"
+#line 91 "parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
