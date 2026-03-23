@@ -41,7 +41,7 @@ typedef struct treeNode{
     char *escopo;
 	NodeKind nodeKind;
 	union {StmtKind stmt; ExpKind exp;} kind;
-	union {TokenType op; int val; char * name;}attr;
+	union {TokenType op; int val; char *name;}attr;
 
 	ExpType type;
 
