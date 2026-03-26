@@ -78,7 +78,6 @@ static const char* opStr(TokenType op) {
 static const char* typeStr(ExpType t) {
     switch (t) {
         case Integer: return "int";
-        case Boolean: return "bool";
         case Void:    return "void";
         default:      return "";
     }
@@ -152,7 +151,7 @@ static void writeNodeLabel(FILE *out, TreeNode *node) {
         }
     }
 
-    if (node->type == Integer || node->type == Boolean || node->type == Void) {
+    if (node->type == Integer || node->type == Void) {
         fprintf(out, "\\n(type=%s)", typeStr(node->type));
     }
     fprintf(out, "\\n(line=%d)", node->lineNo);

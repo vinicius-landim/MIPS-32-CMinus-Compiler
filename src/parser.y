@@ -152,8 +152,8 @@ fun_declaracao:
             $$->type = $1;
             $$->attr.name = copyString($2);
             //Nós filhos: Lista de parâmetros (Esq) e o Corpo da função (Dir)
-            $$->child[0] = $5;
-            $$->child[1] = $7;
+            $$->child[0] = $5; //params
+            $$->child[1] = $7; //composto_decl
             strcpy(currentScope, "global");
       }
 ;

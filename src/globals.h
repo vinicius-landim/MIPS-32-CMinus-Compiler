@@ -14,7 +14,7 @@ extern char currentScope[256];
 extern FILE* source;
 
 // LOUDEN (2014, p.505)
-typedef enum {Void, Integer, Boolean} ExpType;
+typedef enum {Void, Integer} ExpType;
 typedef enum {StmtK, ExpK} NodeKind;
 typedef enum {IfK, WhileK, ReadK, WriteK, CompoundK, FunctDeclK, ReturnK} StmtKind;
 typedef enum {OpK, ConstK, IdK, VarDeclK, ArrDeclK, ParamK, AssignK, CallK} ExpKind;
