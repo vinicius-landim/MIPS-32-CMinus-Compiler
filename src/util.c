@@ -87,63 +87,61 @@ static void writeNodeLabel(FILE *out, TreeNode *node) {
     if (node->nodeKind == StmtK) {
         switch (node->kind.stmt) {
             case IfK:
-                fprintf(out, "IF");
+                fprintf(out, "if");
                 break;
             case WhileK:
-                fprintf(out, "WHILE");
+                fprintf(out, "while");
                 break;
             case ReadK:
-                fprintf(out, "READ");
+                fprintf(out, "read");
                 break;
             case WriteK:
-                fprintf(out, "WRITE");
+                fprintf(out, "write");
                 break;
             case CompoundK:
-                fprintf(out, "COMPOUND");
+                fprintf(out, "{ }");
                 break;
             case FunctDeclK:
-                fprintf(out, "FUN: %s", (node->attr.name != NULL) ? node->attr.name : "?");
+                fprintf(out, "Fun: %s()", (node->attr.name != NULL) ? node->attr.name : "?");
                 break;
             case ReturnK:
-                fprintf(out, "RETURN");
+                fprintf(out, "return");
                 break;
-            default:
+            default: 
                 fprintf(out, "STMT");
                 break;
         }
     } else {
         switch (node->kind.exp) {
             case OpK:
-                fprintf(out, "OP: %s", opStr(node->attr.op));
+                fprintf(out, "%s", opStr(node->attr.op));
                 break;
             case ConstK:
-                fprintf(out, "CONST: %d", node->attr.val);
+                fprintf(out, "%d", node->attr.val);
                 break;
-            case IdK:
-                if (node->child[0] != NULL) {
-                    fprintf(out, "ID: %s[]", (node->attr.name != NULL) ? node->attr.name : "?");
-                } else {
-                    fprintf(out, "ID: %s", (node->attr.name != NULL) ? node->attr.name : "?");
-                }
+            case VarK:
+                fprintf(out, "%s", (node->attr.name != NULL) ? node->attr.name : "?");
+                break;
+            case ArrK:
+                fprintf(out, "%s[]", (node->attr.name != NULL) ? node->attr.name : "?");
                 break;
             case VarDeclK:
-                fprintf(out, "VAR DECL: %s", (node->attr.name != NULL) ? node->attr.name : "?");
+                fprintf(out, "Var: %s", (node->attr.name != NULL) ? node->attr.name : "?");
                 break;
             case ArrDeclK:
-                fprintf(out, "ARR DECL: %s", (node->attr.name != NULL) ? node->attr.name : "?");
+                fprintf(out, "Arr: %s[]", (node->attr.name != NULL) ? node->attr.name : "?");
                 break;
             case ParamK:
-                if (node->child[0] != NULL) {
-                    fprintf(out, "PARAM: %s[]", (node->attr.name != NULL) ? node->attr.name : "?");
-                } else {
-                    fprintf(out, "PARAM: %s", (node->attr.name != NULL) ? node->attr.name : "?");
-                }
+                fprintf(out, "Param: %s", (node->attr.name != NULL) ? node->attr.name : "?");
+                break;
+            case ParamArrK:
+                fprintf(out, "Param: %s[]", (node->attr.name != NULL) ? node->attr.name : "?");
                 break;
             case AssignK:
-                fprintf(out, "ASSIGN");
+                fprintf(out, "=");
                 break;
             case CallK:
-                fprintf(out, "CALL: %s", (node->attr.name != NULL) ? node->attr.name : "?");
+                fprintf(out, "Call: %s()", (node->attr.name != NULL) ? node->attr.name : "?");
                 break;
             default:
                 fprintf(out, "EXP");
@@ -151,34 +149,70 @@ static void writeNodeLabel(FILE *out, TreeNode *node) {
         }
     }
 
-    if (node->type == Integer || node->type == Void) {
-        fprintf(out, "\\n(type=%s)", typeStr(node->type));
-    }
-    fprintf(out, "\\n(line=%d)", node->lineNo);
+    int isDecl = (node->nodeKind == StmtK && node->kind.stmt == FunctDeclK) ||
+                 (node->nodeKind == ExpK && (node->kind.exp == VarDeclK || node->kind.exp == ArrDeclK || node->kind.exp == ParamK || node->kind.exp == ParamArrK));
 
-    if (node->scope != NULL) {
-        fprintf(out, "\\n[scope: %s]", node->scope);
+    if (isDecl) {
+        if (node->type == Integer || node->type == Void) {
+            fprintf(out, "\\n(%s)", typeStr(node->type));
+        }
+        if (node->scope != NULL) {
+            fprintf(out, "\\n[%s]", node->scope);
+        }
     }
 }
 
 static void printTreeGraphvizRec(FILE *out, TreeNode *node) {
     int i;
-
     if (node == NULL) return;
 
-    fprintf(out, "  node%p [label=\"", (void*)node);
+    const char* fillColor = "lightgray";
+    const char* shape = "box";
+    
+    if (node->nodeKind == StmtK) {
+        if (node->kind.stmt == FunctDeclK) fillColor = "lightcoral";
+        else fillColor = "lightblue";
+    } else if (node->nodeKind == ExpK) {
+        
+        if (node->kind.exp == OpK) {
+            fillColor = "plum"; 
+            shape = "circle";
+        }
+        else if (node->kind.exp == ConstK) {
+            fillColor = "lightgrey";
+            shape = "ellipse";
+        }
+        else if (node->kind.exp == AssignK) {
+            fillColor = "gold";
+            shape = "circle";
+        } 
+        else if (node->kind.exp == CallK) {
+            fillColor = "aquamarine";
+        } 
+        else if (node->kind.exp == VarDeclK || node->kind.exp == ArrDeclK || node->kind.exp == ParamK || node->kind.exp == ParamArrK) {
+            fillColor = "palegreen";
+        } 
+        else { 
+            fillColor = "lightyellow"; 
+            shape = "ellipse";
+        }
+    }
+
+    fprintf(out, "  node%p [shape=\"%s\", fillcolor=\"%s\", label=\"", (void*)node, shape, fillColor);
     writeNodeLabel(out, node);
     fprintf(out, "\"];\n");
 
+    //impressão filhos
     for (i = 0; i < MAXCHILDREN; i++) {
         if (node->child[i] != NULL) {
-            fprintf(out, "  node%p -> node%p [label=\"c%d\"];\n", (void*)node, (void*)node->child[i], i);
+            fprintf(out, "  node%p -> node%p;\n", (void*)node, (void*)node->child[i]);
             printTreeGraphvizRec(out, node->child[i]);
         }
     }
 
+    //impressão irmãos
     if (node->sibling != NULL) {
-        fprintf(out, "  node%p -> node%p [style=dashed, color=gray40, label=\"sib\"];\n", (void*)node, (void*)node->sibling);
+        fprintf(out, "  node%p -> node%p [style=dashed, color=gray40];\n", (void*)node, (void*)node->sibling);
         fprintf(out, "  { rank=same; node%p; node%p; }\n", (void*)node, (void*)node->sibling);
         printTreeGraphvizRec(out, node->sibling);
     }

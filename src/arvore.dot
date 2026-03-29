@@ -2,78 +2,292 @@ digraph AST {
   rankdir=TB;
   node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Consolas"];
   edge [fontname="Consolas"];
-  node000001FFD779F140 [label="FUN: gcd\n(type=int)\n(line=6)\n[scope: gcd]"];
-  node000001FFD779F140 -> node000001FFD779F2D0 [label="c0"];
-  node000001FFD779F2D0 [label="PARAM: u\n(type=int)\n(line=2)\n[scope: gcd]"];
-  node000001FFD779F2D0 -> node000001FFD779F0F0 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD779F2D0; node000001FFD779F0F0; }
-  node000001FFD779F0F0 [label="PARAM: v\n(type=int)\n(line=2)\n[scope: gcd]"];
-  node000001FFD779F140 -> node000001FFD779ED30 [label="c1"];
-  node000001FFD779ED30 [label="COMPOUND\n(line=6)\n[scope: gcd]"];
-  node000001FFD779ED30 -> node000001FFD779F0A0 [label="c1"];
-  node000001FFD779F0A0 [label="IF\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F0A0 -> node000001FFD779F000 [label="c0"];
-  node000001FFD779F000 [label="OP: ==\n(type=void)\n(line=3)\n[scope: gcd]"];
-  node000001FFD779F000 -> node000001FFD779EF10 [label="c0"];
-  node000001FFD779EF10 [label="ID: v\n(type=void)\n(line=3)\n[scope: gcd]"];
-  node000001FFD779F000 -> node000001FFD779EEC0 [label="c1"];
-  node000001FFD779EEC0 [label="CONST: 0\n(type=void)\n(line=3)\n[scope: gcd]"];
-  node000001FFD779F0A0 -> node000001FFD779F370 [label="c1"];
-  node000001FFD779F370 [label="RETURN\n(line=3)\n[scope: gcd]"];
-  node000001FFD779F370 -> node000001FFD779F280 [label="c0"];
-  node000001FFD779F280 [label="ID: u\n(type=void)\n(line=3)\n[scope: gcd]"];
-  node000001FFD779F0A0 -> node000001FFD779F050 [label="c2"];
-  node000001FFD779F050 [label="RETURN\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F050 -> node000001FFD779F410 [label="c0"];
-  node000001FFD779F410 [label="CALL: gcd\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F410 -> node000001FFD779EDD0 [label="c0"];
-  node000001FFD779EDD0 [label="ID: v\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779EDD0 -> node000001FFD779F3C0 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD779EDD0; node000001FFD779F3C0; }
-  node000001FFD779F3C0 [label="OP: -\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F3C0 -> node000001FFD779EE20 [label="c0"];
-  node000001FFD779EE20 [label="ID: u\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F3C0 -> node000001FFD779F230 [label="c1"];
-  node000001FFD779F230 [label="OP: *\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F230 -> node000001FFD779F320 [label="c0"];
-  node000001FFD779F320 [label="OP: /\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F320 -> node000001FFD779EF60 [label="c0"];
-  node000001FFD779EF60 [label="ID: u\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F320 -> node000001FFD779EE70 [label="c1"];
-  node000001FFD779EE70 [label="ID: v\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F230 -> node000001FFD779F1E0 [label="c1"];
-  node000001FFD779F1E0 [label="ID: v\n(type=void)\n(line=4)\n[scope: gcd]"];
-  node000001FFD779F140 -> node000001FFD77A7180 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD779F140; node000001FFD77A7180; }
-  node000001FFD77A7180 [label="FUN: main\n(type=void)\n(line=12)\n[scope: main]"];
-  node000001FFD77A7180 -> node000001FFD77A6730 [label="c1"];
-  node000001FFD77A6730 [label="COMPOUND\n(type=void)\n(line=12)\n[scope: main]"];
-  node000001FFD77A6730 -> node000001FFD779ECE0 [label="c0"];
-  node000001FFD779ECE0 [label="VAR DECL: x\n(type=int)\n(line=9)\n[scope: main]"];
-  node000001FFD779ECE0 -> node000001FFD779F190 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD779ECE0; node000001FFD779F190; }
-  node000001FFD779F190 [label="VAR DECL: y\n(type=int)\n(line=9)\n[scope: main]"];
-  node000001FFD77A6730 -> node000001FFD77A74F0 [label="c1"];
-  node000001FFD77A74F0 [label="ASSIGN\n(type=void)\n(line=10)\n[scope: main]"];
-  node000001FFD77A74F0 -> node000001FFD77A6640 [label="c0"];
-  node000001FFD77A6640 [label="ID: x\n(type=void)\n(line=10)\n[scope: main]"];
-  node000001FFD77A74F0 -> node000001FFD77A6E60 [label="c1"];
-  node000001FFD77A6E60 [label="CALL: input\n(type=void)\n(line=10)\n[scope: main]"];
-  node000001FFD77A74F0 -> node000001FFD77A6C30 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD77A74F0; node000001FFD77A6C30; }
-  node000001FFD77A6C30 [label="ASSIGN\n(type=void)\n(line=10)\n[scope: main]"];
-  node000001FFD77A6C30 -> node000001FFD77A6FF0 [label="c0"];
-  node000001FFD77A6FF0 [label="ID: y\n(type=void)\n(line=10)\n[scope: main]"];
-  node000001FFD77A6C30 -> node000001FFD77A67D0 [label="c1"];
-  node000001FFD77A67D0 [label="CALL: input\n(type=void)\n(line=10)\n[scope: main]"];
-  node000001FFD77A6C30 -> node000001FFD77A6BE0 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD77A6C30; node000001FFD77A6BE0; }
-  node000001FFD77A6BE0 [label="CALL: output\n(type=void)\n(line=11)\n[scope: main]"];
-  node000001FFD77A6BE0 -> node000001FFD77A68C0 [label="c0"];
-  node000001FFD77A68C0 [label="CALL: gcd\n(type=void)\n(line=11)\n[scope: main]"];
-  node000001FFD77A68C0 -> node000001FFD77A6B90 [label="c0"];
-  node000001FFD77A6B90 [label="ID: x\n(type=void)\n(line=11)\n[scope: main]"];
-  node000001FFD77A6B90 -> node000001FFD77A6DC0 [style=dashed, color=gray40, label="sib"];
-  { rank=same; node000001FFD77A6B90; node000001FFD77A6DC0; }
-  node000001FFD77A6DC0 [label="ID: y\n(type=void)\n(line=11)\n[scope: main]"];
+  node000002771243E9D0 [shape="box", fillcolor="palegreen", label="Arr: x[]\n(int)\n[global]"];
+  node000002771243E9D0 -> node000002771243E930;
+  node000002771243E930 [shape="ellipse", fillcolor="lightgrey", label="10"];
+  node000002771243E9D0 -> node0000027712446BE0 [style=dashed, color=gray40];
+  { rank=same; node000002771243E9D0; node0000027712446BE0; }
+  node0000027712446BE0 [shape="box", fillcolor="lightcoral", label="Fun: minloc()\n(int)\n[minloc]"];
+  node0000027712446BE0 -> node000002771243E700;
+  node000002771243E700 [shape="box", fillcolor="palegreen", label="Param: a[]\n(int)\n[minloc]"];
+  node000002771243E700 -> node000002771243EA70 [style=dashed, color=gray40];
+  { rank=same; node000002771243E700; node000002771243EA70; }
+  node000002771243EA70 [shape="box", fillcolor="palegreen", label="Param: low\n(int)\n[minloc]"];
+  node000002771243EA70 -> node000002771243EC50 [style=dashed, color=gray40];
+  { rank=same; node000002771243EA70; node000002771243EC50; }
+  node000002771243EC50 [shape="box", fillcolor="palegreen", label="Param: high\n(int)\n[minloc]"];
+  node0000027712446BE0 -> node0000027712447130;
+  node0000027712447130 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0000027712447130 -> node000002771243EA20;
+  node000002771243EA20 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[minloc]"];
+  node000002771243EA20 -> node000002771243ECA0 [style=dashed, color=gray40];
+  { rank=same; node000002771243EA20; node000002771243ECA0; }
+  node000002771243ECA0 [shape="box", fillcolor="palegreen", label="Var: x\n(int)\n[minloc]"];
+  node000002771243ECA0 -> node000002771243EAC0 [style=dashed, color=gray40];
+  { rank=same; node000002771243ECA0; node000002771243EAC0; }
+  node000002771243EAC0 [shape="box", fillcolor="palegreen", label="Var: k\n(int)\n[minloc]"];
+  node0000027712447130 -> node000002771243EBB0;
+  node000002771243EBB0 [shape="circle", fillcolor="gold", label="="];
+  node000002771243EBB0 -> node000002771243ECF0;
+  node000002771243ECF0 [shape="ellipse", fillcolor="lightyellow", label="k"];
+  node000002771243EBB0 -> node000002771243EB60;
+  node000002771243EB60 [shape="ellipse", fillcolor="lightyellow", label="low"];
+  node000002771243EBB0 -> node000002771243E7F0 [style=dashed, color=gray40];
+  { rank=same; node000002771243EBB0; node000002771243E7F0; }
+  node000002771243E7F0 [shape="circle", fillcolor="gold", label="="];
+  node000002771243E7F0 -> node000002771243EC00;
+  node000002771243EC00 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node000002771243E7F0 -> node000002771243ED40;
+  node000002771243ED40 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node000002771243ED40 -> node000002771243E610;
+  node000002771243E610 [shape="ellipse", fillcolor="lightyellow", label="low"];
+  node000002771243E7F0 -> node000002771243E7A0 [style=dashed, color=gray40];
+  { rank=same; node000002771243E7F0; node000002771243E7A0; }
+  node000002771243E7A0 [shape="circle", fillcolor="gold", label="="];
+  node000002771243E7A0 -> node000002771243E660;
+  node000002771243E660 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node000002771243E7A0 -> node000002771243E8E0;
+  node000002771243E8E0 [shape="circle", fillcolor="plum", label="+"];
+  node000002771243E8E0 -> node000002771243E6B0;
+  node000002771243E6B0 [shape="ellipse", fillcolor="lightyellow", label="low"];
+  node000002771243E8E0 -> node000002771243E750;
+  node000002771243E750 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node000002771243E7A0 -> node0000027712447090 [style=dashed, color=gray40];
+  { rank=same; node000002771243E7A0; node0000027712447090; }
+  node0000027712447090 [shape="box", fillcolor="lightblue", label="while"];
+  node0000027712447090 -> node0000027712447040;
+  node0000027712447040 [shape="circle", fillcolor="plum", label="<"];
+  node0000027712447040 -> node000002771243E840;
+  node000002771243E840 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712447040 -> node000002771243E890;
+  node000002771243E890 [shape="ellipse", fillcolor="lightyellow", label="high"];
+  node0000027712447090 -> node0000027712446730;
+  node0000027712446730 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0000027712446730 -> node00000277124468C0;
+  node00000277124468C0 [shape="box", fillcolor="lightblue", label="if"];
+  node00000277124468C0 -> node0000027712446870;
+  node0000027712446870 [shape="circle", fillcolor="plum", label="<"];
+  node0000027712446870 -> node0000027712446640;
+  node0000027712446640 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node0000027712446640 -> node0000027712446820;
+  node0000027712446820 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446870 -> node0000027712446910;
+  node0000027712446910 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node00000277124468C0 -> node00000277124471D0;
+  node00000277124471D0 [shape="box", fillcolor="lightblue", label="{ }"];
+  node00000277124471D0 -> node0000027712446B90;
+  node0000027712446B90 [shape="circle", fillcolor="gold", label="="];
+  node0000027712446B90 -> node00000277124465A0;
+  node00000277124465A0 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node0000027712446B90 -> node0000027712446D20;
+  node0000027712446D20 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node0000027712446D20 -> node0000027712447310;
+  node0000027712447310 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446B90 -> node0000027712446D70 [style=dashed, color=gray40];
+  { rank=same; node0000027712446B90; node0000027712446D70; }
+  node0000027712446D70 [shape="circle", fillcolor="gold", label="="];
+  node0000027712446D70 -> node00000277124466E0;
+  node00000277124466E0 [shape="ellipse", fillcolor="lightyellow", label="k"];
+  node0000027712446D70 -> node0000027712446DC0;
+  node0000027712446DC0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node00000277124468C0 -> node0000027712446E60 [style=dashed, color=gray40];
+  { rank=same; node00000277124468C0; node0000027712446E60; }
+  node0000027712446E60 [shape="circle", fillcolor="gold", label="="];
+  node0000027712446E60 -> node0000027712446550;
+  node0000027712446550 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446E60 -> node0000027712446C30;
+  node0000027712446C30 [shape="circle", fillcolor="plum", label="+"];
+  node0000027712446C30 -> node0000027712446500;
+  node0000027712446500 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446C30 -> node0000027712446A00;
+  node0000027712446A00 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node0000027712447090 -> node0000027712446E10 [style=dashed, color=gray40];
+  { rank=same; node0000027712447090; node0000027712446E10; }
+  node0000027712446E10 [shape="box", fillcolor="lightblue", label="return"];
+  node0000027712446E10 -> node0000027712446460;
+  node0000027712446460 [shape="ellipse", fillcolor="lightyellow", label="k"];
+  node0000027712446BE0 -> node0000027712447E70 [style=dashed, color=gray40];
+  { rank=same; node0000027712446BE0; node0000027712447E70; }
+  node0000027712447E70 [shape="box", fillcolor="lightcoral", label="Fun: sort()\n(void)\n[sort]"];
+  node0000027712447E70 -> node00000277124470E0;
+  node00000277124470E0 [shape="box", fillcolor="palegreen", label="Param: a[]\n(int)\n[sort]"];
+  node00000277124470E0 -> node0000027712446A50 [style=dashed, color=gray40];
+  { rank=same; node00000277124470E0; node0000027712446A50; }
+  node0000027712446A50 [shape="box", fillcolor="palegreen", label="Param: low\n(int)\n[sort]"];
+  node0000027712446A50 -> node0000027712446960 [style=dashed, color=gray40];
+  { rank=same; node0000027712446A50; node0000027712446960; }
+  node0000027712446960 [shape="box", fillcolor="palegreen", label="Param: high\n(int)\n[sort]"];
+  node0000027712447E70 -> node0000027712448730;
+  node0000027712448730 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0000027712448730 -> node00000277124465F0;
+  node00000277124465F0 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[sort]"];
+  node00000277124465F0 -> node0000027712446FF0 [style=dashed, color=gray40];
+  { rank=same; node00000277124465F0; node0000027712446FF0; }
+  node0000027712446FF0 [shape="box", fillcolor="palegreen", label="Var: k\n(int)\n[sort]"];
+  node0000027712448730 -> node0000027712446FA0;
+  node0000027712446FA0 [shape="circle", fillcolor="gold", label="="];
+  node0000027712446FA0 -> node00000277124469B0;
+  node00000277124469B0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446FA0 -> node0000027712446EB0;
+  node0000027712446EB0 [shape="ellipse", fillcolor="lightyellow", label="low"];
+  node0000027712446FA0 -> node0000027712448500 [style=dashed, color=gray40];
+  { rank=same; node0000027712446FA0; node0000027712448500; }
+  node0000027712448500 [shape="box", fillcolor="lightblue", label="while"];
+  node0000027712448500 -> node0000027712446AA0;
+  node0000027712446AA0 [shape="circle", fillcolor="plum", label="<"];
+  node0000027712446AA0 -> node0000027712447180;
+  node0000027712447180 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446AA0 -> node0000027712446F00;
+  node0000027712446F00 [shape="circle", fillcolor="plum", label="-"];
+  node0000027712446F00 -> node0000027712447360;
+  node0000027712447360 [shape="ellipse", fillcolor="lightyellow", label="high"];
+  node0000027712446F00 -> node0000027712446410;
+  node0000027712446410 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node0000027712448500 -> node0000027712448410;
+  node0000027712448410 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0000027712448410 -> node0000027712447220;
+  node0000027712447220 [shape="box", fillcolor="palegreen", label="Var: t\n(int)\n[sort]"];
+  node0000027712448410 -> node00000277124472C0;
+  node00000277124472C0 [shape="circle", fillcolor="gold", label="="];
+  node00000277124472C0 -> node0000027712446F50;
+  node0000027712446F50 [shape="ellipse", fillcolor="lightyellow", label="k"];
+  node00000277124472C0 -> node0000027712446780;
+  node0000027712446780 [shape="box", fillcolor="aquamarine", label="Call: minloc()"];
+  node0000027712446780 -> node0000027712446AF0;
+  node0000027712446AF0 [shape="ellipse", fillcolor="lightyellow", label="a"];
+  node0000027712446AF0 -> node0000027712446B40 [style=dashed, color=gray40];
+  { rank=same; node0000027712446AF0; node0000027712446B40; }
+  node0000027712446B40 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712446B40 -> node0000027712447270 [style=dashed, color=gray40];
+  { rank=same; node0000027712446B40; node0000027712447270; }
+  node0000027712447270 [shape="ellipse", fillcolor="lightyellow", label="high"];
+  node00000277124472C0 -> node0000027712446CD0 [style=dashed, color=gray40];
+  { rank=same; node00000277124472C0; node0000027712446CD0; }
+  node0000027712446CD0 [shape="circle", fillcolor="gold", label="="];
+  node0000027712446CD0 -> node0000027712446690;
+  node0000027712446690 [shape="ellipse", fillcolor="lightyellow", label="t"];
+  node0000027712446CD0 -> node0000027712446C80;
+  node0000027712446C80 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node0000027712446C80 -> node00000277124467D0;
+  node00000277124467D0 [shape="ellipse", fillcolor="lightyellow", label="k"];
+  node0000027712446CD0 -> node0000027712448780 [style=dashed, color=gray40];
+  { rank=same; node0000027712446CD0; node0000027712448780; }
+  node0000027712448780 [shape="circle", fillcolor="gold", label="="];
+  node0000027712448780 -> node00000277124486E0;
+  node00000277124486E0 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node00000277124486E0 -> node00000277124464B0;
+  node00000277124464B0 [shape="ellipse", fillcolor="lightyellow", label="k"];
+  node0000027712448780 -> node0000027712447C90;
+  node0000027712447C90 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node0000027712447C90 -> node00000277124487D0;
+  node00000277124487D0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448780 -> node0000027712448820 [style=dashed, color=gray40];
+  { rank=same; node0000027712448780; node0000027712448820; }
+  node0000027712448820 [shape="circle", fillcolor="gold", label="="];
+  node0000027712448820 -> node0000027712448A00;
+  node0000027712448A00 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
+  node0000027712448A00 -> node0000027712448960;
+  node0000027712448960 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448820 -> node0000027712448190;
+  node0000027712448190 [shape="ellipse", fillcolor="lightyellow", label="t"];
+  node0000027712448820 -> node0000027712448870 [style=dashed, color=gray40];
+  { rank=same; node0000027712448820; node0000027712448870; }
+  node0000027712448870 [shape="circle", fillcolor="gold", label="="];
+  node0000027712448870 -> node0000027712448A50;
+  node0000027712448A50 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448870 -> node0000027712448B90;
+  node0000027712448B90 [shape="circle", fillcolor="plum", label="+"];
+  node0000027712448B90 -> node0000027712448460;
+  node0000027712448460 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448B90 -> node0000027712447D30;
+  node0000027712447D30 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node0000027712447E70 -> node0000027712449790 [style=dashed, color=gray40];
+  { rank=same; node0000027712447E70; node0000027712449790; }
+  node0000027712449790 [shape="box", fillcolor="lightcoral", label="Fun: main()\n(void)\n[main]"];
+  node0000027712449790 -> node0000027712449290;
+  node0000027712449290 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0000027712449290 -> node00000277124484B0;
+  node00000277124484B0 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[main]"];
+  node0000027712449290 -> node0000027712447CE0;
+  node0000027712447CE0 [shape="circle", fillcolor="gold", label="="];
+  node0000027712447CE0 -> node00000277124488C0;
+  node00000277124488C0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712447CE0 -> node0000027712447C40;
+  node0000027712447C40 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0000027712447CE0 -> node00000277124480F0 [style=dashed, color=gray40];
+  { rank=same; node0000027712447CE0; node00000277124480F0; }
+  node00000277124480F0 [shape="box", fillcolor="lightblue", label="while"];
+  node00000277124480F0 -> node0000027712448AF0;
+  node0000027712448AF0 [shape="circle", fillcolor="plum", label="<"];
+  node0000027712448AF0 -> node0000027712448AA0;
+  node0000027712448AA0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448AF0 -> node0000027712447D80;
+  node0000027712447D80 [shape="ellipse", fillcolor="lightgrey", label="10"];
+  node00000277124480F0 -> node00000277124485A0;
+  node00000277124485A0 [shape="box", fillcolor="lightblue", label="{ }"];
+  node00000277124485A0 -> node00000277124489B0;
+  node00000277124489B0 [shape="circle", fillcolor="gold", label="="];
+  node00000277124489B0 -> node0000027712447E20;
+  node0000027712447E20 [shape="ellipse", fillcolor="lightyellow", label="x[]"];
+  node0000027712447E20 -> node0000027712448910;
+  node0000027712448910 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node00000277124489B0 -> node0000027712448B40;
+  node0000027712448B40 [shape="box", fillcolor="aquamarine", label="Call: input()"];
+  node00000277124489B0 -> node0000027712448550 [style=dashed, color=gray40];
+  { rank=same; node00000277124489B0; node0000027712448550; }
+  node0000027712448550 [shape="circle", fillcolor="gold", label="="];
+  node0000027712448550 -> node0000027712447DD0;
+  node0000027712447DD0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448550 -> node0000027712447F10;
+  node0000027712447F10 [shape="circle", fillcolor="plum", label="+"];
+  node0000027712447F10 -> node0000027712447EC0;
+  node0000027712447EC0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712447F10 -> node0000027712448230;
+  node0000027712448230 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node00000277124480F0 -> node0000027712447FB0 [style=dashed, color=gray40];
+  { rank=same; node00000277124480F0; node0000027712447FB0; }
+  node0000027712447FB0 [shape="box", fillcolor="aquamarine", label="Call: sort()"];
+  node0000027712447FB0 -> node00000277124485F0;
+  node00000277124485F0 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node00000277124485F0 -> node0000027712448640 [style=dashed, color=gray40];
+  { rank=same; node00000277124485F0; node0000027712448640; }
+  node0000027712448640 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0000027712448640 -> node0000027712447F60 [style=dashed, color=gray40];
+  { rank=same; node0000027712448640; node0000027712447F60; }
+  node0000027712447F60 [shape="ellipse", fillcolor="lightgrey", label="10"];
+  node0000027712447FB0 -> node0000027712448000 [style=dashed, color=gray40];
+  { rank=same; node0000027712447FB0; node0000027712448000; }
+  node0000027712448000 [shape="circle", fillcolor="gold", label="="];
+  node0000027712448000 -> node00000277124480A0;
+  node00000277124480A0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448000 -> node0000027712448140;
+  node0000027712448140 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0000027712448000 -> node0000027712449150 [style=dashed, color=gray40];
+  { rank=same; node0000027712448000; node0000027712449150; }
+  node0000027712449150 [shape="box", fillcolor="lightblue", label="while"];
+  node0000027712449150 -> node0000027712448050;
+  node0000027712448050 [shape="circle", fillcolor="plum", label="<"];
+  node0000027712448050 -> node0000027712448320;
+  node0000027712448320 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712448050 -> node0000027712448690;
+  node0000027712448690 [shape="ellipse", fillcolor="lightgrey", label="10"];
+  node0000027712449150 -> node0000027712449880;
+  node0000027712449880 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0000027712449880 -> node00000277124482D0;
+  node00000277124482D0 [shape="box", fillcolor="aquamarine", label="Call: output()"];
+  node00000277124482D0 -> node0000027712448280;
+  node0000027712448280 [shape="ellipse", fillcolor="lightyellow", label="x[]"];
+  node0000027712448280 -> node00000277124481E0;
+  node00000277124481E0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node00000277124482D0 -> node0000027712449E20 [style=dashed, color=gray40];
+  { rank=same; node00000277124482D0; node0000027712449E20; }
+  node0000027712449E20 [shape="circle", fillcolor="gold", label="="];
+  node0000027712449E20 -> node00000277124483C0;
+  node00000277124483C0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712449E20 -> node0000027712449240;
+  node0000027712449240 [shape="circle", fillcolor="plum", label="+"];
+  node0000027712449240 -> node0000027712448370;
+  node0000027712448370 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0000027712449240 -> node00000277124491F0;
+  node00000277124491F0 [shape="ellipse", fillcolor="lightgrey", label="1"];
 }

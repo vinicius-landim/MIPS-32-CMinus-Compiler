@@ -154,6 +154,8 @@ fun_declaracao:
             //Nós filhos: Lista de parâmetros (Esq) e o Corpo da função (Dir)
             $$->child[0] = $5; //params
             $$->child[1] = $7; //composto_decl
+
+            //Reset do escopo ao término da função (composto_decl)
             strcpy(currentScope, "global");
       }
 ;
@@ -185,12 +187,9 @@ param:
             $$->attr.name = copyString($2);
        }
     | tipo_especificador ID ABRE_COLCHETE FECHA_COLCHETE {
-            $$ = newExpNode(ParamK);
+            $$ = newExpNode(ParamArrK);
             $$->type = $1;
             $$->attr.name = copyString($2);
-            //Criação de um filho "vazio" para diferenciar parâmetro como função
-            $$->child[0] = newExpNode(ConstK);
-            $$->child[0]->attr.val = 0;
     }
 ;
 
@@ -302,11 +301,11 @@ expressao:
 var: 
       ID {
             //Uso de variável já declarada
-            $$ = newExpNode(IdK);
+            $$ = newExpNode(VarK);
             $$->attr.name = copyString($1);
       }
     | ID ABRE_COLCHETE expressao FECHA_COLCHETE {
-            $$ = newExpNode(IdK);
+            $$ = newExpNode(ArrK);
             $$->attr.name = copyString($1);
             $$->child[0] = $3; //índice dado pela expressão
 
@@ -341,10 +340,7 @@ soma_expressao:
             //Operação de adição/subtração
             $$ = newExpNode(OpK); //soma -> + | -
             $$->attr.op = $2;
-            /* Garantia de Precedencia e Associatividade:
-             * child[0] recebe $1 (recursivo à esquerda), forçando contas como 10-5-2 a virarem (10-5)-2.
-             * child[1] recebe $3 (termo travado), garantindo que multiplicacoes fiquem
-             * mais profundas na arvore e sejam resolvidas ANTES desta soma. */
+            // TODO: verificar precedência
             $$->child[0] = $1;
             $$->child[1] = $3;
       }

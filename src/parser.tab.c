@@ -483,12 +483,12 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    90,    90,    97,   111,   119,   120,   124,   130,   142,
-     143,   147,   147,   162,   163,   167,   178,   182,   187,   200,
-     210,   221,   226,   237,   242,   243,   244,   245,   246,   251,
-     252,   257,   262,   272,   281,   285,   293,   298,   303,   308,
-     318,   325,   330,   331,   332,   333,   334,   335,   340,   351,
-     356,   357,   362,   368,   373,   374,   379,   382,   383,   384,
-     392,   401,   402,   407,   419
+     143,   147,   147,   164,   165,   169,   180,   184,   189,   199,
+     209,   220,   225,   236,   241,   242,   243,   244,   245,   250,
+     251,   256,   261,   271,   280,   284,   292,   297,   302,   307,
+     317,   324,   329,   330,   331,   332,   333,   334,   339,   347,
+     352,   353,   358,   364,   369,   370,   375,   378,   379,   380,
+     388,   397,   398,   403,   415
 };
 #endif
 
@@ -1573,8 +1573,10 @@ yyreduce:
             (yyval.tree)->type = (yyvsp[(1) - (7)].type);
             (yyval.tree)->attr.name = copyString((yyvsp[(2) - (7)].name));
             //Nós filhos: Lista de parâmetros (Esq) e o Corpo da função (Dir)
-            (yyval.tree)->child[0] = (yyvsp[(5) - (7)].tree);
-            (yyval.tree)->child[1] = (yyvsp[(7) - (7)].tree);
+            (yyval.tree)->child[0] = (yyvsp[(5) - (7)].tree); //params
+            (yyval.tree)->child[1] = (yyvsp[(7) - (7)].tree); //composto_decl
+
+            //Reset do escopo ao término da função (composto_decl)
             strcpy(currentScope, "global");
       ;}
     break;
@@ -1582,21 +1584,21 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 162 "parser.y"
+#line 164 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 163 "parser.y"
+#line 165 "parser.y"
     {(yyval.tree) = NULL;;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 167 "parser.y"
+#line 169 "parser.y"
     {
             TreeNode *t = (yyvsp[(1) - (3)].tree);
             if (t != NULL){
@@ -1613,14 +1615,14 @@ yyreduce:
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 178 "parser.y"
+#line 180 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 182 "parser.y"
+#line 184 "parser.y"
     {
             (yyval.tree) = newExpNode(ParamK);
             (yyval.tree)->type = (yyvsp[(1) - (2)].type);
@@ -1631,21 +1633,18 @@ yyreduce:
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 187 "parser.y"
+#line 189 "parser.y"
     {
-            (yyval.tree) = newExpNode(ParamK);
+            (yyval.tree) = newExpNode(ParamArrK);
             (yyval.tree)->type = (yyvsp[(1) - (4)].type);
             (yyval.tree)->attr.name = copyString((yyvsp[(2) - (4)].name));
-            //Criação de um filho "vazio" para diferenciar parâmetro como função
-            (yyval.tree)->child[0] = newExpNode(ConstK);
-            (yyval.tree)->child[0]->attr.val = 0;
     ;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 200 "parser.y"
+#line 199 "parser.y"
     {
             // Nó que define o escopo
             (yyval.tree) = newStmtNode(CompoundK);
@@ -1657,7 +1656,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 210 "parser.y"
+#line 209 "parser.y"
     {
             TreeNode *t = (yyvsp[(1) - (2)].tree);
             if (t!=NULL){
@@ -1674,14 +1673,14 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 221 "parser.y"
+#line 220 "parser.y"
     {(yyval.tree) = NULL;;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 226 "parser.y"
+#line 225 "parser.y"
     {
             TreeNode *t = (yyvsp[(1) - (2)].tree);
             if (t != NULL){
@@ -1698,63 +1697,63 @@ yyreduce:
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 237 "parser.y"
+#line 236 "parser.y"
     {(yyval.tree) = NULL;;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 242 "parser.y"
+#line 241 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 243 "parser.y"
+#line 242 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 244 "parser.y"
+#line 243 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 245 "parser.y"
+#line 244 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 246 "parser.y"
+#line 245 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 251 "parser.y"
+#line 250 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (2)].tree);;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 252 "parser.y"
+#line 251 "parser.y"
     {(yyval.tree) = NULL;;}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 257 "parser.y"
+#line 256 "parser.y"
     {
             (yyval.tree) = newStmtNode(IfK); //Pai: IF
             (yyval.tree)->child[0] = (yyvsp[(3) - (5)].tree); //Filho 1: expressão
@@ -1765,7 +1764,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 262 "parser.y"
+#line 261 "parser.y"
     {
             (yyval.tree) = newStmtNode(IfK); //Pai: IF
             (yyval.tree)->child[0] = (yyvsp[(3) - (7)].tree); //Filho 1: expressão condicional
@@ -1777,7 +1776,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 272 "parser.y"
+#line 271 "parser.y"
     {
             (yyval.tree) = newStmtNode(WhileK);
             (yyval.tree)->child[0] = (yyvsp[(3) - (5)].tree); //Filho 1: expressão condicional
@@ -1788,7 +1787,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 281 "parser.y"
+#line 280 "parser.y"
     {
             (yyval.tree) = newStmtNode(ReturnK);
             // Return; => Filhos nulos
@@ -1798,7 +1797,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 285 "parser.y"
+#line 284 "parser.y"
     {
             (yyval.tree) = newStmtNode(ReturnK);
             (yyval.tree)->child[0] = (yyvsp[(2) - (3)].tree);
@@ -1808,7 +1807,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 293 "parser.y"
+#line 292 "parser.y"
     {
             (yyval.tree) = newExpNode(AssignK);
             (yyval.tree)->child[0] = (yyvsp[(1) - (3)].tree);
@@ -1819,17 +1818,17 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 298 "parser.y"
+#line 297 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 303 "parser.y"
+#line 302 "parser.y"
     {
             //Uso de variável já declarada
-            (yyval.tree) = newExpNode(IdK);
+            (yyval.tree) = newExpNode(VarK);
             (yyval.tree)->attr.name = copyString((yyvsp[(1) - (1)].name));
       ;}
     break;
@@ -1837,9 +1836,9 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 308 "parser.y"
+#line 307 "parser.y"
     {
-            (yyval.tree) = newExpNode(IdK);
+            (yyval.tree) = newExpNode(ArrK);
             (yyval.tree)->attr.name = copyString((yyvsp[(1) - (4)].name));
             (yyval.tree)->child[0] = (yyvsp[(3) - (4)].tree); //índice dado pela expressão
 
@@ -1849,7 +1848,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 318 "parser.y"
+#line 317 "parser.y"
     {
             //Operação lógica/relacional (i.e: a < b, x==5)
             (yyval.tree) = newExpNode(OpK);
@@ -1862,64 +1861,61 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 325 "parser.y"
+#line 324 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 330 "parser.y"
+#line 329 "parser.y"
     {(yyval.val) = MENOR_IGUAL;;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 331 "parser.y"
+#line 330 "parser.y"
     {(yyval.val) = MENOR;;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 332 "parser.y"
+#line 331 "parser.y"
     {(yyval.val) = MAIOR;;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 333 "parser.y"
+#line 332 "parser.y"
     {(yyval.val) = MAIOR_IGUAL;;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 334 "parser.y"
+#line 333 "parser.y"
     {(yyval.val) = IGUAL_IGUAL;;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 335 "parser.y"
+#line 334 "parser.y"
     {(yyval.val) = DIFERENTE;;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 340 "parser.y"
+#line 339 "parser.y"
     {
             //Operação de adição/subtração
             (yyval.tree) = newExpNode(OpK); //soma -> + | -
             (yyval.tree)->attr.op = (yyvsp[(2) - (3)].val);
-            /* Garantia de Precedencia e Associatividade:
-             * child[0] recebe $1 (recursivo à esquerda), forçando contas como 10-5-2 a virarem (10-5)-2.
-             * child[1] recebe $3 (termo travado), garantindo que multiplicacoes fiquem
-             * mais profundas na arvore e sejam resolvidas ANTES desta soma. */
+            // TODO: verificar precedência
             (yyval.tree)->child[0] = (yyvsp[(1) - (3)].tree);
             (yyval.tree)->child[1] = (yyvsp[(3) - (3)].tree);
       ;}
@@ -1928,28 +1924,28 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 351 "parser.y"
+#line 347 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 356 "parser.y"
+#line 352 "parser.y"
     {(yyval.val) = SOMA;;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 357 "parser.y"
+#line 353 "parser.y"
     {(yyval.val) = SUB;;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 362 "parser.y"
+#line 358 "parser.y"
     {
             (yyval.tree) = newExpNode(OpK);
             (yyval.tree)->attr.op = (yyvsp[(2) - (3)].val);
@@ -1961,28 +1957,28 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 368 "parser.y"
+#line 364 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 373 "parser.y"
+#line 369 "parser.y"
     {(yyval.val) = MUL;;}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 374 "parser.y"
+#line 370 "parser.y"
     {(yyval.val) = DIV;;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 379 "parser.y"
+#line 375 "parser.y"
     {
             (yyval.tree) = (yyvsp[(2) - (3)].tree); //Parênteses força o Bison à priorizar a conta
       ;}
@@ -1991,21 +1987,21 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 382 "parser.y"
+#line 378 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 383 "parser.y"
+#line 379 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 384 "parser.y"
+#line 380 "parser.y"
     {
             (yyval.tree) = newExpNode(ConstK);
             (yyval.tree)->attr.val = (yyvsp[(1) - (1)].val);
@@ -2015,7 +2011,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 392 "parser.y"
+#line 388 "parser.y"
     {
             (yyval.tree) = newExpNode(CallK);
             (yyval.tree)->attr.name = copyString((yyvsp[(1) - (4)].name));
@@ -2026,21 +2022,21 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 401 "parser.y"
+#line 397 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 402 "parser.y"
+#line 398 "parser.y"
     {(yyval.tree) = NULL;;}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 407 "parser.y"
+#line 403 "parser.y"
     {
             //Lista de argumentos para ativação
             TreeNode *t = (yyvsp[(1) - (3)].tree);
@@ -2058,14 +2054,14 @@ yyreduce:
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 419 "parser.y"
+#line 415 "parser.y"
     {(yyval.tree) = (yyvsp[(1) - (1)].tree);;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2069 "parser.tab.c"
+#line 2065 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2277,7 +2273,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 422 "parser.y"
+#line 418 "parser.y"
 
 
 void yyerror(const char *s) {

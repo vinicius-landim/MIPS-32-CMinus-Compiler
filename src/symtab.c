@@ -10,7 +10,7 @@
 //Lista com número da linha de todas as ocorrências de uma variável
 typedef struct LineListNode{
     int lineNo;
-    struct LineListNode *next;
+    struct LineListNode *next; // listar todas as ocorrências de uma mesma variável
 } *LineList;
 
 //Lista de variáveis em uma bucket
@@ -40,12 +40,14 @@ void st_insert (char *name, int lineNo, int loc){
     while ((b_node != NULL) && (strcmp(name, b_node->name) != 0))
         b_node = b_node->next;
     if(b_node == NULL) {
-        // Primeiro nó na posição da tabela
+        //novo nó a ser inserido na lista da posição do hash
+        b_node = (BucketList)malloc(sizeof(struct BucketListNode));
         b_node->name = name;
         b_node->lines = (LineList)malloc(sizeof(struct LineListNode));
         b_node->lines->lineNo=lineNo;
         b_node->memloc = loc;
         b_node->lines->next = NULL;
+         //head insertion
         b_node->next = hashTable[h];
         hashTable[h] = b_node;
     } else {
@@ -65,7 +67,6 @@ int st_lookup(char *name){
     while((b_node != NULL) && (strcmp(name, b_node->name) != 0))
         b_node = b_node->next;
     if(b_node == NULL)
-        return -1;
-    else 
-        return 1;
+        return 0;
+    return 1;
 }
