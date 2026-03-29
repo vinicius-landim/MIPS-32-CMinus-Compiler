@@ -16,7 +16,10 @@ typedef struct LineListNode{
 //Lista de variáveis em uma bucket
 typedef struct BucketListNode{
     char *name;
+    char *scope;
     LineList lines;
+    ExpType type;
+    SymbolKind kind;
     int memloc;
     struct BucketListNode *next;
 } *BucketList;
@@ -34,18 +37,24 @@ static int hash(char *key){
     return temp;
 }
 //Inserção na tabela de símbolos
-void st_insert (char *name, int lineNo, int loc){
+void st_insert (char *name, char *scope, ExpType type, SymbolKind kind, int lineNo, int loc){
     int h = hash(name);
     BucketList b_node = hashTable[h]; //Endereço para um novo nó na bucket
-    while ((b_node != NULL) && (strcmp(name, b_node->name) != 0))
+
+    while ((b_node != NULL) && ((strcmp(name, b_node->name) != 0) || (strcmp(scope, b_node->scope) != 0)))
         b_node = b_node->next;
+
     if(b_node == NULL) {
         //novo nó a ser inserido na lista da posição do hash
         b_node = (BucketList)malloc(sizeof(struct BucketListNode));
-        b_node->name = name;
+        b_node->name = copyString(name);
+        b_node->scope = copyString(scope);
+        b_node->type = type;
+        b_node->kind = kind;
+        b_node->memloc = loc;
+
         b_node->lines = (LineList)malloc(sizeof(struct LineListNode));
         b_node->lines->lineNo=lineNo;
-        b_node->memloc = loc;
         b_node->lines->next = NULL;
          //head insertion
         b_node->next = hashTable[h];
@@ -61,12 +70,14 @@ void st_insert (char *name, int lineNo, int loc){
     }
 }
 
-int st_lookup(char *name){
+BucketList st_lookup(char *name, char *scope){
     int h = hash(name);
     BucketList b_node = hashTable[h];
-    while((b_node != NULL) && (strcmp(name, b_node->name) != 0))
+
+    while((b_node != NULL) && ((strcmp(name, b_node->name) != 0) || (strcmp(scope, b_node->scope) != 0))) {
         b_node = b_node->next;
-    if(b_node == NULL)
-        return 0;
-    return 1;
+    }
+
+    return b_node;
 }
+

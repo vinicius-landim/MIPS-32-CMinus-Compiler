@@ -1,9 +1,12 @@
 #ifndef _SYMTAB_H_
 #define _SYMTAB_H_
+#include "globals.h"
 
-void st_insert(char *name, int lineNo, int loc);
+typedef enum {SYM_VAR, SYM_ARR, SYM_FUNC} SymbolKind;
 
-int st_lookup(char *name);
+void st_insert (char *name, char *scope, ExpType type, SymbolKind kind, int lineNo, int loc);
+
+BucketList st_lookup(char *name, char *scope);
 
 //void printSymTab
 
