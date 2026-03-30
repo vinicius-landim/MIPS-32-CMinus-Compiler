@@ -75,7 +75,7 @@ ESPACO  [ \t\r]+
 
  /*Erros Léxicos*/
 . { 
-    fprintf(stderr, "ERRO LEXICO: '%s' na linha %d\n", yytext, lineNo); 
+    fprintf(stderr, "ERRO LEXICO: Caractere '%s' inválido - LINHA:%d\n", yytext, lineNo); 
 }
 
 %%
