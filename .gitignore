@@ -1,12 +1,16 @@
-# .gitignore para compilador C- (C++) e pasta de desenvolvimento LaTeX
 
-# Flex/Bison
-# lex.yy.c
-# *.tab.c
-# *.tab.h
-# *.output
+# Flex/Bison (Arquivos gerados automaticamente)
+lex.yy.c
+*.tab.c
+*.tab.h
+*.output
 
-# Diretórios de build/artefatos
+# Artefatos do Compilador C- (Testes)
+output_files/
+compilador     # Executável gerado no Linux
+*.dot          # Árvores Graphviz (caso salvas na raiz)
+
+# Diretórios de build/artefatos C/C++
 /build/
 /bin/
 /out/
@@ -17,7 +21,6 @@ CMakeCache.txt
 cmake_install.cmake
 compile_commands.json
 Makefile.user
-
 
 # Arquivos binários/obj/etc
 *.o
