@@ -9,23 +9,22 @@
 #include "util.h"
 #include "parser.tab.h"
 
-/* Mantemos a contagem de linhas sincronizada com o globals.h */
 extern int lineNo;
 %}
 
-/* Definições Auxiliares */
+/* Definições*/
 DIGITO  [0-9]
 LETRA   [a-zA-Z]
 ID      {LETRA}+
 NUM     {DIGITO}+
 ESPACO  [ \t\r]+
 
-/* Estado para Comentários Multilinha */
+/* Estado para Comentários Multilinha*/
 %x COMENTARIO
 
 %%
 
- /* --- Palavras-Reservadas --- */
+ /* Palavras-Reservadas*/
 "if"            { return IF; }
 "else"          { return ELSE; }
 "int"           { return INT; }
@@ -33,7 +32,7 @@ ESPACO  [ \t\r]+
 "void"          { return VOID; }
 "while"         { return WHILE; }
 
- /* --- Operadores e Símbolos --- */
+ /*Operadores e Símbolos*/
 "+"             { return SOMA; }
 "-"             { return SUB; }
 "*"             { return MUL; }
@@ -54,30 +53,29 @@ ESPACO  [ \t\r]+
 "{"             { return ABRE_CHAVE; }
 "}"             { return FECHA_CHAVE; }
 
- /* --- Identificadores e Números --- */
-{ID}            { 
-                  yylval.name = copyString(yytext); 
-                  return ID; 
-                }
-{NUM}           { 
-                  yylval.val = atoi(yytext); 
-                  return NUM; 
-                }
+ /*Identificadores e Números*/
+{ID} {
+      yylval.name = copyString(yytext); 
+      return ID; 
+}
+{NUM} { 
+        yylval.val = atoi(yytext); 
+        return NUM; 
+}
 
- /* --- Gerenciamento de Espaços e Linhas --- */
-\n              { lineNo++; }
-{ESPACO}        { /* ignora */ }
+ /*Gerenciamento de Espaços e Linhas*/
+\n        { lineNo++; }
+{ESPACO}  { /* ignora */ }
 
- /* --- Tratamento de Comentários (/* ... */) --- */
-"/*"            { BEGIN(COMENTARIO); }
+ /*Tratamento de Comentários*/
+"/*"             { BEGIN(COMENTARIO); }
 <COMENTARIO>"*/" { BEGIN(INITIAL); }
 <COMENTARIO>\n   { lineNo++; }
 <COMENTARIO>.    { /* ignora conteúdo */ }
 
- /* --- Erros Léxicos --- */
-.               { 
-                  fprintf(stderr, "ERRO LEXICO: '%s' na linha %d\n", yytext, lineNo); 
-                  /* Opcional: retornar um token de erro ou apenas ignorar */
-                }
+ /*Erros Léxicos*/
+. { 
+    fprintf(stderr, "ERRO LEXICO: '%s' na linha %d\n", yytext, lineNo); 
+}
 
 %%
