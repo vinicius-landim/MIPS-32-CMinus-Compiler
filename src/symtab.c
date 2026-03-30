@@ -5,6 +5,7 @@
 #include "util.h"
 
 Scope currentScope = NULL;
+Scope scopeHistory = NULL;
 
 //Lista com número da linha de todas as ocorrências de uma variável
 typedef struct LineListNode{
@@ -18,6 +19,19 @@ void pushScope(char *name){
     newScope->h_symbols = NULL;
     newScope->parent = currentScope;
     currentScope = newScope;
+
+    //push histórico para impressão: inserção ao final da lista
+    newScope->next = NULL;
+    if (scopeHistory == NULL)
+        scopeHistory = newScope;
+    else {
+        //atualizar next do último nó
+        Scope temp = scopeHistory;
+        while (temp->next != NULL)
+            temp = temp->next;
+
+        temp->next = newScope;
+    }
 }
 
 void popScope(){
@@ -78,4 +92,52 @@ Symbol st_lookup_scope(char *name){
         s_node = s_node->next;
     }
     return NULL;
+}
+
+//impressão
+static const char* typeToString(ExpType type) {
+    switch(type) {
+        case Void: return "void";
+        case Integer: return "int";
+        default: return "unknown";
+    }
+}
+
+static const char* kindToString(SymbolKind kind) {
+    switch(kind) {
+        case SYMB_VAR: return "Variavel";
+        case SYMB_ARR: return "Vetor";
+        case SYMB_FUNC: return "Funcao";
+        default: return "unknown";
+    }
+}
+
+void printSymTab(FILE * listing) {
+    fprintf(listing, "Nome do Simbolo   |  Tipo      |  Classificacao  |  Escopo          |  Loc  |  Linhas\n");
+    fprintf(listing, "-----------------------------------------------------------------------------------------\n");
+
+    Scope scp = scopeHistory; 
+    while (scp != NULL) {
+        Symbol sym = scp->h_symbols;
+        
+        //barre todas as variáveis/funções dentro do escopo
+        while (sym != NULL) {
+            fprintf(listing, "%-17s |  ", sym->name);
+            fprintf(listing, "%-8s  |  ", typeToString(sym->type));
+            fprintf(listing, "%-13s  |  ", kindToString(sym->kind));
+            fprintf(listing, "%-14s  |  ", scp->name);
+            fprintf(listing, "%-3d  |  ", sym->memloc);
+
+            //imprime todas as linhas onde o símbolo apareceu
+            LineList line = sym->lines;
+            while (line != NULL) {
+                fprintf(listing, "%d ", line->lineNo);
+                line = line->next;
+            }
+            fprintf(listing, "\n");
+
+            sym = sym->next;
+        }
+        scp = scp->next;
+    }
 }

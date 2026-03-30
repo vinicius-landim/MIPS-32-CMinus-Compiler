@@ -5,7 +5,7 @@
 static int location = 0; 
 static int blockCounter = 0;
 
-// Tratamento de declarações e escopos
+//Primeiro procedimento: Tratamento de declarações e escopos
 static void insertNode(TreeNode *t) {
     char newScopeName[256]; //Buffer para nomes de escopo de blocos
     if (currentScope != NULL) {
@@ -31,8 +31,7 @@ static void insertNode(TreeNode *t) {
                     pushScope(newScopeName);
                     break;
 
-                default:
-                    break;
+                default: break;
             }
             break;
 
@@ -69,14 +68,52 @@ static void insertNode(TreeNode *t) {
                     st_insert(t->attr.name, t->type,SYMB_ARR, t->lineNo, location++);
                     break;
                 }
-                default:
+                case VarK: {
+                    Symbol s_node = st_lookup(t->attr.name);
+                    if (s_node == NULL) {
+                        fprintf(stderr,"ERRO SEMÂNTICO: Variável '%s' não declarada - LINHA: %d\n",t->attr.name, t->lineNo);
+                        t->type = Integer; // fallback
+                    } else {
+                        t->type = s_node->type;
+                    }
                     break;
+                }
+                case ArrK: {
+                    Symbol s_node = st_lookup(t->attr.name);
+                    if (s_node == NULL) {
+                        fprintf(stderr, "ERRO SEMÂNTICO: Variável '%s' não declarada - LINHA: %d\n", t->attr.name, t->lineNo);
+                    } else {
+                        if (s_node->kind != SYMB_ARR)
+                            fprintf(stderr,"ERRO SEMÂNTICO: Variável '%s' não é um vetor - LINHA: %d\n",t->attr.name, t->lineNo);
+
+                        t->type = s_node->type;
+                    }
+                    break;
+                }
+                case CallK: {
+                    Symbol s_node = st_lookup(t->attr.name);
+
+                    if (s_node == NULL) {
+                        fprintf(stderr,"ERRO SEMÂNTICO: Função '%s' não declarada - LINHA: %d\n",t->attr.name, t->lineNo);
+                        t->type = Integer;
+                    } else {
+                        if (s_node->kind != SYMB_FUNC)
+                            fprintf(stderr,"ERRO SEMÂNTICO: '%s' não é uma função - LINHA: %d\n",t->attr.name, t->lineNo);
+                        
+                        t->type = s_node->type;
+                    }
+                    break;
+                }
+
+                default: break;
             }
             break;
+
+        default: break;
     }
 }
 
-//retorno ao escopo pai do nó de FunctDecl e CompundK inserido 
+//topo da pilha atualizado para esconder escopos que não podem ser acessados 
 static void leaveScope(TreeNode *t) {
     if (t->nodeKind == StmtK) {
         if (t->kind.stmt == FunctDeclK || t->kind.stmt == CompoundK)
@@ -84,7 +121,7 @@ static void leaveScope(TreeNode *t) {
     }
 }
 
-//Percurso pré-ordem
+//percurso pré-ordem (Pai -> Filhos -> Irmão)
 static void buildSymtabRec(TreeNode *t) {
     if (t != NULL) {
         insertNode(t);
@@ -96,6 +133,7 @@ static void buildSymtabRec(TreeNode *t) {
         buildSymtabRec(t->sibling); // Vai para o irmão
     }
 }
+
 void buildSymtab(TreeNode *AST) {
     pushScope("global");
     
@@ -103,4 +141,72 @@ void buildSymtab(TreeNode *AST) {
     st_insert("output", Void, SYMB_FUNC, 0, location++);
 
     buildSymtabRec(AST); 
+}
+
+//Segundo procedimento: Verificação de tipos
+static void checkNode(TreeNode *t) {
+    switch (t->nodeKind) {
+        case ExpK:
+            switch (t->kind.exp) {
+                case OpK: {
+                    if ((t->child[0]->type != Integer || t->child[1]->type != Integer))
+                        fprintf(stderr, "ERRO SEMÂNTICO: Operandos de '%s' devem ser do tipo 'int' - LINHA: %d\n", t->attr.name, t->lineNo);
+                    
+                        t->type = Integer; // resultado int
+                    break;
+                }
+                case ConstK:{
+                    t->type = Integer;
+                    break;
+                }
+                case ArrK: {
+                    if (t->child[0]->type != Integer)
+                        fprintf(stderr,"ERRO SEMÂNTICO: Índice do vetor '%s' deve ser do tipo 'int' - LINHA: %d\n",t->attr.name, t->lineNo);
+                    break;
+                }
+                case AssignK: {
+                    if (t->child[0]->type != Integer || t->child[1]->type != Integer) 
+                        fprintf(stderr,"ERRO SEMÂNTICO: Tipos incompatíveis na atribuição - LINHA: %d\n",t->lineNo);
+        
+                    t->type = t->child[0]->type;
+                    break;
+                }
+                default: break;
+            }
+            break;
+
+        case StmtK:
+            switch (t->kind.stmt) {
+
+                case IfK:
+                    if (t->child[0]->type != Integer)
+                        fprintf(stderr,"ERRO SEMÂNTICO: A condição do teste deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
+                    break;
+
+                case WhileK:
+                    if (t->child[0]->type != Integer)
+                        fprintf(stderr,"ERRO SEMÂNTICO: A condição do teste deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
+                    break;
+
+                default: break;
+            }
+            break;
+
+        default: break;
+    }
+}
+
+//percurso Pós-ordem (Filhos -> Pai -> Irmão)
+static void typeCheckRec(TreeNode *t) {
+    if (t != NULL) {
+        for (int i = 0; i < MAXCHILDREN; i++) {
+            typeCheckRec(t->child[i]);
+        }
+        checkNode(t);
+        typeCheckRec(t->sibling);
+    }
+}
+
+void typeCheck(TreeNode *AST) {
+    typeCheckRec(AST);
 }

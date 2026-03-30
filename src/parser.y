@@ -144,13 +144,16 @@ tipo_especificador:
 ;
 //6. fun-declaração -> tipo-especificador ID ( params ) composto-decl
 fun_declaracao: 
-      tipo_especificador ID ABRE_PARENTESE params FECHA_PARENTESE composto_decl {
+      tipo_especificador ID { 
+            $<val>$ = lineNo; 
+      }
+      ABRE_PARENTESE params FECHA_PARENTESE composto_decl {
             $$ = newStmtNode(FunctDeclK);
+            $$->lineNo = $<val>3; //resgata o número da linha salvo na ação intermediária (posição 3 da regra)
             $$->type = $1;
             $$->attr.name = copyString($2);
-            //Nós filhos: Lista de parâmetros (Esq) e o Corpo da função (Dir)
-            $$->child[0] = $4; // params
-            $$->child[1] = $6; // composto_decl
+            $$->child[0] = $5; // params
+            $$->child[1] = $7; // composto_decl
 
             //o compound da função é determinado como corpo da função (uso na análise semântica)
             if ($$->child[1] != NULL) {

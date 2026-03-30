@@ -229,7 +229,7 @@ void printTreeGraphviz(TreeNode *AST){
         return;
     }
 
-    out = fopen("arvore.dot", "w");
+    out = fopen("output_files/arvore.dot", "w");
     if (out == NULL) {
         fprintf(stderr, "Erro ao criar arquivo arvore.dot\n");
         return;
@@ -245,5 +245,5 @@ void printTreeGraphviz(TreeNode *AST){
     fprintf(out, "}\n");
     fclose(out);
 
-    printf("Arquivo Graphviz gerado: arvore.dot\n");
+    printf("Arquivo Graphviz gerado: output_files/arvore.dot\n");
 }

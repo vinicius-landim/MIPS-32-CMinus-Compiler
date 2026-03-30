@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "util.h"
 #include "analyze.h" 
+#include "symtab.h"
 
 extern FILE *yyin;
 extern int yyparse(void);
@@ -41,9 +42,18 @@ int main(int argc, char **argv) {
 		
 		//análise semântica
         buildSymtab(AST);
-        // typeCheck(AST);
+        typeCheck(AST);
+
         printTreeGraphviz(AST);
-        // printSymTab(stdout); 
+
+        FILE *symtabFile = fopen("output_files/tabela_simbolos.txt", "w");
+        if (symtabFile == NULL) {
+            fprintf(stderr, "Erro ao criar tabela de simbolos. Verifique se a pasta 'output_files' existe\n");
+        } else {
+            printSymTab(symtabFile); // Passa o arquivo no lugar do stdout
+            fclose(symtabFile);      // Tranca o arquivo
+            printf("Tabela de Simbolos gerada: output_files/tabela_simbolos.txt\n");
+        }
     }
 
     return 0;

@@ -1,0 +1,21 @@
+Nome do Simbolo   |  Tipo      |  Classificacao  |  Escopo          |  Loc  |  Linhas
+-----------------------------------------------------------------------------------------
+main              |  void      |  Funcao         |  global          |  17   |  28 
+sort              |  void      |  Funcao         |  global          |  10   |  16 
+minloc            |  int       |  Funcao         |  global          |  3    |  4 
+x                 |  int       |  Vetor          |  global          |  2    |  2 
+output            |  void      |  Funcao         |  global          |  1    |  0 
+input             |  int       |  Funcao         |  global          |  0    |  0 
+k                 |  int       |  Variavel       |  minloc          |  9    |  5 
+x                 |  int       |  Variavel       |  minloc          |  8    |  5 
+i                 |  int       |  Variavel       |  minloc          |  7    |  5 
+high              |  int       |  Variavel       |  minloc          |  6    |  4 
+low               |  int       |  Variavel       |  minloc          |  5    |  4 
+a                 |  int       |  Vetor          |  minloc          |  4    |  4 
+k                 |  int       |  Variavel       |  sort            |  15   |  17 
+i                 |  int       |  Variavel       |  sort            |  14   |  17 
+high              |  int       |  Variavel       |  sort            |  13   |  16 
+low               |  int       |  Variavel       |  sort            |  12   |  16 
+a                 |  int       |  Vetor          |  sort            |  11   |  16 
+t                 |  int       |  Variavel       |  sort:block1     |  16   |  19 
+i                 |  int       |  Variavel       |  main            |  18   |  29 

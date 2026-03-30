@@ -18,6 +18,7 @@ typedef struct ScopeNode {
 	char *name;
 	Symbol h_symbols;
 	struct ScopeNode *parent;
+    struct ScopeNode *next;
 } *Scope;
 
 extern Scope currentScope;
@@ -28,6 +29,6 @@ void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc);
 Symbol st_lookup(char *name);
 Symbol st_lookup_scope(char *name);
 
-//void printSymTab
+void printSymTab(FILE *listing);
 
 #endif

@@ -4,6 +4,6 @@
 #include "globals.h"
 
 void buildSymtab(TreeNode *AST);
-// void typeCheck(TreeNode *AST);
+void typeCheck(TreeNode *AST);
 
 #endif
