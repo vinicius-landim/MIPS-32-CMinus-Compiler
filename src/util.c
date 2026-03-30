@@ -17,7 +17,7 @@ TreeNode* newStmtNode(StmtKind kind) {
         t->nodeKind = StmtK;
         t->kind.stmt = kind;
         t->lineNo = lineNo;
-        t->scope = copyString(currentScope);
+        t->scope = NULL;
     }
     return t;
 }
@@ -35,7 +35,7 @@ TreeNode* newExpNode(ExpKind kind) {
         t->nodeKind = ExpK;
         t->kind.exp = kind;
         t->lineNo = lineNo;
-        t->scope = copyString(currentScope);
+        t->scope = NULL;
         t->type = Void;
     }
     return t;
@@ -45,12 +45,12 @@ char * copyString(const char * s) {
     int n;
     char * t;
 
-    if (s == NULL) return NULL;
+    if(s == NULL) return NULL;
     
     n = strlen(s) + 1;
     t = malloc(n);
     
-    if (t == NULL) {
+    if(t == NULL) {
         fprintf(stderr, "Erro de memoria na lineNo %d\n", lineNo);
         exit(1);
     } else {
@@ -99,6 +99,9 @@ static void writeNodeLabel(FILE *out, TreeNode *node) {
                 fprintf(out, "write");
                 break;
             case CompoundK:
+                fprintf(out, "{ }");
+                break;
+            case FunctBodyK:
                 fprintf(out, "{ }");
                 break;
             case FunctDeclK:

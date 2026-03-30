@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symtab.h"
+#include "util.h"
 
-//LOUDEN (2004, p.517-9)
-#define SIZE 211
-#define SHIFT 4
+Scope currentScope = NULL;
 
 //Lista com número da linha de todas as ocorrências de uma variável
 typedef struct LineListNode{
@@ -13,56 +12,41 @@ typedef struct LineListNode{
     struct LineListNode *next; // listar todas as ocorrências de uma mesma variável
 } *LineList;
 
-//Lista de variáveis em uma bucket
-typedef struct BucketListNode{
-    char *name;
-    char *scope;
-    LineList lines;
-    ExpType type;
-    SymbolKind kind;
-    int memloc;
-    struct BucketListNode *next;
-} *BucketList;
-
-//Tabela hash
-static BucketList hashTable[SIZE];
-
-static int hash(char *key){
-    int temp = 0;
-    int i = 0;
-    while(key[i] != '\0'){
-        temp = ((temp<<SHIFT) + key[i]) % SIZE;
-        ++i;
-    }
-    return temp;
+void pushScope(char *name){
+    Scope newScope = (Scope)malloc(sizeof(struct ScopeNode));
+    newScope->name = copyString(name);
+    newScope->h_symbols = NULL;
+    newScope->parent = currentScope;
+    currentScope = newScope;
 }
-//Inserção na tabela de símbolos
-void st_insert (char *name, char *scope, ExpType type, SymbolKind kind, int lineNo, int loc){
-    int h = hash(name);
-    BucketList b_node = hashTable[h]; //Endereço para um novo nó na bucket
 
-    while ((b_node != NULL) && ((strcmp(name, b_node->name) != 0) || (strcmp(scope, b_node->scope) != 0)))
-        b_node = b_node->next;
+void popScope(){
+    if (currentScope != NULL){
+        // Scope temp = currentScope;
+        currentScope = currentScope->parent;
+    }
+}
 
-    if(b_node == NULL) {
-        //novo nó a ser inserido na lista da posição do hash
-        b_node = (BucketList)malloc(sizeof(struct BucketListNode));
-        b_node->name = copyString(name);
-        b_node->scope = copyString(scope);
-        b_node->type = type;
-        b_node->kind = kind;
-        b_node->memloc = loc;
+void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
+    Symbol s_node = currentScope->h_symbols;
+    while(s_node != NULL && (strcmp(name, s_node->name) != 0))
+        s_node = s_node->next;
 
-        b_node->lines = (LineList)malloc(sizeof(struct LineListNode));
-        b_node->lines->lineNo=lineNo;
-        b_node->lines->next = NULL;
-         //head insertion
-        b_node->next = hashTable[h];
-        hashTable[h] = b_node;
+    if (s_node == NULL){
+        Symbol newSymble = (Symbol)malloc(sizeof(struct SymbolNode));
+        newSymble->name = name;
+        newSymble->type = type;
+        newSymble->kind = kind;
+        newSymble->memloc = loc;
+        newSymble->lines = (LineList)malloc(sizeof(struct LineListNode));
+        newSymble->lines->lineNo = lineNo;
+        newSymble->lines->next = NULL;
+
+        newSymble->next = currentScope->h_symbols;
+        currentScope->h_symbols = newSymble;
     } else {
-        // Nó da variável já inserido na posição. Assim, insere-se apenas a nova ocorrência na LineList
-        LineList line_node = b_node->lines;
-        while(line_node->next != NULL)
+        LineList line_node = s_node->lines;
+        while (line_node->next !=  NULL)
             line_node = line_node->next;
         line_node->next = (LineList)malloc(sizeof(struct LineListNode));
         line_node->next->lineNo = lineNo;
@@ -70,14 +54,28 @@ void st_insert (char *name, char *scope, ExpType type, SymbolKind kind, int line
     }
 }
 
-BucketList st_lookup(char *name, char *scope){
-    int h = hash(name);
-    BucketList b_node = hashTable[h];
-
-    while((b_node != NULL) && ((strcmp(name, b_node->name) != 0) || (strcmp(scope, b_node->scope) != 0))) {
-        b_node = b_node->next;
+Symbol st_lookup(char *name){
+    Scope scp_node = currentScope;
+    while (scp_node != NULL){
+        Symbol s_node = scp_node->h_symbols;
+        while(s_node != NULL){
+            if(strcmp(name, s_node->name) == 0)
+                return s_node;
+            s_node = s_node->next;
+        }
+        scp_node = scp_node->parent;
     }
-
-    return b_node;
+    return NULL;
 }
 
+Symbol st_lookup_scope(char *name){
+    if(currentScope == NULL)
+        return NULL;
+    Symbol s_node = currentScope->h_symbols;
+    while (s_node != NULL){
+        if(strcmp(name, s_node->name) == 0)
+            return s_node;
+        s_node = s_node->next;
+    }
+    return NULL;
+}

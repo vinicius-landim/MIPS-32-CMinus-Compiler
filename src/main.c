@@ -1,46 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "globals.h"
 #include "util.h"
+#include "analyze.h" 
 
 extern FILE *yyin;
 extern int yyparse(void);
 extern TreeNode *AST;
 
 int lineNo = 1;
-char currentScope[256] = "global";
 FILE *source = NULL;
 
 int main(int argc, char **argv) {
-	int parseStatus;
+    int parseStatus;
 
-	if (argc < 2) {
-		fprintf(stderr, "Uso: %s <arquivo_entrada>\n", argv[0]);
-		return 1;
-	}
+    if (argc < 2) {
+        fprintf(stderr, "Uso: %s <arquivo_entrada>\n", argv[0]);
+        return 1;
+    }
 
-	source = fopen(argv[1], "r");
-	if (source == NULL) {
-		fprintf(stderr, "Erro ao abrir arquivo de entrada: '%s'\n", argv[1]);
-		return 1;
-	}
+    source = fopen(argv[1], "r");
+    if (source == NULL) {
+        fprintf(stderr, "Erro ao abrir arquivo de entrada: '%s'\n", argv[1]);
+        return 1;
+    }
 
-	yyin = source;
-	lineNo = 1;
+    yyin = source;
+    lineNo = 1;
 
-	parseStatus = yyparse();
+    //análise léxica e sintática
+    parseStatus = yyparse();
 
-	fclose(source);
-	source = NULL;
+    fclose(source);
+    source = NULL;
 
-	if (parseStatus != 0) {
-		fprintf(stderr, "Falha na compilacao: erros sintaticos encontrados.\n");
-		return 1;
-	}
+    if (parseStatus != 0)
+        return 1;
 
-	printf("Analise concluida com sucesso.\n");
+    if (AST != NULL) {
+		
+		//análise semântica
+        buildSymtab(AST);
+        // typeCheck(AST);
+        printTreeGraphviz(AST);
+        // printSymTab(stdout); 
+    }
 
-	if (AST != NULL) {
-		printTreeGraphviz(AST);
-	}
-
-	return 0;
+    return 0;
 }

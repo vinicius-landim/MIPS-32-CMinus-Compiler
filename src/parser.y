@@ -144,19 +144,18 @@ tipo_especificador:
 ;
 //6. fun-declaração -> tipo-especificador ID ( params ) composto-decl
 fun_declaracao: 
-      tipo_especificador ID{
-            strncpy(currentScope, $2, 255); //Parâmetros terão escopo de nome 'ID'
-      } ABRE_PARENTESE params FECHA_PARENTESE composto_decl {
-            //Nó raíz da função
+      tipo_especificador ID ABRE_PARENTESE params FECHA_PARENTESE composto_decl {
             $$ = newStmtNode(FunctDeclK);
             $$->type = $1;
             $$->attr.name = copyString($2);
             //Nós filhos: Lista de parâmetros (Esq) e o Corpo da função (Dir)
-            $$->child[0] = $5; //params
-            $$->child[1] = $7; //composto_decl
+            $$->child[0] = $4; // params
+            $$->child[1] = $6; // composto_decl
 
-            //Reset do escopo ao término da função (composto_decl)
-            strcpy(currentScope, "global");
+            //o compound da função é determinado como corpo da função (uso na análise semântica)
+            if ($$->child[1] != NULL) {
+                $$->child[1]->kind.stmt = FunctBodyK; 
+            }
       }
 ;
 //7. params -> param-lista | void 
@@ -418,5 +417,5 @@ arg_lista:
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "ERRO SINTATICO: token inesperado '%s' - lineNo: %d\n", yytext, lineNo);
+    fprintf(stderr, "ERRO SINTATICO: token inesperado '%s' - LINHA: %d\n", yytext, lineNo);
 }
