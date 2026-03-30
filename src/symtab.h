@@ -22,12 +22,14 @@ typedef struct ScopeNode {
 } *Scope;
 
 extern Scope currentScope;
+extern Scope globalScope; 
 
-void pushScope(char *name);
+Scope pushScope(char *name);
 void popScope();
 void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc);
 Symbol st_lookup(char *name);
 Symbol st_lookup_scope(char *name);
+Symbol st_lookup_global(char *name);
 
 void printSymTab(FILE *listing);
 

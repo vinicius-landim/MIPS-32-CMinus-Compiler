@@ -5,6 +5,7 @@
 #include "util.h"
 
 Scope currentScope = NULL;
+Scope globalScope = NULL;
 Scope scopeHistory = NULL;
 
 //Lista com número da linha de todas as ocorrências de uma variável
@@ -13,7 +14,7 @@ typedef struct LineListNode{
     struct LineListNode *next; // listar todas as ocorrências de uma mesma variável
 } *LineList;
 
-void pushScope(char *name){
+Scope pushScope(char *name){
     Scope newScope = (Scope)malloc(sizeof(struct ScopeNode));
     newScope->name = copyString(name);
     newScope->h_symbols = NULL;
@@ -32,6 +33,7 @@ void pushScope(char *name){
 
         temp->next = newScope;
     }
+    return newScope;
 }
 
 void popScope(){
@@ -87,6 +89,18 @@ Symbol st_lookup_scope(char *name){
         return NULL;
     Symbol s_node = currentScope->h_symbols;
     while (s_node != NULL){
+        if(strcmp(name, s_node->name) == 0)
+            return s_node;
+        s_node = s_node->next;
+    }
+    return NULL;
+}
+
+Symbol st_lookup_global(char *name){
+    if(globalScope == NULL)
+        return NULL;
+    Symbol s_node = globalScope->h_symbols;
+    while(s_node != NULL){
         if(strcmp(name, s_node->name) == 0)
             return s_node;
         s_node = s_node->next;
