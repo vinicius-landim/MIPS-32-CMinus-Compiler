@@ -40,7 +40,7 @@ static void insertNode(TreeNode *t) {
                 case VarDeclK: {
                     if (t->type == Void) {
                         printf("ERRO SEMÂNTICO: Variável '%s' não pode ser do tipo 'void'\n - LINHA: %d\n", t->attr.name, t->lineNo);
-                    } else if (st_lookup_scope(t->attr.name) != NULL) {
+                    } else if (st_lookup(t->attr.name) != NULL || st_lookup_global(t->attr.name) != NULL) {
                         printf("ERRO SEMÂNTICO: Variável '%s' já declarada. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
@@ -50,7 +50,7 @@ static void insertNode(TreeNode *t) {
                 case ArrDeclK: {
                     if (t->type == Void) {
                         printf("ERRO SEMÂNTICO: Variável '%s' não pode ser do tipo 'void'\n - LINHA: %d\n", t->attr.name, t->lineNo);
-                    } else if (st_lookup_scope(t->attr.name) != NULL) {
+                    } else if (st_lookup_scope(t->attr.name) != NULL || st_lookup_global(t->attr.name) != NULL) {
                         printf("ERRO SEMÂNTICO: Variável '%s' já declarada. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
@@ -135,7 +135,7 @@ static void buildSymtabRec(TreeNode *t) {
 }
 
 void buildSymtab(TreeNode *AST) {
-    pushScope("global");
+    globalScope = pushScope("global");
     
     st_insert("input", Integer, SYMB_FUNC, 0, location++);
     st_insert("output", Void, SYMB_FUNC, 0, location++);
