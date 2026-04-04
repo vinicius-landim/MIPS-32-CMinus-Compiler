@@ -175,6 +175,7 @@ void buildSymtab(TreeNode *AST) {
     
     st_insert("input", Integer, SYMB_FUNC, 0, location++);
     st_insert("output", Void, SYMB_FUNC, 0, location++);
+    st_add_param("output", Integer);
 
     buildSymtabRec(AST); 
 
