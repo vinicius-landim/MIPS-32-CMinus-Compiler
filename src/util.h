@@ -7,6 +7,8 @@ TreeNode * newStmtNode(StmtKind kind);
 TreeNode * newExpNode(ExpKind kind);
 
 char * copyString(const char * s);
+const char* opStr(TokenType op);
+
 
 void printTreeGraphviz(TreeNode *tree);
 #endif 

@@ -17,7 +17,7 @@ static void insertNode(TreeNode *t) {
             switch (t->kind.stmt) {
                 case FunctDeclK:
                     if(st_lookup_scope(t->attr.name) != NULL){
-                        fprintf(stderr, "ERRO SEMÂNTICO: Função '%s' já declarada - LINHA: %d", t->attr.name, t->lineNo);
+                        fprintf(stderr, "ERRO SEMÂNTICO: Função '%s' já declarada - LINHA: %d", opStr(t->attr.name), t->lineNo);
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_FUNC, t->lineNo, location++);
                     }
@@ -40,8 +40,8 @@ static void insertNode(TreeNode *t) {
                 case VarDeclK: {
                     if (t->type == Void) {
                         printf("ERRO SEMÂNTICO: Variável '%s' não pode ser do tipo 'void'\n - LINHA: %d\n", t->attr.name, t->lineNo);
-                    } else if (st_lookup(t->attr.name) != NULL || st_lookup_global(t->attr.name) != NULL) {
-                        printf("ERRO SEMÂNTICO: Variável '%s' já declarada. - LINHA: %d\n", t->attr.name, t->lineNo);
+                    } else if (st_lookup(t->attr.name) != NULL) {
+                        printf("ERRO SEMÂNTICO: Variável '%s' já declarada neste escopo. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
                     }
@@ -50,8 +50,8 @@ static void insertNode(TreeNode *t) {
                 case ArrDeclK: {
                     if (t->type == Void) {
                         printf("ERRO SEMÂNTICO: Variável '%s' não pode ser do tipo 'void'\n - LINHA: %d\n", t->attr.name, t->lineNo);
-                    } else if (st_lookup_scope(t->attr.name) != NULL || st_lookup_global(t->attr.name) != NULL) {
-                        printf("ERRO SEMÂNTICO: Variável '%s' já declarada. - LINHA: %d\n", t->attr.name, t->lineNo);
+                    } else if (st_lookup_scope(t->attr.name) != NULL) {
+                        printf("ERRO SEMÂNTICO: Variável '%s' já declarada neste escopo. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
                     }
@@ -150,7 +150,7 @@ static void checkNode(TreeNode *t) {
             switch (t->kind.exp) {
                 case OpK: {
                     if ((t->child[0]->type != Integer || t->child[1]->type != Integer))
-                        fprintf(stderr, "ERRO SEMÂNTICO: Operandos de '%s' devem ser do tipo 'int' - LINHA: %d\n", t->attr.name, t->lineNo);
+                        fprintf(stderr, "ERRO SEMÂNTICO: Operandos de '%s' devem ser do tipo 'int' - LINHA: %d\n",  t->attr.op, t->lineNo);
                     
                         t->type = Integer; // resultado int
                     break;

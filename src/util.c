@@ -59,7 +59,7 @@ char * copyString(const char * s) {
     return t;
 }
 
-static const char* opStr(TokenType op) {
+const char* opStr(TokenType op) {
     switch (op) {
         case SOMA:        return "+";
         case SUB:         return "-";
