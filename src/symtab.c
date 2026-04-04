@@ -49,17 +49,17 @@ void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
         s_node = s_node->next;
 
     if (s_node == NULL){
-        Symbol newSymble = (Symbol)malloc(sizeof(struct SymbolNode));
-        newSymble->name = name;
-        newSymble->type = type;
-        newSymble->kind = kind;
-        newSymble->memloc = loc;
-        newSymble->lines = (LineList)malloc(sizeof(struct LineListNode));
-        newSymble->lines->lineNo = lineNo;
-        newSymble->lines->next = NULL;
+        Symbol newS = (Symbol)malloc(sizeof(struct SymbolNode));
+        newS->name = name;
+        newS->type = type;
+        newS->kind = kind;
+        newS->memloc = loc;
+        newS->lines = (LineList)malloc(sizeof(struct LineListNode));
+        newS->lines->lineNo = lineNo;
+        newS->lines->next = NULL;
 
-        newSymble->next = currentScope->h_symbols;
-        currentScope->h_symbols = newSymble;
+        newS->next = currentScope->h_symbols;
+        currentScope->h_symbols = newS;
     } else {
         LineList line_node = s_node->lines;
         while (line_node->next !=  NULL)
@@ -67,6 +67,26 @@ void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
         line_node->next = (LineList)malloc(sizeof(struct LineListNode));
         line_node->next->lineNo = lineNo;
         line_node->next->next = NULL;
+    }
+}
+
+void st_add_param(char* funcName, ExpType paramType) {
+    Symbol s = st_lookup_global(funcName); 
+    if (s != NULL && s->kind == SYMB_FUNC) {
+        ParamList newP = (ParamList)malloc(sizeof(struct ParamListNode));
+        newP->type = paramType;
+        newP->next = NULL;
+
+        //inserção ao final
+        if (s->params == NULL) {
+            s->params = newP;
+        } else {
+            ParamList temp = s->params;
+            while (temp->next != NULL) 
+                temp = temp->next;
+            temp->next = newP;
+        }
+        s->numParams++;
     }
 }
 
