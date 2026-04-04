@@ -27,7 +27,7 @@ static void insertNode(TreeNode *t) {
     switch (t->nodeKind) {
         case StmtK:
             switch (t->kind.stmt) {
-                case FunctDeclK:
+                case FunctDeclK: {
                     if(st_lookup_scope(t->attr.name) != NULL){
                         fprintf(stderr, "ERRO SEMANTICO: Funcao '%s' ja declarada - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
@@ -39,12 +39,14 @@ static void insertNode(TreeNode *t) {
                     pushScope(t->attr.name);
                     blockCounter = 0;
                     break;
-                
-                case CompoundK:
+                }
+
+                case CompoundK: {
                     blockCounter++;
                     sprintf(newScopeName, "%s:block%d", currentScope->name, blockCounter);
                     pushScope(newScopeName);
                     break;
+                }
 
                 default: break;
             }
@@ -205,17 +207,19 @@ static void checkNode(TreeNode *t) {
 
         case StmtK:
             switch (t->kind.stmt) {
-                case IfK:
+                case IfK: {
                     if (t->child[0]->type != Integer)
                         fprintf(stderr,"ERRO SEMANTICO: A condição do 'if' deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
                     break;
+                }
 
-                case WhileK:
+                case WhileK: {
                     if (t->child[0]->type != Integer)
                         fprintf(stderr,"ERRO SEMANTICO: A condição do 'while' deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
                     break;
+                }
 
-                case ReturnK:
+                case ReturnK: {
                     if (currentFuncType == Void) {
                         if (t->child[0] != NULL) {
                             fprintf(stderr, "ERRO SEMANTICO: Funcao 'void' nao deve retornar um valor - LINHA: %d\n", t->lineNo);
@@ -231,6 +235,7 @@ static void checkNode(TreeNode *t) {
                         }
                     }
                     break;
+                }
 
                 default: break;
             }
