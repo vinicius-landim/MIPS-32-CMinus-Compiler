@@ -10,7 +10,7 @@ static ExpType currentFuncType = Void;
 static int hasReturn = 0; 
 static char* currentFuncName = NULL;
 
-//Primeiro procedimento: Tratamento de declaracões e escopos
+//Primeiro procedimento: Tratamento de declaracões e escopos (PRÉ-ORDEM)
 static void insertNode(TreeNode *t) {
     char newScopeName[256]; //Buffer para nomes de escopo de blocos
     if (currentScope != NULL) {
@@ -79,19 +79,28 @@ static void insertNode(TreeNode *t) {
                         // t->attr.name == NULL é o caso do void isolado, como em int main(void)
                         if (t->attr.name != NULL) {
                             fprintf(stderr, "ERRO SEMANTICO: Parametro '%s' nao pode ser do tipo 'void' - LINHA: %d\n", t->attr.name, t->lineNo);
-                            st_insert(t->attr.name, Integer, SYMB_VAR, t->lineNo, location++); //fallback
+                            //fallback
+                            st_insert(t->attr.name, Integer, SYMB_VAR, t->lineNo, location++);
+                            st_add_param(currentScope->name, t->type);
                         } 
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
+                        st_add_param(currentScope->name, t->type);
+
                     }
                     break;
                 }
                 case ParamArrK: {
                     if (t->type == Void) {
                         fprintf(stderr, "ERRO SEMANTICO: Parametro de vetor '%s' nao pode ser do tipo 'void' - LINHA: %d\n", t->attr.name, t->lineNo);
+                        //fallback
                         st_insert(t->attr.name, Integer, SYMB_ARR, t->lineNo, location++); //fallback
+                        st_add_param(currentScope->name, t->type);
+
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
+                        st_add_param(currentScope->name, t->type);
+
                     }
                     break;
                 }
@@ -122,11 +131,11 @@ static void insertNode(TreeNode *t) {
 
                     if (s_node == NULL) {
                         fprintf(stderr,"ERRO SEMANTICO: Funcao '%s' nao declarada - LINHA: %d\n",t->attr.name, t->lineNo);
-                        t->type = Integer;
+                        t->type = Integer; //fallback
                     } else {
                         if (s_node->kind != SYMB_FUNC)
                             fprintf(stderr,"ERRO SEMANTICO: '%s' nao é uma funcao - LINHA: %d\n",t->attr.name, t->lineNo);
-                        
+
                         t->type = s_node->type;
                     }
                     break;
@@ -173,7 +182,7 @@ void buildSymtab(TreeNode *AST) {
         fprintf(stderr, "ERRO SEMANTICO: O programa nao possui a funcao 'main'.\n");
 }
 
-//Segundo procedimento: Verificacao de tipos
+//Segundo procedimento: Verificacao de tipos (PÓS-ORDEM)
 static void checkNode(TreeNode *t) {
     switch (t->nodeKind) {
         case ExpK:
@@ -199,6 +208,27 @@ static void checkNode(TreeNode *t) {
                         fprintf(stderr,"ERRO SEMANTICO: Tipos incompatíveis na atribuicao - LINHA: %d\n",t->lineNo);
         
                     t->type = t->child[0]->type;
+                    break;
+                }
+                case CallK: {
+                    //verificação de parâmetros
+                    Symbol s_node = st_lookup(t->attr.name);
+                    if (s_node != NULL && s_node->kind == SYMB_FUNC) {
+                        TreeNode *arg = t->child[0];
+                        ParamList param = s_node->params;
+                        int countParams = 1;
+
+                        while (arg != NULL && param != NULL){
+                            if(arg->type != param->type)
+                                fprintf(stderr, "ERRO SEMANTICO: Tipo incompatível no argumento %d da função '%s' - LINHA: %d\n", countParams, s_node->name, t->lineNo);
+
+                            arg = arg->sibling;
+                            param = param->next;
+                            countParams++;
+                        }
+                        if (arg != NULL || param != NULL) 
+                            fprintf(stderr, "ERRO SEMANTICO: Total de argumentos incorreto para função '%s' - LINHA: %d\n", s_node->name, t->lineNo);
+                    }
                     break;
                 }
                 default: break;
