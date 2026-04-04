@@ -69,14 +69,24 @@ static void insertNode(TreeNode *t) {
                     break;
                 }
                 case ParamK: {
-                    //ignora o "void" de int main(void)
-                    if (t->type != Void) {
+                    if (t->type == Void) {
+                        // t->attr.name == NULL é o caso do void isolado, como em int main(void)
+                        if (t->attr.name != NULL) {
+                            fprintf(stderr, "ERRO SEMANTICO: Parametro '%s' nao pode ser do tipo 'void' - LINHA: %d\n", t->attr.name, t->lineNo);
+                            st_insert(t->attr.name, Integer, SYMB_VAR, t->lineNo, location++); //fallback
+                        } 
+                    } else {
                         st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
                     }
                     break;
                 }
                 case ParamArrK: {
-                    st_insert(t->attr.name, t->type,SYMB_ARR, t->lineNo, location++);
+                    if (t->type == Void) {
+                        fprintf(stderr, "ERRO SEMANTICO: Parametro de vetor '%s' nao pode ser do tipo 'void' - LINHA: %d\n", t->attr.name, t->lineNo);
+                        st_insert(t->attr.name, Integer, SYMB_ARR, t->lineNo, location++); //fallback
+                    } else {
+                        st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
+                    }
                     break;
                 }
                 case VarK: {
@@ -191,15 +201,14 @@ static void checkNode(TreeNode *t) {
 
         case StmtK:
             switch (t->kind.stmt) {
-
                 case IfK:
                     if (t->child[0]->type != Integer)
-                        fprintf(stderr,"ERRO SEMANTICO: A condicao do teste deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
+                        fprintf(stderr,"ERRO SEMANTICO: A condição do 'if' deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
                     break;
 
                 case WhileK:
                     if (t->child[0]->type != Integer)
-                        fprintf(stderr,"ERRO SEMANTICO: A condicao do teste deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
+                        fprintf(stderr,"ERRO SEMANTICO: A condição do 'while' deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
                     break;
 
                 default: break;
