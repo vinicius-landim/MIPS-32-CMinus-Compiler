@@ -3,4 +3,5 @@
 ## Análise Semântica:
 - ~~Verifica main~~
 - ~~Parâmetros void são aceitos?~~
-- Funções void não devem ter retorno de variável
+- ~~Funções void não devem ter retorno de variável e funções int devem ter ao menos um retorno~~
+- Verificar total de parâmetros passados na chamada de uma função 

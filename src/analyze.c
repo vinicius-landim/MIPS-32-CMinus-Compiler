@@ -6,6 +6,10 @@ static int location = 0;
 static int blockCounter = 0;
 static int hasMain = 0;
 
+static ExpType currentFuncType = Void; 
+static int hasReturn = 0; 
+static char* currentFuncName = NULL;
+
 //Primeiro procedimento: Tratamento de declaracões e escopos
 static void insertNode(TreeNode *t) {
     char newScopeName[256]; //Buffer para nomes de escopo de blocos
@@ -211,6 +215,23 @@ static void checkNode(TreeNode *t) {
                         fprintf(stderr,"ERRO SEMANTICO: A condição do 'while' deve ser do tipo 'int' - LINHA: %d\n",t->lineNo);
                     break;
 
+                case ReturnK:
+                    if (currentFuncType == Void) {
+                        if (t->child[0] != NULL) {
+                            fprintf(stderr, "ERRO SEMANTICO: Funcao 'void' nao deve retornar um valor - LINHA: %d\n", t->lineNo);
+                        }
+                    } else {
+                        //Louden (p.495, 2004) funções int devem retornar valores
+                        hasReturn = 1; // Registamos que a função tem pelo menos um retorno
+
+                        if (t->child[0] == NULL) {
+                            fprintf(stderr, "ERRO SEMANTICO: Retorno vazio em funcao do tipo 'int' - LINHA: %d\n", t->lineNo);
+                        } else if (t->child[0]->type != Integer) {
+                            fprintf(stderr, "ERRO SEMANTICO: O valor retornado deve ser do tipo 'int' - LINHA: %d\n", t->lineNo);
+                        }
+                    }
+                    break;
+
                 default: break;
             }
             break;
@@ -222,10 +243,26 @@ static void checkNode(TreeNode *t) {
 //percurso Pós-ordem (Filhos -> Pai -> Irmao)
 static void typeCheckRec(TreeNode *t) {
     if (t != NULL) {
+        // ao encontrar uma declaração de função, guarda o contexto
+        if (t->nodeKind == StmtK && t->kind.stmt == FunctDeclK) {
+            currentFuncType = t->type;
+            currentFuncName = t->attr.name;
+            hasReturn = 0; //reinicar total de returns
+        }
+
         for (int i = 0; i < MAXCHILDREN; i++) {
             typeCheckRec(t->child[i]);
         }
+
         checkNode(t);
+
+        //após processar todos os filhos, verifica se uma função int cumpriu o requisito de return
+        if (t->nodeKind == StmtK && t->kind.stmt == FunctDeclK) {
+            if (currentFuncType == Integer && hasReturn == 0) {
+                fprintf(stderr, "ERRO SEMANTICO: A funcao '%s' eh do tipo 'int' e deve possuir um retorno - LINHA: %d\n", t->attr.name, t->lineNo);
+            }
+        }
+
         typeCheckRec(t->sibling);
     }
 }
