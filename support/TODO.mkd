@@ -1,6 +1,6 @@
 # TODO
 
 ## Análise Semântica:
-- Verifica main
+- ~~Verifica main~~
 - Parâmetros void são aceitos?
 - Funções void não devem ter retorno de variável
