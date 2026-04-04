@@ -17,7 +17,6 @@ static void insertNode(TreeNode *t) {
         //após a declaracão da main, não é permitido haver novas declaracões. (ausência de protótipos na linguagem C-)
         if ((t->nodeKind == StmtK && t->kind.stmt == FunctDeclK) || (t->nodeKind == ExpK && (t->kind.exp == VarDeclK || t->kind.exp == ArrDeclK))) {
             fprintf(stderr, "ERRO SEMANTICO: Declaracao de '%s' invalida. A funcao 'main' deve ser a ultima declaracao do arquivo - LINHA: %d\n", t->attr.name, t->lineNo);
-            return;
         }
     }
 
@@ -26,7 +25,7 @@ static void insertNode(TreeNode *t) {
             switch (t->kind.stmt) {
                 case FunctDeclK:
                     if(st_lookup_scope(t->attr.name) != NULL){
-                        fprintf(stderr, "ERRO SEMANTICO: Funcao '%s' ja declarada - LINHA: %d", t->attr.name, t->lineNo);
+                        fprintf(stderr, "ERRO SEMANTICO: Funcao '%s' ja declarada - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
                         st_insert(t->attr.name, t->type, SYMB_FUNC, t->lineNo, location++);
 
