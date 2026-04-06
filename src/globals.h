@@ -12,7 +12,7 @@ typedef int TokenType;
 extern int lineNo; 
 extern FILE* source;
 
-// LOUDEN (2014, p.505)
+// LOUDEN (2004, p.505)
 typedef enum {Void, Integer} ExpType;
 typedef enum {StmtK, ExpK} NodeKind;
 typedef enum {IfK, WhileK, ReadK, WriteK, CompoundK, FunctDeclK, FunctBodyK, ReturnK} StmtKind;

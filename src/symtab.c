@@ -71,22 +71,22 @@ void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
 }
 
 void st_add_param(char* funcName, ExpType paramType) {
-    Symbol s = st_lookup_global(funcName); 
-    if (s != NULL && s->kind == SYMB_FUNC) {
+    Symbol s_node = st_lookup_global(funcName); 
+    if (s_node != NULL && s_node->kind == SYMB_FUNC) {
         ParamList newP = (ParamList)malloc(sizeof(struct ParamListNode));
         newP->type = paramType;
         newP->next = NULL;
 
         //inserção ao final
-        if (s->params == NULL) {
-            s->params = newP;
+        if (s_node->params == NULL) {
+            s_node->params = newP;
         } else {
-            ParamList temp = s->params;
+            ParamList temp = s_node->params;
             while (temp->next != NULL) 
                 temp = temp->next;
             temp->next = newP;
         }
-        s->numParams++;
+        s_node->numParams++;
     }
 }
 
