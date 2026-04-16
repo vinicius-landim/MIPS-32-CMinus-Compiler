@@ -1,0 +1,56 @@
+#ifndef _CGEN_H_
+#define _CGEN_H_
+
+#include "globals.h"
+#include "parser.tab.h"
+
+//Operações intermediárias
+typedef enum {
+    OPND_EMPTY,
+    OPND_NUM,
+    OPND_VAR,
+    OPND_TEMP,
+    OPND_LABEL,
+    OPND_FUNC,
+    OPND_SCOPE
+} OpndKind;
+
+typedef enum {
+    OP_ADD, OP_SUB, OP_MUL, OP_DIV, 
+    OP_ASSIGN, 
+    OP_EQ, OP_NEQ, OP_LT, OP_LEQ, OP_GT, OP_GEQ,
+    OP_GOTO,
+    OP_IFFALSE,
+    OP_LABEL,
+    OP_FUNC, OP_PARAM,
+    OP_CALL,
+    OP_ALLOCVAR, OP_ALLOCARR,
+    OP_LOAD, OP_STORE,
+    OP_RETURN,
+    OP_HALT
+} OpKind;
+
+typedef struct {
+    OpndKind kind;
+    union {
+        int val;
+        char *name;
+        char *scope;
+    } content;
+} Operand;
+
+typedef struct QuadList {
+    OpKind op;
+    Operand result; //TODO: Verificar se seria melhor declarar os itens todos como OpKind
+    Operand arg1;
+    Operand arg2;
+    struct QuadList* next;
+} Quad;
+
+extern Quad* headQuad;
+extern Quad* currentQuad;
+
+void printIntermediateCode(FILE *listing);
+void generateIntermediateCode();
+
+#endif

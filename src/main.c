@@ -4,6 +4,7 @@
 #include "util.h"
 #include "analyze.h" 
 #include "symtab.h"
+#include "cgen.h"
 
 extern FILE *yyin;
 extern int yyparse(void);
@@ -43,16 +44,20 @@ int main(int argc, char **argv) {
 		//análise semântica
         buildSymtab(AST);
         typeCheck(AST);
-
+        generateIntermediateCode(AST);
         printTreeGraphviz(AST);
 
         FILE *symtabFile = fopen("output_files/tabela_simbolos.txt", "w");
-        if (symtabFile == NULL) {
-            fprintf(stderr, "Erro ao criar tabela de simbolos. Verifique se a pasta 'output_files' existe\n");
+        FILE *gciFile = fopen("output_files/codigo_intermediario.txt", "w");
+        if (symtabFile == NULL || gciFile == NULL) {
+            fprintf(stderr, "Erro ao criar arquivo. Verifique se a pasta 'output_files' existe\n");
         } else {
-            printSymTab(symtabFile); // Passa o arquivo no lugar do stdout
-            fclose(symtabFile);      // Tranca o arquivo
+            printSymTab(symtabFile);
+            fclose(symtabFile);
             printf("Tabela de Simbolos gerada: output_files/tabela_simbolos.txt\n");
+            printIntermediateCode(gciFile);
+            fclose(gciFile);
+            printf("Codigo intermediario gerado: output_files/codigo_intermediario.txt\n");
         }
     }
 
