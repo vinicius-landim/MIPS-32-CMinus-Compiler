@@ -1,12 +1,13 @@
 
 # Flex/Bison (Arquivos gerados automaticamente)
 lex.yy.c
+flex.yy.c
 *.tab.c
 *.tab.h
 *.output
 
 # Artefatos do Compilador C- (Testes)
-output_files/
+#output_files/
 compilador     # Executável gerado no Linux
 *.dot          # Árvores Graphviz (caso salvas na raiz)
 
