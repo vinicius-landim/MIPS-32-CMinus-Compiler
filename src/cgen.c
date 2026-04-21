@@ -22,7 +22,7 @@ static Operand newTemp() {
     char *tempName = (char*)malloc(10*sizeof(char));
     tempOffset++;
     sprintf(tempName, "$t%d", tempOffset);
-    tempOpnd.content.name = tempName;
+    tempOpnd.content.str_val = tempName;
     return tempOpnd;
 }
 
@@ -32,14 +32,14 @@ static Operand newLabel() {
     char *labelName = (char*)malloc(10*sizeof(char));
     labelOffset++;
     sprintf(labelName, "L%d", labelOffset);
-    labelOpnd.content.name = labelName;
+    labelOpnd.content.str_val = labelName;
     return labelOpnd;
 }
 
 static Operand emptyOperand() {
     Operand emptyOpnd;
     emptyOpnd.kind = OPND_EMPTY;
-    emptyOpnd.content.name = NULL;
+    emptyOpnd.content.str_val = NULL;
     return emptyOpnd;
 }
 
@@ -50,25 +50,35 @@ static Operand numOperand(int val){
     return numOpnd;
 }
 
-static Operand varOperand(char *name){
+static Operand varOperand(char *var_name){
     Operand varOpnd;
     varOpnd.kind = OPND_VAR;
-    varOpnd.content.name = name;
+    varOpnd.content.str_val = var_name;
     return varOpnd;
 }
 
-static Operand funcOperand(char *name){
+static Operand funcOperand(char *func_name){
     Operand funcOpnd;
     funcOpnd.kind = OPND_FUNC;
-    funcOpnd.content.name = name;
+    funcOpnd.content.str_val = func_name;
     return funcOpnd;
 }
 
-static Operand scopeOperand(char *name){
+static Operand scopeOperand(char *scope){
     Operand scopeOpnd;
     scopeOpnd.kind = OPND_SCOPE;
-    scopeOpnd.content.name = name;
+    scopeOpnd.content.str_val = scope;
     return scopeOpnd;
+}
+
+static Operand typeOperand(ExpType type) {
+    Operand typeOpnd;
+    typeOpnd.kind = OPND_TYPE;
+    if (type == Integer)
+        typeOpnd.content.str_val = "int";
+    else if (type == Void)
+        typeOpnd.content.str_val = "void";
+    return typeOpnd;
 }
 
 OpKind opTokenToOpKind(TokenType op){
@@ -83,36 +93,41 @@ OpKind opTokenToOpKind(TokenType op){
         case MAIOR:        return OP_GT;
         case IGUAL_IGUAL:  return OP_EQ;
         case DIFERENTE:    return OP_NEQ;
-        default:            return OP_ADD; //TODO: Verificar necessidade de fallback
+        default:           return OP_ADD; //TODO: Verificar necessidade de fallback
     }
 }
 
 static const char* opKindToString(OpKind op) {
     switch (op) {
-        case OP_ADD:       return "ADD";
-        case OP_SUB:       return "SUB";
-        case OP_MUL:       return "MUL";
-        case OP_DIV:       return "DIV";
-        case OP_ASSIGN:    return "ASSIGN";
-        case OP_EQ:        return "EQ";
-        case OP_NEQ:       return "NEQ";
-        case OP_LT:        return "LT";
-        case OP_LEQ:       return "LEQ";
-        case OP_GT:        return "GT";
-        case OP_GEQ:       return "GEQ";
-        case OP_GOTO:      return "GOTO";
-        case OP_IFFALSE:   return "IFFALSE";
-        case OP_FUNC:      return "FUNC";
-        case OP_LABEL:     return "LABEL";
-        case OP_PARAM:     return "PARAM";
-        case OP_CALL:      return "CALL";
-        case OP_ALLOCVAR:  return "ALLOCVAR";
-        case OP_ALLOCARR:  return "ALLOCARR";
-        case OP_LOAD:      return "LOAD";
-        case OP_STORE:     return "STORE";
-        case OP_RETURN:    return "RETURN";
-        case OP_HALT:      return "HALT";
-        default:        return "UNKNOWN";
+        case OP_ADD:        return "ADD";
+        case OP_SUB:        return "SUB";
+        case OP_MUL:        return "MUL";
+        case OP_DIV:        return "DIV";
+        case OP_ASSIGN:     return "ASSIGN";
+        case OP_EQ:         return "EQ";
+        case OP_NEQ:        return "NEQ";
+        case OP_LT:         return "LT";
+        case OP_LEQ:        return "LEQ";
+        case OP_GT:         return "GT";
+        case OP_GEQ:        return "GEQ";
+        case OP_GOTO:       return "GOTO";
+        case OP_IFFALSE:    return "IFFALSE";
+        case OP_FUNC:       return "FUNC";
+        case OP_ENDFUNC:    return "ENDFUNC";
+        case OP_LABEL:      return "LABEL";
+        case OP_PARAM:      return "PARAM";
+        case OP_CALL:       return "CALL";
+        case OP_ARG:        return "ARG";
+        case OP_ALLOCVAR:   return "ALLOCVAR";
+        case OP_ALLOCARR:   return "ALLOCARR";
+        case OP_LOADVAR:    return "LOADVAR";
+        case OP_LOADARR:    return "LOADARR";
+        case OP_LOADIMM:    return "LOADIMM";
+        case OP_STOREVAR:   return "STOREVAR";
+        case OP_STOREARR:   return "STOREARR";
+        case OP_RETURN:     return "RETURN";
+        case OP_HALT:       return "HALT";
+        default:            return "UNKNOWN";
     }
 }
 
@@ -140,14 +155,14 @@ static Operand genExp(TreeNode *t) {
                 // (LOAD, $t_a, const, -)
                 Operand resultTemp = newTemp();
                 Operand argNum = numOperand(t->attr.val);
-                emitQuad(OP_LOAD, resultTemp, argNum, EMPTY_OPND);
+                emitQuad(OP_LOADIMM, resultTemp, argNum, EMPTY_OPND);
                 return resultTemp;
             }
             case VarK:{
                 //(LOAD, $t_a, var, -)
                 Operand resultTemp = newTemp();
                 Operand argVar = varOperand(t->attr.name);
-                emitQuad(OP_LOAD, resultTemp, argVar, EMPTY_OPND);
+                emitQuad(OP_LOADVAR, resultTemp, argVar, EMPTY_OPND);
                 return resultTemp;
             }
             case ArrK:{
@@ -155,7 +170,7 @@ static Operand genExp(TreeNode *t) {
                 Operand argIdx = genExp(t->child[0]); //tratamento de constantes, operações matemáticas ou uso de variáveis
                 Operand resultTemp = newTemp();
                 //(LOAD, $t_a, var, index)
-                emitQuad(OP_LOAD, resultTemp, argArr, argIdx);
+                emitQuad(OP_LOADARR, resultTemp, argArr, argIdx);
                 return resultTemp;
             }
             case VarDeclK:{
@@ -184,23 +199,27 @@ static Operand genExp(TreeNode *t) {
             case AssignK:{
                 Operand argVar = varOperand(t->child[0]->attr.name);
                 Operand argVal = genExp(t->child[1]); //tratamento de constantes, operações matemáticas ou uso de variáveis
-                Operand resultTemp = newTemp();
-                //(ASSIGN, $t_a, $t_b, -)
-                emitQuad(OP_ASSIGN, resultTemp, argVal, EMPTY_OPND);
-
                 TreeNode *l_tree = t->child[0];
                 if(l_tree->kind.exp == VarK){
                     Operand argVar = varOperand(l_tree->attr.name);
                     //(STORE, var, $t_a, -)
-                    emitQuad(OP_STORE, argVar, resultTemp, EMPTY_OPND);
+                    emitQuad(OP_STOREVAR, argVar, argVal, EMPTY_OPND);
                 }
                 else if(l_tree->kind.exp == ArrK){
                     Operand argArr = varOperand(l_tree->attr.name);
                     Operand argIdx = genExp(l_tree->child[0]);
                     //(STORE, var, $t_a, index)
-                    emitQuad(OP_STORE, argArr, resultTemp, argIdx);
+                    emitQuad(OP_STOREARR, argArr, argVal, argIdx);
                 }
-                return resultTemp;
+                return argVal;
+            }
+            case ParamK: {
+                Operand argType = typeOperand(t->type);
+                Operand argName = varOperand(t->attr.name);
+                Operand argScope = varOperand(t->scope);
+                //(ARG, type, param, scope)
+                emitQuad(OP_ARG, argType, argName, argScope);
+                break;
             }
             case CallK:{
                 //emissão de quádruplas de params (percorrer t->child[0] e seus irmãos)
@@ -240,14 +259,14 @@ static void genStmt(TreeNode *t) {
                 if(t->child[2] != NULL){
                     Operand labelEnd = newLabel();
                     //GOTO para o bloco then
-                    emitQuad(OP_GOTO, EMPTY_OPND, labelEnd, EMPTY_OPND);
+                    emitQuad(OP_GOTO, labelEnd, EMPTY_OPND, EMPTY_OPND);
                     //else: jump para labelFalse
-                    emitQuad(OP_LABEL, EMPTY_OPND, labelFalse, EMPTY_OPND);
+                    emitQuad(OP_LABEL, labelFalse, EMPTY_OPND, EMPTY_OPND);
                     cGen(t->child[2]);
-                    emitQuad(OP_LABEL, EMPTY_OPND, labelEnd, EMPTY_OPND);
+                    emitQuad(OP_LABEL, labelEnd, EMPTY_OPND, EMPTY_OPND);
                 } else {
                     //else: jump para labelFalse
-                    emitQuad(OP_LABEL, EMPTY_OPND, labelFalse, EMPTY_OPND);
+                    emitQuad(OP_LABEL, labelFalse, EMPTY_OPND, EMPTY_OPND);
                 }
                 break;
             }
@@ -261,9 +280,9 @@ static void genStmt(TreeNode *t) {
                 //tratamento do compound do while
                 cGen(t->child[1]);
                 //loop
-                emitQuad(OP_GOTO, EMPTY_OPND, labelStart, EMPTY_OPND);
+                emitQuad(OP_GOTO, labelStart, EMPTY_OPND, EMPTY_OPND);
                 //label de fim
-                emitQuad(OP_LABEL, EMPTY_OPND, labelEnd, EMPTY_OPND);
+                emitQuad(OP_LABEL, labelEnd, EMPTY_OPND, EMPTY_OPND);
                 break;
             }
             case CompoundK:{
@@ -281,10 +300,13 @@ static void genStmt(TreeNode *t) {
                 break;
             }
             case FunctDeclK:{
-                Operand labelFunc = funcOperand(t->attr.name);
-                emitQuad(OP_FUNC, EMPTY_OPND, labelFunc, EMPTY_OPND);
+                Operand argType = typeOperand(t->type);
+                Operand argFunc = funcOperand(t->attr.name);
+                emitQuad(OP_FUNC, argType, argFunc, EMPTY_OPND);
                 cGen(t->child[0]);
                 cGen(t->child[1]);
+                //(ENDFUNC, gcd, -, -)
+                emitQuad(OP_ENDFUNC, argFunc, EMPTY_OPND, EMPTY_OPND);
                 break;
             }
             case ReturnK:{
@@ -340,19 +362,22 @@ static void printOperand(FILE *listing, Operand op) {
             fprintf(listing, "%d", op.content.val); 
             break;
         case OPND_VAR:
-            fprintf(listing, "%s", op.content.name); 
+            fprintf(listing, "%s", op.content.str_val); 
             break;
         case OPND_TEMP:
-            fprintf(listing, "%s", op.content.name); 
+            fprintf(listing, "%s", op.content.str_val); 
             break;
         case OPND_LABEL:
-            fprintf(listing, "%s", op.content.name); 
+            fprintf(listing, "%s", op.content.str_val); 
             break;
         case OPND_FUNC:
-            fprintf(listing, "%s", op.content.name); 
+            fprintf(listing, "%s", op.content.str_val); 
             break;
         case OPND_SCOPE:
-            fprintf(listing, "%s", op.content.name); 
+            fprintf(listing, "%s", op.content.str_val); 
+            break;
+        case OPND_TYPE:
+            fprintf(listing, "%s", op.content.str_val); 
             break;
         default:
             fprintf(listing, "?");

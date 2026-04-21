@@ -12,7 +12,8 @@ typedef enum {
     OPND_TEMP,
     OPND_LABEL,
     OPND_FUNC,
-    OPND_SCOPE
+    OPND_SCOPE,
+    OPND_TYPE
 } OpndKind;
 
 typedef enum {
@@ -22,10 +23,12 @@ typedef enum {
     OP_GOTO,
     OP_IFFALSE,
     OP_LABEL,
-    OP_FUNC, OP_PARAM,
+    OP_FUNC, OP_ENDFUNC, 
+    OP_ARG, OP_PARAM,
     OP_CALL,
     OP_ALLOCVAR, OP_ALLOCARR,
-    OP_LOAD, OP_STORE,
+    OP_LOADVAR, OP_LOADARR, OP_LOADIMM,
+    OP_STOREVAR, OP_STOREARR,
     OP_RETURN,
     OP_HALT
 } OpKind;
@@ -34,8 +37,7 @@ typedef struct {
     OpndKind kind;
     union {
         int val;
-        char *name;
-        char *scope;
+        char *str_val; //nome variável/função, tipo, escopo, label, registradores
     } content;
 } Operand;
 
