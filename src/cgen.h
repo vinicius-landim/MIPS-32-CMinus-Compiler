@@ -21,7 +21,7 @@ typedef enum {
     OP_ASSIGN, 
     OP_EQ, OP_NEQ, OP_LT, OP_LEQ, OP_GT, OP_GEQ,
     OP_GOTO,
-    OP_IFFALSE,
+    OP_BEQ, OP_BNE, OP_BLT, OP_BGT, OP_BLE, OP_BGE,
     OP_LABEL,
     OP_FUNC, OP_ENDFUNC, 
     OP_ARG, OP_PARAM,

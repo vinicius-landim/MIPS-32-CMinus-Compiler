@@ -16,7 +16,7 @@ static int labelOffset = 0;
 
 static void cGen(TreeNode *t);
 
-static Operand newTemp() {
+static Operand newTemp(){
     Operand tempOpnd;
     tempOpnd.kind = OPND_TEMP;
     char *tempName = (char*)malloc(10*sizeof(char));
@@ -26,7 +26,7 @@ static Operand newTemp() {
     return tempOpnd;
 }
 
-static Operand newLabel() {
+static Operand newLabel(){
     Operand labelOpnd;
     labelOpnd.kind = OPND_LABEL;
     char *labelName = (char*)malloc(10*sizeof(char));
@@ -36,7 +36,7 @@ static Operand newLabel() {
     return labelOpnd;
 }
 
-static Operand emptyOperand() {
+static Operand emptyOperand(){
     Operand emptyOpnd;
     emptyOpnd.kind = OPND_EMPTY;
     emptyOpnd.content.str_val = NULL;
@@ -71,12 +71,12 @@ static Operand scopeOperand(char *scope){
     return scopeOpnd;
 }
 
-static Operand typeOperand(ExpType type) {
+static Operand typeOperand(ExpType type){
     Operand typeOpnd;
     typeOpnd.kind = OPND_TYPE;
-    if (type == Integer)
+    if(type == Integer)
         typeOpnd.content.str_val = "int";
-    else if (type == Void)
+    else if(type == Void)
         typeOpnd.content.str_val = "void";
     return typeOpnd;
 }
@@ -97,8 +97,8 @@ OpKind opTokenToOpKind(TokenType op){
     }
 }
 
-static const char* opKindToString(OpKind op) {
-    switch (op) {
+static const char* opKindToString(OpKind op){
+    switch(op){
         case OP_ADD:        return "ADD";
         case OP_SUB:        return "SUB";
         case OP_MUL:        return "MUL";
@@ -111,7 +111,12 @@ static const char* opKindToString(OpKind op) {
         case OP_GT:         return "GT";
         case OP_GEQ:        return "GEQ";
         case OP_GOTO:       return "GOTO";
-        case OP_IFFALSE:    return "IFFALSE";
+        case OP_BEQ:        return "BEQ";
+        case OP_BNE:        return "BNE";
+        case OP_BGE:        return "BGE";
+        case OP_BLE:        return "BLE";
+        case OP_BGT:        return "BGT";
+        case OP_BLT:        return "BLT";
         case OP_FUNC:       return "FUNC";
         case OP_ENDFUNC:    return "ENDFUNC";
         case OP_LABEL:      return "LABEL";
@@ -131,7 +136,7 @@ static const char* opKindToString(OpKind op) {
     }
 }
 
-void emitQuad(OpKind op, Operand result, Operand arg1, Operand arg2) {
+void emitQuad(OpKind op, Operand result, Operand arg1, Operand arg2){
     Quad* newQ = (Quad*)malloc(sizeof(Quad));
     newQ->op = op;
     newQ->result = result;
@@ -139,7 +144,7 @@ void emitQuad(OpKind op, Operand result, Operand arg1, Operand arg2) {
     newQ->arg2 = arg2;
     newQ->next = NULL;
 
-    if (headQuad == NULL) {
+    if(headQuad == NULL){
         headQuad = newQ;
         currentQuad = newQ;
     } else {
@@ -148,7 +153,7 @@ void emitQuad(OpKind op, Operand result, Operand arg1, Operand arg2) {
     }
 }
 
-static Operand genExp(TreeNode *t) {
+static Operand genExp(TreeNode *t){
     if(t != NULL){
         switch(t->kind.exp){
             case ConstK:{
@@ -198,7 +203,7 @@ static Operand genExp(TreeNode *t) {
             }
             case AssignK:{
                 Operand argVar = varOperand(t->child[0]->attr.name);
-                Operand argVal = genExp(t->child[1]); //tratamento de constantes, operações matemáticas ou uso de variáveis
+                Operand argVal = genExp(t->child[1]); //tratamento de constantes, operações matemáticas, uso de variáveis ou calls
                 TreeNode *l_tree = t->child[0];
                 if(l_tree->kind.exp == VarK){
                     Operand argVar = varOperand(l_tree->attr.name);
@@ -213,7 +218,7 @@ static Operand genExp(TreeNode *t) {
                 }
                 return argVal;
             }
-            case ParamK: {
+            case ParamK:{
                 Operand argType = typeOperand(t->type);
                 Operand argName = varOperand(t->attr.name);
                 Operand argScope = varOperand(t->scope);
@@ -244,16 +249,51 @@ static Operand genExp(TreeNode *t) {
     }
 }
 
-static void genStmt(TreeNode *t) {
-    if (t != NULL) {
-        switch (t->kind.stmt) {
+static void genStmt(TreeNode *t){
+    if(t != NULL){
+        switch(t->kind.stmt){
             case IfK:{
                 //tratamento de expressão de condição
-                Operand condition = genExp(t->child[0]); //$t_n
+                TreeNode *condition = t->child[0];
                 Operand labelFalse = newLabel();
-                //(IFFALSE, $t_n, L_m, -)
-                emitQuad(OP_IFFALSE, condition, labelFalse, EMPTY_OPND);
-                //tratamento de sequência verdadeira
+                if(condition->kind.exp == OpK){
+                    //tratar ambos os lados da operação
+                    Operand arg1 = genExp(condition->child[0]);
+                    Operand arg2 = genExp(condition->child[1]);
+                    OpKind branchOp;
+                    //inverter operador para branch falso
+                    switch(condition->attr.op){
+                        case MAIOR: 
+                            branchOp = OP_BLE;
+                            break;
+                        case MENOR:
+                            branchOp = OP_BGE;
+                            break;
+                        case IGUAL_IGUAL:
+                            branchOp = OP_BNE;
+                            break;
+                        case DIFERENTE:
+                            branchOp = OP_BEQ;
+                            break;
+                        case MAIOR_IGUAL:
+                            branchOp = OP_BLT;
+                            break; 
+                        case MENOR_IGUAL:
+                            branchOp = OP_BGT;
+                            break;
+                        default: break;
+                    }
+                    //(BRANCH, $t_n, $t_m, L_k)
+                    emitQuad(branchOp, arg1, arg2, labelFalse);
+                }
+                //comparação implicita com zero
+                else{
+                    Operand arg = genExp(condition);
+                    Operand zero = numOperand(0);
+                    //(BRANCH, $t_n, 0, L_k): branch falso
+                    emitQuad(OP_BEQ, arg, zero, labelFalse);
+                }
+                //tratamento do compound do if
                 cGen(t->child[1]);
                 //tratamento do else
                 if(t->child[2] != NULL){
@@ -265,7 +305,7 @@ static void genStmt(TreeNode *t) {
                     cGen(t->child[2]);
                     emitQuad(OP_LABEL, labelEnd, EMPTY_OPND, EMPTY_OPND);
                 } else {
-                    //else: jump para labelFalse
+                    //labelFalse para jump de condição falsa
                     emitQuad(OP_LABEL, labelFalse, EMPTY_OPND, EMPTY_OPND);
                 }
                 break;
@@ -275,8 +315,42 @@ static void genStmt(TreeNode *t) {
                 Operand labelStart = newLabel();
                 Operand labelEnd = newLabel();
                 emitQuad(OP_LABEL, EMPTY_OPND, labelStart, EMPTY_OPND);
-                Operand condition = genExp(t->child[0]);
-                emitQuad(OP_IFFALSE, condition, labelEnd, EMPTY_OPND);
+                TreeNode *condition = t->child[0];
+                if(condition->kind.exp == OpK){
+                    Operand arg1 = genExp(condition->child[0]);
+                    Operand arg2 = genExp(condition->child[1]);
+                    OpKind branchOp;
+                    switch(condition->attr.op){
+                        case MAIOR: 
+                            branchOp = OP_BLE;
+                            break;
+                        case MENOR:
+                            branchOp = OP_BGE;
+                            break;
+                        case IGUAL_IGUAL:
+                            branchOp = OP_BNE;
+                            break;
+                        case DIFERENTE:
+                            branchOp = OP_BEQ;
+                            break;
+                        case MAIOR_IGUAL:
+                            branchOp = OP_BLT;
+                            break; 
+                        case MENOR_IGUAL:
+                            branchOp = OP_BGT;
+                            break;
+                        default: break;
+                    }
+                    //(BRANCH, $t_n, $t_m, L_k)
+                    emitQuad(branchOp, arg1, arg2, labelEnd);
+                }
+                //comparação implicita com zero
+                else{
+                    Operand arg = genExp(condition);
+                    Operand zero = numOperand(0);
+                    //(BRANCH, $t_n, 0, L_k): branch falso
+                    emitQuad(OP_BEQ, arg, zero, labelEnd);
+                }
                 //tratamento do compound do while
                 cGen(t->child[1]);
                 //loop
@@ -325,9 +399,9 @@ static void genStmt(TreeNode *t) {
     }
 }
 
-static void cGen(TreeNode * t) {
-    if (t != NULL) {
-        switch (t->nodeKind) {
+static void cGen(TreeNode * t){
+    if(t != NULL){
+        switch(t->nodeKind){
             case StmtK:
                 genStmt(t);
                 break;
@@ -341,7 +415,7 @@ static void cGen(TreeNode * t) {
     }
 }
 
-void generateIntermediateCode(TreeNode *AST) {
+void generateIntermediateCode(TreeNode *AST){
     headQuad = NULL;
     currentQuad = NULL;
     tempOffset = 0;
@@ -353,8 +427,8 @@ void generateIntermediateCode(TreeNode *AST) {
     emitQuad(OP_HALT, EMPTY_OPND, EMPTY_OPND, EMPTY_OPND);
 }
 
-static void printOperand(FILE *listing, Operand op) {
-    switch (op.kind) {
+static void printOperand(FILE *listing, Operand op){
+    switch(op.kind){
         case OPND_EMPTY:
             fprintf(listing, "-");
             break;
@@ -385,10 +459,10 @@ static void printOperand(FILE *listing, Operand op) {
     }
 }
 
-void printIntermediateCode(FILE *listing) {
+void printIntermediateCode(FILE *listing){
     Quad* curr = headQuad;
 
-    while (curr != NULL) {        
+    while (curr != NULL){        
         fprintf(listing, "(");
         fprintf(listing, "%s, ", opKindToString(curr->op));
         
