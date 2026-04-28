@@ -314,7 +314,7 @@ static void genStmt(TreeNode *t){
             case WhileK:{
                 Operand labelStart = newLabel();
                 Operand labelEnd = newLabel();
-                emitQuad(OP_LABEL, EMPTY_OPND, labelStart, EMPTY_OPND);
+                emitQuad(OP_LABEL, labelStart, EMPTY_OPND, EMPTY_OPND);
                 TreeNode *condition = t->child[0];
                 if(condition->kind.exp == OpK){
                     Operand arg1 = genExp(condition->child[0]);
