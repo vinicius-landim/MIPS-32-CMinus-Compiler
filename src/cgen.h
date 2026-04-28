@@ -20,7 +20,7 @@ typedef enum {
     OP_ADD, OP_SUB, OP_MUL, OP_DIV, 
     OP_ASSIGN, 
     OP_EQ, OP_NEQ, OP_LT, OP_LEQ, OP_GT, OP_GEQ,
-    OP_GOTO,
+    OP_JUMP,
     OP_BEQ, OP_BNE, OP_BLT, OP_BGT, OP_BLE, OP_BGE,
     OP_LABEL,
     OP_FUNC, OP_ENDFUNC, 

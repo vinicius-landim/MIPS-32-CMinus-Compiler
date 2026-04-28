@@ -110,7 +110,7 @@ static const char* opKindToString(OpKind op){
         case OP_LEQ:        return "LEQ";
         case OP_GT:         return "GT";
         case OP_GEQ:        return "GEQ";
-        case OP_GOTO:       return "GOTO";
+        case OP_JUMP:       return "JUMP";
         case OP_BEQ:        return "BEQ";
         case OP_BNE:        return "BNE";
         case OP_BGE:        return "BGE";
@@ -299,7 +299,7 @@ static void genStmt(TreeNode *t){
                 if(t->child[2] != NULL){
                     Operand labelEnd = newLabel();
                     //GOTO para o bloco then
-                    emitQuad(OP_GOTO, labelEnd, EMPTY_OPND, EMPTY_OPND);
+                    emitQuad(OP_JUMP, labelEnd, EMPTY_OPND, EMPTY_OPND);
                     //else: jump para labelFalse
                     emitQuad(OP_LABEL, labelFalse, EMPTY_OPND, EMPTY_OPND);
                     cGen(t->child[2]);
@@ -354,7 +354,7 @@ static void genStmt(TreeNode *t){
                 //tratamento do compound do while
                 cGen(t->child[1]);
                 //loop
-                emitQuad(OP_GOTO, labelStart, EMPTY_OPND, EMPTY_OPND);
+                emitQuad(OP_JUMP, labelStart, EMPTY_OPND, EMPTY_OPND);
                 //label de fim
                 emitQuad(OP_LABEL, labelEnd, EMPTY_OPND, EMPTY_OPND);
                 break;
