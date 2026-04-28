@@ -1,0 +1,28 @@
+/* Programa para testar arrays e loops (soma de elementos) */
+
+void main(void) {
+    int arr[5];
+    int i;
+    int sum;
+
+    i = 0;
+    sum = 0;
+
+    /* 1. Teste de gravacao no vetor (STOREARR) */
+    while (i < 5) {
+        arr[i] = i * 2;
+        i = i + 1;
+    }
+
+    i = 0;
+
+    /* 2. Teste de leitura no vetor (LOADARR) */
+    while (i < 5) {
+        sum = sum + arr[i];
+        output(arr[i]); /* Imprime o valor atual para debug */
+        i = i + 1;
+    }
+
+    /* Imprime o resultado final (deve ser 0+2+4+6+8 = 20) */
+    output(sum);
+}

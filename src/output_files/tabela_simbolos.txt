@@ -1,7 +1,8 @@
 Nome do Simbolo   |  Tipo      |  Classificacao  |  Escopo          |  Loc  |  Linhas
 -----------------------------------------------------------------------------------------
-main              |  void      |  Funcao         |  global          |  2    |  1 
+main              |  void      |  Funcao         |  global          |  2    |  3 
 output            |  void      |  Funcao         |  global          |  1    |  0 
 input             |  int       |  Funcao         |  global          |  0    |  0 
-y                 |  int       |  Variavel       |  main            |  4    |  3 
-x                 |  int       |  Variavel       |  main            |  3    |  3 
+sum               |  int       |  Variavel       |  main            |  5    |  6 
+i                 |  int       |  Variavel       |  main            |  4    |  5 
+arr               |  int       |  Vetor          |  main            |  3    |  4 

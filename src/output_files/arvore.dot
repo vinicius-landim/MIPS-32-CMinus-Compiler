@@ -2,42 +2,117 @@ digraph AST {
   rankdir=TB;
   node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Consolas"];
   edge [fontname="Consolas"];
-  node0x5edb356c3d80 [shape="box", fillcolor="lightcoral", label="Fun: main()\n(void)\n[global]"];
-  node0x5edb356c3d80 -> node0x5edb356c3d30;
-  node0x5edb356c3d30 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x5edb356c3d30 -> node0x5edb356c3550;
-  node0x5edb356c3550 [shape="box", fillcolor="palegreen", label="Var: x\n(int)\n[main]"];
-  node0x5edb356c3550 -> node0x5edb356c35e0 [style=dashed, color=gray40];
-  { rank=same; node0x5edb356c3550; node0x5edb356c35e0; }
-  node0x5edb356c35e0 [shape="box", fillcolor="palegreen", label="Var: y\n(int)\n[main]"];
-  node0x5edb356c3d30 -> node0x5edb356c3770;
-  node0x5edb356c3770 [shape="circle", fillcolor="gold", label="="];
-  node0x5edb356c3770 -> node0x5edb356c3670;
-  node0x5edb356c3670 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x5edb356c3770 -> node0x5edb356c3700;
-  node0x5edb356c3700 [shape="box", fillcolor="aquamarine", label="Call: input()"];
-  node0x5edb356c3770 -> node0x5edb356c38e0 [style=dashed, color=gray40];
-  { rank=same; node0x5edb356c3770; node0x5edb356c38e0; }
-  node0x5edb356c38e0 [shape="circle", fillcolor="gold", label="="];
-  node0x5edb356c38e0 -> node0x5edb356c37e0;
-  node0x5edb356c37e0 [shape="ellipse", fillcolor="lightyellow", label="y"];
-  node0x5edb356c38e0 -> node0x5edb356c3870;
-  node0x5edb356c3870 [shape="box", fillcolor="aquamarine", label="Call: input()"];
-  node0x5edb356c38e0 -> node0x5edb356c3ce0 [style=dashed, color=gray40];
-  { rank=same; node0x5edb356c38e0; node0x5edb356c3ce0; }
-  node0x5edb356c3ce0 [shape="box", fillcolor="lightblue", label="if"];
-  node0x5edb356c3ce0 -> node0x5edb356c3a50;
-  node0x5edb356c3a50 [shape="circle", fillcolor="plum", label=">"];
-  node0x5edb356c3a50 -> node0x5edb356c3950;
-  node0x5edb356c3950 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x5edb356c3a50 -> node0x5edb356c39e0;
-  node0x5edb356c39e0 [shape="ellipse", fillcolor="lightyellow", label="y"];
-  node0x5edb356c3ce0 -> node0x5edb356c3b50;
-  node0x5edb356c3b50 [shape="box", fillcolor="aquamarine", label="Call: output()"];
-  node0x5edb356c3b50 -> node0x5edb356c3ae0;
-  node0x5edb356c3ae0 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x5edb356c3ce0 -> node0x5edb356c3c70;
-  node0x5edb356c3c70 [shape="box", fillcolor="aquamarine", label="Call: output()"];
-  node0x5edb356c3c70 -> node0x5edb356c3c00;
-  node0x5edb356c3c00 [shape="ellipse", fillcolor="lightyellow", label="y"];
+  node0x629165db3b20 [shape="box", fillcolor="lightcoral", label="Fun: main()\n(void)\n[global]"];
+  node0x629165db3b20 -> node0x629165db3ad0;
+  node0x629165db3ad0 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x629165db3ad0 -> node0x629165db2550;
+  node0x629165db2550 [shape="box", fillcolor="palegreen", label="Arr: arr[]\n(int)\n[main]"];
+  node0x629165db2550 -> node0x629165db25c0;
+  node0x629165db25c0 [shape="ellipse", fillcolor="lightgrey", label="5"];
+  node0x629165db2550 -> node0x629165db2630 [style=dashed, color=gray40];
+  { rank=same; node0x629165db2550; node0x629165db2630; }
+  node0x629165db2630 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[main]"];
+  node0x629165db2630 -> node0x629165db26c0 [style=dashed, color=gray40];
+  { rank=same; node0x629165db2630; node0x629165db26c0; }
+  node0x629165db26c0 [shape="box", fillcolor="palegreen", label="Var: sum\n(int)\n[main]"];
+  node0x629165db3ad0 -> node0x629165db2810;
+  node0x629165db2810 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db2810 -> node0x629165db2750;
+  node0x629165db2750 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db2810 -> node0x629165db27c0;
+  node0x629165db27c0 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0x629165db2810 -> node0x629165db2940 [style=dashed, color=gray40];
+  { rank=same; node0x629165db2810; node0x629165db2940; }
+  node0x629165db2940 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db2940 -> node0x629165db2880;
+  node0x629165db2880 [shape="ellipse", fillcolor="lightyellow", label="sum"];
+  node0x629165db2940 -> node0x629165db28f0;
+  node0x629165db28f0 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0x629165db2940 -> node0x629165db2fc0 [style=dashed, color=gray40];
+  { rank=same; node0x629165db2940; node0x629165db2fc0; }
+  node0x629165db2fc0 [shape="box", fillcolor="lightblue", label="while"];
+  node0x629165db2fc0 -> node0x629165db2a70;
+  node0x629165db2a70 [shape="circle", fillcolor="plum", label="<"];
+  node0x629165db2a70 -> node0x629165db29b0;
+  node0x629165db29b0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db2a70 -> node0x629165db2a20;
+  node0x629165db2a20 [shape="ellipse", fillcolor="lightgrey", label="5"];
+  node0x629165db2fc0 -> node0x629165db2f70;
+  node0x629165db2f70 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x629165db2f70 -> node0x629165db2d10;
+  node0x629165db2d10 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db2d10 -> node0x629165db2b70;
+  node0x629165db2b70 [shape="ellipse", fillcolor="lightyellow", label="arr[]"];
+  node0x629165db2b70 -> node0x629165db2b00;
+  node0x629165db2b00 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db2d10 -> node0x629165db2cc0;
+  node0x629165db2cc0 [shape="circle", fillcolor="plum", label="*"];
+  node0x629165db2cc0 -> node0x629165db2c00;
+  node0x629165db2c00 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db2cc0 -> node0x629165db2c70;
+  node0x629165db2c70 [shape="ellipse", fillcolor="lightgrey", label="2"];
+  node0x629165db2d10 -> node0x629165db2f20 [style=dashed, color=gray40];
+  { rank=same; node0x629165db2d10; node0x629165db2f20; }
+  node0x629165db2f20 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db2f20 -> node0x629165db2d80;
+  node0x629165db2d80 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db2f20 -> node0x629165db2ed0;
+  node0x629165db2ed0 [shape="circle", fillcolor="plum", label="+"];
+  node0x629165db2ed0 -> node0x629165db2e10;
+  node0x629165db2e10 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db2ed0 -> node0x629165db2e80;
+  node0x629165db2e80 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node0x629165db2fc0 -> node0x629165db30f0 [style=dashed, color=gray40];
+  { rank=same; node0x629165db2fc0; node0x629165db30f0; }
+  node0x629165db30f0 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db30f0 -> node0x629165db3030;
+  node0x629165db3030 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db30f0 -> node0x629165db30a0;
+  node0x629165db30a0 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0x629165db30f0 -> node0x629165db3960 [style=dashed, color=gray40];
+  { rank=same; node0x629165db30f0; node0x629165db3960; }
+  node0x629165db3960 [shape="box", fillcolor="lightblue", label="while"];
+  node0x629165db3960 -> node0x629165db3220;
+  node0x629165db3220 [shape="circle", fillcolor="plum", label="<"];
+  node0x629165db3220 -> node0x629165db3160;
+  node0x629165db3160 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db3220 -> node0x629165db31d0;
+  node0x629165db31d0 [shape="ellipse", fillcolor="lightgrey", label="5"];
+  node0x629165db3960 -> node0x629165db3910;
+  node0x629165db3910 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x629165db3910 -> node0x629165db3500;
+  node0x629165db3500 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db3500 -> node0x629165db3290;
+  node0x629165db3290 [shape="ellipse", fillcolor="lightyellow", label="sum"];
+  node0x629165db3500 -> node0x629165db34b0;
+  node0x629165db34b0 [shape="circle", fillcolor="plum", label="+"];
+  node0x629165db34b0 -> node0x629165db3320;
+  node0x629165db3320 [shape="ellipse", fillcolor="lightyellow", label="sum"];
+  node0x629165db34b0 -> node0x629165db3440;
+  node0x629165db3440 [shape="ellipse", fillcolor="lightyellow", label="arr[]"];
+  node0x629165db3440 -> node0x629165db33d0;
+  node0x629165db33d0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db3500 -> node0x629165db3690 [style=dashed, color=gray40];
+  { rank=same; node0x629165db3500; node0x629165db3690; }
+  node0x629165db3690 [shape="box", fillcolor="aquamarine", label="Call: output()"];
+  node0x629165db3690 -> node0x629165db3620;
+  node0x629165db3620 [shape="ellipse", fillcolor="lightyellow", label="arr[]"];
+  node0x629165db3620 -> node0x629165db35b0;
+  node0x629165db35b0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db3690 -> node0x629165db38c0 [style=dashed, color=gray40];
+  { rank=same; node0x629165db3690; node0x629165db38c0; }
+  node0x629165db38c0 [shape="circle", fillcolor="gold", label="="];
+  node0x629165db38c0 -> node0x629165db3720;
+  node0x629165db3720 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db38c0 -> node0x629165db3870;
+  node0x629165db3870 [shape="circle", fillcolor="plum", label="+"];
+  node0x629165db3870 -> node0x629165db37b0;
+  node0x629165db37b0 [shape="ellipse", fillcolor="lightyellow", label="i"];
+  node0x629165db3870 -> node0x629165db3820;
+  node0x629165db3820 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node0x629165db3960 -> node0x629165db3a60 [style=dashed, color=gray40];
+  { rank=same; node0x629165db3960; node0x629165db3a60; }
+  node0x629165db3a60 [shape="box", fillcolor="aquamarine", label="Call: output()"];
+  node0x629165db3a60 -> node0x629165db39f0;
+  node0x629165db39f0 [shape="ellipse", fillcolor="lightyellow", label="sum"];
 }
