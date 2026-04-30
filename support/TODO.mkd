@@ -1,4 +1,12 @@
 # TODO
+## Main:
+- AST e Tabela devem ser impressos em caso de erro semântico?
+
+## Análise Léxica: 
+- Impressão de erros (talvez)
+
+## Análise Sintática:
+- Implementar Fallback (Panic Mode)
 
 ## Análise Semântica:
 - ~~Verifica main~~
@@ -7,4 +15,4 @@
 - ~~Verificar total de parâmetros passados na chamada de uma função~~
 
 ## Gerador de Código Intermediário:
-- Corrigir pendências da GCI do gcd()
+- ~~Corrigir pendências da GCI do gcd()~~
