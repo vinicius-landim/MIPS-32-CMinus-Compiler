@@ -94,3 +94,8 @@ coverage/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Pasta SysML
+/docs/sysml-diagrams/*
+!/docs/sysml-diagrams/C-Minus_Compiler_SysML.vpp
+!/docs/sysml-diagrams/*.pdf
