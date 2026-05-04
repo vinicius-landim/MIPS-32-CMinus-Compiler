@@ -36,8 +36,9 @@ extern Scope globalScope;
 
 Scope pushScope(char *name);
 void popScope();
-void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc);
-void st_add_param(char* funcName, ExpType paramType);
+Symbol st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc);
+void st_add_line(Symbol s_node, int lineNo);
+void st_add_param(Symbol func_node, ExpType paramType);
 Symbol st_lookup(char *name);
 Symbol st_lookup_scope(char *name);
 Symbol st_lookup_global(char *name);

@@ -14,6 +14,7 @@ typedef struct LineListNode{
     struct LineListNode *next; // listar todas as ocorrências de uma mesma variável
 } *LineList;
 
+//empilhar escopo e atualizar currentScope
 Scope pushScope(char *name){
     Scope newScope = (Scope)malloc(sizeof(struct ScopeNode));
     newScope->name = copyString(name);
@@ -23,7 +24,7 @@ Scope pushScope(char *name){
 
     //push histórico para impressão: inserção ao final da lista
     newScope->next = NULL;
-    if (scopeHistory == NULL)
+    if(scopeHistory == NULL)
         scopeHistory = newScope;
     else {
         //atualizar next do último nó
@@ -36,60 +37,67 @@ Scope pushScope(char *name){
     return newScope;
 }
 
+//apontar currentScope para novo topo (pop)
 void popScope(){
-    if (currentScope != NULL){
-        // Scope temp = currentScope;
+    if(currentScope != NULL){
         currentScope = currentScope->parent;
     }
 }
 
-void st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
-    Symbol s_node = currentScope->h_symbols;
-    while(s_node != NULL && (strcmp(name, s_node->name) != 0))
-        s_node = s_node->next;
+//inserção de novo símbolo no escopo atual
+Symbol st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
+    Symbol newS = (Symbol)malloc(sizeof(struct SymbolNode));
+    newS->name = name;
+    newS->type = type;
+    newS->kind = kind;
+    newS->memloc = loc;
+    newS->lines = (LineList)malloc(sizeof(struct LineListNode));
+    newS->lines->lineNo = lineNo;
+    newS->lines->next = NULL;
 
-    if (s_node == NULL){
-        Symbol newS = (Symbol)malloc(sizeof(struct SymbolNode));
-        newS->name = name;
-        newS->type = type;
-        newS->kind = kind;
-        newS->memloc = loc;
-        newS->lines = (LineList)malloc(sizeof(struct LineListNode));
-        newS->lines->lineNo = lineNo;
-        newS->lines->next = NULL;
+    newS->next = currentScope->h_symbols;
+    currentScope->h_symbols = newS;
 
-        newS->next = currentScope->h_symbols;
-        currentScope->h_symbols = newS;
-    } else {
+    return newS;
+}
+
+//adicionar linha de uso de um simbolo já declarado
+void st_add_line(Symbol s_node, int lineNo){
+    if(s_node != NULL) { 
         LineList line_node = s_node->lines;
-        while (line_node->next !=  NULL)
+        
+        while(line_node->next != NULL){
             line_node = line_node->next;
-        line_node->next = (LineList)malloc(sizeof(struct LineListNode));
-        line_node->next->lineNo = lineNo;
-        line_node->next->next = NULL;
+        }
+        
+        if(line_node->lineNo != lineNo) {
+            line_node->next = (LineList)malloc(sizeof(struct LineListNode));
+            line_node->next->lineNo = lineNo;
+            line_node->next->next = NULL;
+        }
     }
 }
 
-void st_add_param(char* funcName, ExpType paramType) {
-    Symbol s_node = st_lookup_global(funcName); 
-    if (s_node != NULL && s_node->kind == SYMB_FUNC) {
+//adicionar parametros de declaração de função na struct do símbolo para rastreabilidade
+void st_add_param(Symbol func_node, ExpType paramType) {
+    if(func_node != NULL && func_node->kind == SYMB_FUNC){
         ParamList newP = (ParamList)malloc(sizeof(struct ParamListNode));
         newP->type = paramType;
         newP->next = NULL;
 
-        //inserção ao final
-        if (s_node->params == NULL) {
-            s_node->params = newP;
+        if(func_node->params == NULL){
+            func_node->params = newP;
         } else {
-            ParamList temp = s_node->params;
+            ParamList temp = func_node->params;
             while (temp->next != NULL) 
                 temp = temp->next;
             temp->next = newP;
         }
-        s_node->numParams++;
+        func_node->numParams++;
     }
 }
 
+//procura símbolo do topo atual para baixo (segue hierarquia de escopo)
 Symbol st_lookup(char *name){
     Scope scp_node = currentScope;
     while (scp_node != NULL){
@@ -104,6 +112,7 @@ Symbol st_lookup(char *name){
     return NULL;
 }
 
+//procura no escopo atual somente
 Symbol st_lookup_scope(char *name){
     if(currentScope == NULL)
         return NULL;
@@ -129,7 +138,7 @@ Symbol st_lookup_global(char *name){
 }
 
 //impressão
-static const char* typeToString(ExpType type) {
+static const char* typeToString(ExpType type){
     switch(type) {
         case Void: return "void";
         case Integer: return "int";
@@ -137,7 +146,7 @@ static const char* typeToString(ExpType type) {
     }
 }
 
-static const char* kindToString(SymbolKind kind) {
+static const char* kindToString(SymbolKind kind){
     switch(kind) {
         case SYMB_VAR: return "Variavel";
         case SYMB_ARR: return "Vetor";
@@ -146,7 +155,7 @@ static const char* kindToString(SymbolKind kind) {
     }
 }
 
-void printSymTab(FILE * listing) {
+void printSymTab(FILE * listing){
     fprintf(listing, "Nome do Simbolo   |  Tipo      |  Classificacao  |  Escopo          |  Loc  |  Linhas\n");
     fprintf(listing, "-----------------------------------------------------------------------------------------\n");
 
