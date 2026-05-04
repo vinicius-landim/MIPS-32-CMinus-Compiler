@@ -19,7 +19,6 @@ typedef enum {
 typedef enum {
     OP_ADD, OP_SUB, OP_MUL, OP_DIV, 
     OP_ASSIGN, 
-    OP_EQ, OP_NEQ, OP_LT, OP_LEQ, OP_GT, OP_GEQ,
     OP_JUMP,
     OP_BEQ, OP_BNE, OP_BLT, OP_BGT, OP_BLE, OP_BGE,
     OP_LABEL,
@@ -34,7 +33,7 @@ typedef enum {
 } OpKind;
 
 typedef struct {
-    OpndKind kind;
+    OpndKind kind; //especifica o que val/str_val diz respeito
     union {
         int val;
         char *str_val; //nome variável/função, tipo, escopo, label, registradores
@@ -43,7 +42,7 @@ typedef struct {
 
 typedef struct QuadList {
     OpKind op;
-    Operand result; //TODO: Verificar se seria melhor declarar os itens todos como OpKind
+    Operand result;
     Operand arg1;
     Operand arg2;
     struct QuadList* next;

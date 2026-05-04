@@ -53,21 +53,21 @@ static Operand numOperand(int val){
 static Operand varOperand(char *var_name){
     Operand varOpnd;
     varOpnd.kind = OPND_VAR;
-    varOpnd.content.str_val = var_name;
+    varOpnd.content.str_val = copyString(var_name);
     return varOpnd;
 }
 
 static Operand funcOperand(char *func_name){
     Operand funcOpnd;
     funcOpnd.kind = OPND_FUNC;
-    funcOpnd.content.str_val = func_name;
+    funcOpnd.content.str_val = copyString(func_name);
     return funcOpnd;
 }
 
 static Operand scopeOperand(char *scope){
     Operand scopeOpnd;
     scopeOpnd.kind = OPND_SCOPE;
-    scopeOpnd.content.str_val = scope;
+    scopeOpnd.content.str_val = copyString(scope);
     return scopeOpnd;
 }
 
@@ -87,13 +87,9 @@ OpKind opTokenToOpKind(TokenType op){
         case SUB:          return OP_SUB;
         case MUL:          return OP_MUL;
         case DIV:          return OP_DIV;
-        case MENOR_IGUAL:  return OP_LEQ; 
-        case MENOR:        return OP_LT;
-        case MAIOR_IGUAL:  return OP_GEQ;
-        case MAIOR:        return OP_GT;
-        case IGUAL_IGUAL:  return OP_EQ;
-        case DIFERENTE:    return OP_NEQ;
-        default:           return OP_ADD; //TODO: Verificar necessidade de fallback
+        default:
+            fprintf(stderr, "Erro GCI: Operador inválido encontrado");
+            exit(1);
     }
 }
 
@@ -104,12 +100,6 @@ static const char* opKindToString(OpKind op){
         case OP_MUL:        return "MUL";
         case OP_DIV:        return "DIV";
         case OP_ASSIGN:     return "ASSIGN";
-        case OP_EQ:         return "EQ";
-        case OP_NEQ:        return "NEQ";
-        case OP_LT:         return "LT";
-        case OP_LEQ:        return "LEQ";
-        case OP_GT:         return "GT";
-        case OP_GEQ:        return "GEQ";
         case OP_JUMP:       return "JUMP";
         case OP_BEQ:        return "BEQ";
         case OP_BNE:        return "BNE";
@@ -399,7 +389,7 @@ static void genStmt(TreeNode *t){
     }
 }
 
-static void cGen(TreeNode * t){
+static void cGen(TreeNode *t){
     if(t != NULL){
         switch(t->nodeKind){
             case StmtK:
