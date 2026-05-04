@@ -12,7 +12,7 @@ static char* currentFuncName = NULL;
 static Symbol currentFuncSymbol = NULL;
 
 //Primeiro procedimento: Tratamento de declaracões e escopos (PRÉ-ORDEM)
-// Erros Semânticos: Valida main (falta e ordem), duplicatas (vars/funcs/params), void em variáveis e uso sem declaração;
+//Erros Semânticos: Valida main (falta e ordem), duplicatas (vars/funcs/params), void em variáveis e uso sem declaração;
 static void insertNode(TreeNode *t) {
     char newScopeName[256]; //Buffer para nomes de escopo de blocos
     if(currentScope != NULL) {
