@@ -41,7 +41,7 @@ TreeNode* newExpNode(ExpKind kind) {
     return t;
 }
 
-char * copyString(const char * s) {
+char* copyString(const char *s) {
     int n;
     char * t;
 
@@ -91,12 +91,6 @@ static void writeNodeLabel(FILE *out, TreeNode *node) {
                 break;
             case WhileK:
                 fprintf(out, "while");
-                break;
-            case ReadK:
-                fprintf(out, "read");
-                break;
-            case WriteK:
-                fprintf(out, "write");
                 break;
             case CompoundK:
                 fprintf(out, "{ }");
