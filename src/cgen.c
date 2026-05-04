@@ -192,7 +192,6 @@ static Operand genExp(TreeNode *t){
                 return resultTemp;
             }
             case AssignK:{
-                Operand argVar = varOperand(t->child[0]->attr.name);
                 Operand argVal = genExp(t->child[1]); //tratamento de constantes, operações matemáticas, uso de variáveis ou calls
                 TreeNode *l_tree = t->child[0];
                 if(l_tree->kind.exp == VarK){
@@ -213,6 +212,15 @@ static Operand genExp(TreeNode *t){
                 Operand argName = varOperand(t->attr.name);
                 Operand argScope = varOperand(t->scope);
                 //(ARG, type, param, scope)
+                emitQuad(OP_ARG, argType, argName, argScope);
+                break;
+            }
+            case ParamArrK: {
+                Operand argType = typeOperand(t->type);
+                char arrName[50];
+                sprintf(arrName, "%s[]", t->attr.name);
+                Operand argName = varOperand(arrName);
+                Operand argScope = varOperand(t->scope);
                 emitQuad(OP_ARG, argType, argName, argScope);
                 break;
             }
