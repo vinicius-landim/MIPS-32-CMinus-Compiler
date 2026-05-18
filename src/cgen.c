@@ -178,7 +178,7 @@ static Operand genExp(TreeNode *t){
             case ArrDeclK:{
                 //(ALLOCARR, var, arr_size, scope)
                 Operand resultArr = varOperand(t->attr.name);
-                Operand argNum = numOperand(t->child[0]->attr.val);
+                Operand argNum = numOperand(t->child[0]->attr.val); //C- não permite declaração de array usando [variável]
                 Operand argScope = scopeOperand(t->scope);
                 emitQuad(OP_ALLOCARR, resultArr, argNum, argScope);
                 return emptyOperand();
@@ -296,14 +296,14 @@ static void genStmt(TreeNode *t){
                 //tratamento do else
                 if(t->child[2] != NULL){
                     Operand labelEnd = newLabel();
-                    //GOTO para o bloco then
+                    //JUMP para bloco then não invadir o bloco else
                     emitQuad(OP_JUMP, labelEnd, EMPTY_OPND, EMPTY_OPND);
-                    //else: jump para labelFalse
+                    //else: label para jump falso
                     emitQuad(OP_LABEL, labelFalse, EMPTY_OPND, EMPTY_OPND);
                     cGen(t->child[2]);
                     emitQuad(OP_LABEL, labelEnd, EMPTY_OPND, EMPTY_OPND);
                 } else {
-                    //labelFalse para jump de condição falsa
+                    //labelFalse para jump de condição falsa (encerramento do bloco de comparação)
                     emitQuad(OP_LABEL, labelFalse, EMPTY_OPND, EMPTY_OPND);
                 }
                 break;
