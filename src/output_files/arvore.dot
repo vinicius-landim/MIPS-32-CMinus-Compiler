@@ -2,292 +2,78 @@ digraph AST {
   rankdir=TB;
   node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Consolas"];
   edge [fontname="Consolas"];
-  node0x654aa1bf4530 [shape="box", fillcolor="palegreen", label="Arr: x[]\n(int)\n[global]"];
-  node0x654aa1bf4530 -> node0x654aa1bf45a0;
-  node0x654aa1bf45a0 [shape="ellipse", fillcolor="lightgrey", label="10"];
-  node0x654aa1bf4530 -> node0x654aa1bf5a50 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf4530; node0x654aa1bf5a50; }
-  node0x654aa1bf5a50 [shape="box", fillcolor="lightcoral", label="Fun: minloc()\n(int)\n[global]"];
-  node0x654aa1bf5a50 -> node0x654aa1bf4630;
-  node0x654aa1bf4630 [shape="box", fillcolor="palegreen", label="Param: a[]\n(int)\n[minloc]"];
-  node0x654aa1bf4630 -> node0x654aa1bf46c0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf4630; node0x654aa1bf46c0; }
-  node0x654aa1bf46c0 [shape="box", fillcolor="palegreen", label="Param: low\n(int)\n[minloc]"];
-  node0x654aa1bf46c0 -> node0x654aa1bf4750 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf46c0; node0x654aa1bf4750; }
-  node0x654aa1bf4750 [shape="box", fillcolor="palegreen", label="Param: high\n(int)\n[minloc]"];
-  node0x654aa1bf5a50 -> node0x654aa1bf5a00;
-  node0x654aa1bf5a00 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf5a00 -> node0x654aa1bf47e0;
-  node0x654aa1bf47e0 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[minloc]"];
-  node0x654aa1bf47e0 -> node0x654aa1bf4870 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf47e0; node0x654aa1bf4870; }
-  node0x654aa1bf4870 [shape="box", fillcolor="palegreen", label="Var: x\n(int)\n[minloc]"];
-  node0x654aa1bf4870 -> node0x654aa1bf4900 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf4870; node0x654aa1bf4900; }
-  node0x654aa1bf4900 [shape="box", fillcolor="palegreen", label="Var: k\n(int)\n[minloc]"];
-  node0x654aa1bf5a00 -> node0x654aa1bf4a90;
-  node0x654aa1bf4a90 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf4a90 -> node0x654aa1bf4990;
-  node0x654aa1bf4990 [shape="ellipse", fillcolor="lightyellow", label="k"];
-  node0x654aa1bf4a90 -> node0x654aa1bf4a20;
-  node0x654aa1bf4a20 [shape="ellipse", fillcolor="lightyellow", label="low"];
-  node0x654aa1bf4a90 -> node0x654aa1bf4c90 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf4a90; node0x654aa1bf4c90; }
-  node0x654aa1bf4c90 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf4c90 -> node0x654aa1bf4b00;
-  node0x654aa1bf4b00 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x654aa1bf4c90 -> node0x654aa1bf4c20;
-  node0x654aa1bf4c20 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf4c20 -> node0x654aa1bf4bb0;
-  node0x654aa1bf4bb0 [shape="ellipse", fillcolor="lightyellow", label="low"];
-  node0x654aa1bf4c90 -> node0x654aa1bf4ea0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf4c90; node0x654aa1bf4ea0; }
-  node0x654aa1bf4ea0 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf4ea0 -> node0x654aa1bf4d00;
-  node0x654aa1bf4d00 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf4ea0 -> node0x654aa1bf4e50;
-  node0x654aa1bf4e50 [shape="circle", fillcolor="plum", label="+"];
-  node0x654aa1bf4e50 -> node0x654aa1bf4d90;
-  node0x654aa1bf4d90 [shape="ellipse", fillcolor="lightyellow", label="low"];
-  node0x654aa1bf4e50 -> node0x654aa1bf4e00;
-  node0x654aa1bf4e00 [shape="ellipse", fillcolor="lightgrey", label="1"];
-  node0x654aa1bf4ea0 -> node0x654aa1bf58d0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf4ea0; node0x654aa1bf58d0; }
-  node0x654aa1bf58d0 [shape="box", fillcolor="lightblue", label="while"];
-  node0x654aa1bf58d0 -> node0x654aa1bf5010;
-  node0x654aa1bf5010 [shape="circle", fillcolor="plum", label="<"];
-  node0x654aa1bf5010 -> node0x654aa1bf4f10;
-  node0x654aa1bf4f10 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf5010 -> node0x654aa1bf4fa0;
-  node0x654aa1bf4fa0 [shape="ellipse", fillcolor="lightyellow", label="high"];
-  node0x654aa1bf58d0 -> node0x654aa1bf5880;
-  node0x654aa1bf5880 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf5880 -> node0x654aa1bf5640;
-  node0x654aa1bf5640 [shape="box", fillcolor="lightblue", label="if"];
-  node0x654aa1bf5640 -> node0x654aa1bf5210;
-  node0x654aa1bf5210 [shape="circle", fillcolor="plum", label="<"];
-  node0x654aa1bf5210 -> node0x654aa1bf5110;
-  node0x654aa1bf5110 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf5110 -> node0x654aa1bf50a0;
-  node0x654aa1bf50a0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf5210 -> node0x654aa1bf51a0;
-  node0x654aa1bf51a0 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x654aa1bf5640 -> node0x654aa1bf55d0;
-  node0x654aa1bf55d0 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf55d0 -> node0x654aa1bf5410;
-  node0x654aa1bf5410 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf5410 -> node0x654aa1bf5280;
-  node0x654aa1bf5280 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x654aa1bf5410 -> node0x654aa1bf53a0;
-  node0x654aa1bf53a0 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf53a0 -> node0x654aa1bf5330;
-  node0x654aa1bf5330 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf5410 -> node0x654aa1bf5580 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5410; node0x654aa1bf5580; }
-  node0x654aa1bf5580 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf5580 -> node0x654aa1bf5480;
-  node0x654aa1bf5480 [shape="ellipse", fillcolor="lightyellow", label="k"];
-  node0x654aa1bf5580 -> node0x654aa1bf5510;
-  node0x654aa1bf5510 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf5640 -> node0x654aa1bf5830 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5640; node0x654aa1bf5830; }
-  node0x654aa1bf5830 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf5830 -> node0x654aa1bf5690;
-  node0x654aa1bf5690 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf5830 -> node0x654aa1bf57e0;
-  node0x654aa1bf57e0 [shape="circle", fillcolor="plum", label="+"];
-  node0x654aa1bf57e0 -> node0x654aa1bf5720;
-  node0x654aa1bf5720 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf57e0 -> node0x654aa1bf5790;
-  node0x654aa1bf5790 [shape="ellipse", fillcolor="lightgrey", label="1"];
-  node0x654aa1bf58d0 -> node0x654aa1bf59b0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf58d0; node0x654aa1bf59b0; }
-  node0x654aa1bf59b0 [shape="box", fillcolor="lightblue", label="return"];
-  node0x654aa1bf59b0 -> node0x654aa1bf5940;
-  node0x654aa1bf5940 [shape="ellipse", fillcolor="lightyellow", label="k"];
-  node0x654aa1bf5a50 -> node0x654aa1bf6e70 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5a50; node0x654aa1bf6e70; }
-  node0x654aa1bf6e70 [shape="box", fillcolor="lightcoral", label="Fun: sort()\n(void)\n[global]"];
-  node0x654aa1bf6e70 -> node0x654aa1bf5b00;
-  node0x654aa1bf5b00 [shape="box", fillcolor="palegreen", label="Param: a[]\n(int)\n[sort]"];
-  node0x654aa1bf5b00 -> node0x654aa1bf5b90 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5b00; node0x654aa1bf5b90; }
-  node0x654aa1bf5b90 [shape="box", fillcolor="palegreen", label="Param: low\n(int)\n[sort]"];
-  node0x654aa1bf5b90 -> node0x654aa1bf5c20 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5b90; node0x654aa1bf5c20; }
-  node0x654aa1bf5c20 [shape="box", fillcolor="palegreen", label="Param: high\n(int)\n[sort]"];
-  node0x654aa1bf6e70 -> node0x654aa1bf6e20;
-  node0x654aa1bf6e20 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf6e20 -> node0x654aa1bf5cb0;
-  node0x654aa1bf5cb0 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[sort]"];
-  node0x654aa1bf5cb0 -> node0x654aa1bf5d40 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5cb0; node0x654aa1bf5d40; }
-  node0x654aa1bf5d40 [shape="box", fillcolor="palegreen", label="Var: k\n(int)\n[sort]"];
-  node0x654aa1bf6e20 -> node0x654aa1bf5ed0;
-  node0x654aa1bf5ed0 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf5ed0 -> node0x654aa1bf5dd0;
-  node0x654aa1bf5dd0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf5ed0 -> node0x654aa1bf5e60;
-  node0x654aa1bf5e60 [shape="ellipse", fillcolor="lightyellow", label="low"];
-  node0x654aa1bf5ed0 -> node0x654aa1bf6dd0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf5ed0; node0x654aa1bf6dd0; }
-  node0x654aa1bf6dd0 [shape="box", fillcolor="lightblue", label="while"];
-  node0x654aa1bf6dd0 -> node0x654aa1bf60e0;
-  node0x654aa1bf60e0 [shape="circle", fillcolor="plum", label="<"];
-  node0x654aa1bf60e0 -> node0x654aa1bf5f40;
-  node0x654aa1bf5f40 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf60e0 -> node0x654aa1bf6090;
-  node0x654aa1bf6090 [shape="circle", fillcolor="plum", label="-"];
-  node0x654aa1bf6090 -> node0x654aa1bf5fd0;
-  node0x654aa1bf5fd0 [shape="ellipse", fillcolor="lightyellow", label="high"];
-  node0x654aa1bf6090 -> node0x654aa1bf6040;
-  node0x654aa1bf6040 [shape="ellipse", fillcolor="lightgrey", label="1"];
-  node0x654aa1bf6dd0 -> node0x654aa1bf6d80;
-  node0x654aa1bf6d80 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf6d80 -> node0x654aa1bf6150;
-  node0x654aa1bf6150 [shape="box", fillcolor="palegreen", label="Var: t\n(int)\n[sort:block1]"];
-  node0x654aa1bf6d80 -> node0x654aa1bf6490;
-  node0x654aa1bf6490 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf6490 -> node0x654aa1bf61e0;
-  node0x654aa1bf61e0 [shape="ellipse", fillcolor="lightyellow", label="k"];
-  node0x654aa1bf6490 -> node0x654aa1bf6420;
-  node0x654aa1bf6420 [shape="box", fillcolor="aquamarine", label="Call: minloc()"];
-  node0x654aa1bf6420 -> node0x654aa1bf6290;
-  node0x654aa1bf6290 [shape="ellipse", fillcolor="lightyellow", label="a"];
-  node0x654aa1bf6290 -> node0x654aa1bf6320 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6290; node0x654aa1bf6320; }
-  node0x654aa1bf6320 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf6320 -> node0x654aa1bf63b0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6320; node0x654aa1bf63b0; }
-  node0x654aa1bf63b0 [shape="ellipse", fillcolor="lightyellow", label="high"];
-  node0x654aa1bf6490 -> node0x654aa1bf6690 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6490; node0x654aa1bf6690; }
-  node0x654aa1bf6690 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf6690 -> node0x654aa1bf6500;
-  node0x654aa1bf6500 [shape="ellipse", fillcolor="lightyellow", label="t"];
-  node0x654aa1bf6690 -> node0x654aa1bf6620;
-  node0x654aa1bf6620 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf6620 -> node0x654aa1bf65b0;
-  node0x654aa1bf65b0 [shape="ellipse", fillcolor="lightyellow", label="k"];
-  node0x654aa1bf6690 -> node0x654aa1bf6920 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6690; node0x654aa1bf6920; }
-  node0x654aa1bf6920 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf6920 -> node0x654aa1bf6790;
-  node0x654aa1bf6790 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf6790 -> node0x654aa1bf6720;
-  node0x654aa1bf6720 [shape="ellipse", fillcolor="lightyellow", label="k"];
-  node0x654aa1bf6920 -> node0x654aa1bf68b0;
-  node0x654aa1bf68b0 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf68b0 -> node0x654aa1bf6840;
-  node0x654aa1bf6840 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf6920 -> node0x654aa1bf6b20 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6920; node0x654aa1bf6b20; }
-  node0x654aa1bf6b20 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf6b20 -> node0x654aa1bf6a20;
-  node0x654aa1bf6a20 [shape="ellipse", fillcolor="lightyellow", label="a[]"];
-  node0x654aa1bf6a20 -> node0x654aa1bf69b0;
-  node0x654aa1bf69b0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf6b20 -> node0x654aa1bf6ab0;
-  node0x654aa1bf6ab0 [shape="ellipse", fillcolor="lightyellow", label="t"];
-  node0x654aa1bf6b20 -> node0x654aa1bf6d30 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6b20; node0x654aa1bf6d30; }
-  node0x654aa1bf6d30 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf6d30 -> node0x654aa1bf6b90;
-  node0x654aa1bf6b90 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf6d30 -> node0x654aa1bf6ce0;
-  node0x654aa1bf6ce0 [shape="circle", fillcolor="plum", label="+"];
-  node0x654aa1bf6ce0 -> node0x654aa1bf6c20;
-  node0x654aa1bf6c20 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf6ce0 -> node0x654aa1bf6c90;
-  node0x654aa1bf6c90 [shape="ellipse", fillcolor="lightgrey", label="1"];
-  node0x654aa1bf6e70 -> node0x654aa1bf7f70 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf6e70; node0x654aa1bf7f70; }
-  node0x654aa1bf7f70 [shape="box", fillcolor="lightcoral", label="Fun: main()\n(void)\n[global]"];
-  node0x654aa1bf7f70 -> node0x654aa1bf7f20;
-  node0x654aa1bf7f20 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf7f20 -> node0x654aa1bf6f20;
-  node0x654aa1bf6f20 [shape="box", fillcolor="palegreen", label="Var: i\n(int)\n[main]"];
-  node0x654aa1bf7f20 -> node0x654aa1bf7070;
-  node0x654aa1bf7070 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf7070 -> node0x654aa1bf6fb0;
-  node0x654aa1bf6fb0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7070 -> node0x654aa1bf7020;
-  node0x654aa1bf7020 [shape="ellipse", fillcolor="lightgrey", label="0"];
-  node0x654aa1bf7070 -> node0x654aa1bf7650 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf7070; node0x654aa1bf7650; }
-  node0x654aa1bf7650 [shape="box", fillcolor="lightblue", label="while"];
-  node0x654aa1bf7650 -> node0x654aa1bf71a0;
-  node0x654aa1bf71a0 [shape="circle", fillcolor="plum", label="<"];
-  node0x654aa1bf71a0 -> node0x654aa1bf70e0;
-  node0x654aa1bf70e0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf71a0 -> node0x654aa1bf7150;
-  node0x654aa1bf7150 [shape="ellipse", fillcolor="lightgrey", label="10"];
-  node0x654aa1bf7650 -> node0x654aa1bf7600;
-  node0x654aa1bf7600 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf7600 -> node0x654aa1bf73a0;
-  node0x654aa1bf73a0 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf73a0 -> node0x654aa1bf72a0;
-  node0x654aa1bf72a0 [shape="ellipse", fillcolor="lightyellow", label="x[]"];
-  node0x654aa1bf72a0 -> node0x654aa1bf7230;
-  node0x654aa1bf7230 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf73a0 -> node0x654aa1bf7330;
-  node0x654aa1bf7330 [shape="box", fillcolor="aquamarine", label="Call: input()"];
-  node0x654aa1bf73a0 -> node0x654aa1bf75b0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf73a0; node0x654aa1bf75b0; }
-  node0x654aa1bf75b0 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf75b0 -> node0x654aa1bf7410;
-  node0x654aa1bf7410 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf75b0 -> node0x654aa1bf7560;
-  node0x654aa1bf7560 [shape="circle", fillcolor="plum", label="+"];
-  node0x654aa1bf7560 -> node0x654aa1bf74a0;
-  node0x654aa1bf74a0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7560 -> node0x654aa1bf7510;
-  node0x654aa1bf7510 [shape="ellipse", fillcolor="lightgrey", label="1"];
-  node0x654aa1bf7650 -> node0x654aa1bf77f0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf7650; node0x654aa1bf77f0; }
-  node0x654aa1bf77f0 [shape="box", fillcolor="aquamarine", label="Call: sort()"];
-  node0x654aa1bf77f0 -> node0x654aa1bf76e0;
-  node0x654aa1bf76e0 [shape="ellipse", fillcolor="lightyellow", label="x"];
-  node0x654aa1bf76e0 -> node0x654aa1bf7750 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf76e0; node0x654aa1bf7750; }
-  node0x654aa1bf7750 [shape="ellipse", fillcolor="lightgrey", label="0"];
-  node0x654aa1bf7750 -> node0x654aa1bf77a0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf7750; node0x654aa1bf77a0; }
-  node0x654aa1bf77a0 [shape="ellipse", fillcolor="lightgrey", label="10"];
-  node0x654aa1bf77f0 -> node0x654aa1bf7940 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf77f0; node0x654aa1bf7940; }
-  node0x654aa1bf7940 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf7940 -> node0x654aa1bf7880;
-  node0x654aa1bf7880 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7940 -> node0x654aa1bf78f0;
-  node0x654aa1bf78f0 [shape="ellipse", fillcolor="lightgrey", label="0"];
-  node0x654aa1bf7940 -> node0x654aa1bf7ed0 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf7940; node0x654aa1bf7ed0; }
-  node0x654aa1bf7ed0 [shape="box", fillcolor="lightblue", label="while"];
-  node0x654aa1bf7ed0 -> node0x654aa1bf7a70;
-  node0x654aa1bf7a70 [shape="circle", fillcolor="plum", label="<"];
-  node0x654aa1bf7a70 -> node0x654aa1bf79b0;
-  node0x654aa1bf79b0 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7a70 -> node0x654aa1bf7a20;
-  node0x654aa1bf7a20 [shape="ellipse", fillcolor="lightgrey", label="10"];
-  node0x654aa1bf7ed0 -> node0x654aa1bf7e80;
-  node0x654aa1bf7e80 [shape="box", fillcolor="lightblue", label="{ }"];
-  node0x654aa1bf7e80 -> node0x654aa1bf7c00;
-  node0x654aa1bf7c00 [shape="box", fillcolor="aquamarine", label="Call: output()"];
-  node0x654aa1bf7c00 -> node0x654aa1bf7b90;
-  node0x654aa1bf7b90 [shape="ellipse", fillcolor="lightyellow", label="x[]"];
-  node0x654aa1bf7b90 -> node0x654aa1bf7b20;
-  node0x654aa1bf7b20 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7c00 -> node0x654aa1bf7e30 [style=dashed, color=gray40];
-  { rank=same; node0x654aa1bf7c00; node0x654aa1bf7e30; }
-  node0x654aa1bf7e30 [shape="circle", fillcolor="gold", label="="];
-  node0x654aa1bf7e30 -> node0x654aa1bf7c90;
-  node0x654aa1bf7c90 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7e30 -> node0x654aa1bf7de0;
-  node0x654aa1bf7de0 [shape="circle", fillcolor="plum", label="+"];
-  node0x654aa1bf7de0 -> node0x654aa1bf7d20;
-  node0x654aa1bf7d20 [shape="ellipse", fillcolor="lightyellow", label="i"];
-  node0x654aa1bf7de0 -> node0x654aa1bf7d90;
-  node0x654aa1bf7d90 [shape="ellipse", fillcolor="lightgrey", label="1"];
+  node0x6269a9f16da0 [shape="box", fillcolor="lightcoral", label="Fun: gcd()\n(int)\n[global]"];
+  node0x6269a9f16da0 -> node0x6269a9f16550;
+  node0x6269a9f16550 [shape="box", fillcolor="palegreen", label="Param: u\n(int)\n[gcd]"];
+  node0x6269a9f16550 -> node0x6269a9f165e0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f16550; node0x6269a9f165e0; }
+  node0x6269a9f165e0 [shape="box", fillcolor="palegreen", label="Param: v\n(int)\n[gcd]"];
+  node0x6269a9f16da0 -> node0x6269a9f16d50;
+  node0x6269a9f16d50 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x6269a9f16d50 -> node0x6269a9f16d00;
+  node0x6269a9f16d00 [shape="box", fillcolor="lightblue", label="if"];
+  node0x6269a9f16d00 -> node0x6269a9f16730;
+  node0x6269a9f16730 [shape="circle", fillcolor="plum", label="=="];
+  node0x6269a9f16730 -> node0x6269a9f16670;
+  node0x6269a9f16670 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f16730 -> node0x6269a9f166e0;
+  node0x6269a9f166e0 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0x6269a9f16d00 -> node0x6269a9f16810;
+  node0x6269a9f16810 [shape="box", fillcolor="lightblue", label="return"];
+  node0x6269a9f16810 -> node0x6269a9f167a0;
+  node0x6269a9f167a0 [shape="ellipse", fillcolor="lightyellow", label="u"];
+  node0x6269a9f16d00 -> node0x6269a9f16cb0;
+  node0x6269a9f16cb0 [shape="box", fillcolor="lightblue", label="return"];
+  node0x6269a9f16cb0 -> node0x6269a9f16c40;
+  node0x6269a9f16c40 [shape="box", fillcolor="aquamarine", label="Call: gcd()"];
+  node0x6269a9f16c40 -> node0x6269a9f168a0;
+  node0x6269a9f168a0 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f168a0 -> node0x6269a9f16bf0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f168a0; node0x6269a9f16bf0; }
+  node0x6269a9f16bf0 [shape="circle", fillcolor="plum", label="-"];
+  node0x6269a9f16bf0 -> node0x6269a9f16930;
+  node0x6269a9f16930 [shape="ellipse", fillcolor="lightyellow", label="u"];
+  node0x6269a9f16bf0 -> node0x6269a9f16ba0;
+  node0x6269a9f16ba0 [shape="circle", fillcolor="plum", label="*"];
+  node0x6269a9f16ba0 -> node0x6269a9f16ac0;
+  node0x6269a9f16ac0 [shape="circle", fillcolor="plum", label="/"];
+  node0x6269a9f16ac0 -> node0x6269a9f169c0;
+  node0x6269a9f169c0 [shape="ellipse", fillcolor="lightyellow", label="u"];
+  node0x6269a9f16ac0 -> node0x6269a9f16a50;
+  node0x6269a9f16a50 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f16ba0 -> node0x6269a9f16b30;
+  node0x6269a9f16b30 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f16da0 -> node0x6269a9f174c0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f16da0; node0x6269a9f174c0; }
+  node0x6269a9f174c0 [shape="box", fillcolor="lightcoral", label="Fun: main()\n(void)\n[global]"];
+  node0x6269a9f174c0 -> node0x6269a9f17470;
+  node0x6269a9f17470 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x6269a9f17470 -> node0x6269a9f16e50;
+  node0x6269a9f16e50 [shape="box", fillcolor="palegreen", label="Var: x\n(int)\n[main]"];
+  node0x6269a9f16e50 -> node0x6269a9f16ee0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f16e50; node0x6269a9f16ee0; }
+  node0x6269a9f16ee0 [shape="box", fillcolor="palegreen", label="Var: y\n(int)\n[main]"];
+  node0x6269a9f17470 -> node0x6269a9f17070;
+  node0x6269a9f17070 [shape="circle", fillcolor="gold", label="="];
+  node0x6269a9f17070 -> node0x6269a9f16f70;
+  node0x6269a9f16f70 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node0x6269a9f17070 -> node0x6269a9f17000;
+  node0x6269a9f17000 [shape="box", fillcolor="aquamarine", label="Call: input()"];
+  node0x6269a9f17070 -> node0x6269a9f171e0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f17070; node0x6269a9f171e0; }
+  node0x6269a9f171e0 [shape="circle", fillcolor="gold", label="="];
+  node0x6269a9f171e0 -> node0x6269a9f170e0;
+  node0x6269a9f170e0 [shape="ellipse", fillcolor="lightyellow", label="y"];
+  node0x6269a9f171e0 -> node0x6269a9f17170;
+  node0x6269a9f17170 [shape="box", fillcolor="aquamarine", label="Call: input()"];
+  node0x6269a9f171e0 -> node0x6269a9f17400 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f171e0; node0x6269a9f17400; }
+  node0x6269a9f17400 [shape="box", fillcolor="aquamarine", label="Call: output()"];
+  node0x6269a9f17400 -> node0x6269a9f17390;
+  node0x6269a9f17390 [shape="box", fillcolor="aquamarine", label="Call: gcd()"];
+  node0x6269a9f17390 -> node0x6269a9f17290;
+  node0x6269a9f17290 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node0x6269a9f17290 -> node0x6269a9f17320 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f17290; node0x6269a9f17320; }
+  node0x6269a9f17320 [shape="ellipse", fillcolor="lightyellow", label="y"];
 }
