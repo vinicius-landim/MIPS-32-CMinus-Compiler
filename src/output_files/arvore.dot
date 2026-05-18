@@ -1,0 +1,79 @@
+digraph AST {
+  rankdir=TB;
+  node [shape=box, style="rounded,filled", fillcolor="lightgoldenrod1", fontname="Consolas"];
+  edge [fontname="Consolas"];
+  node0x6269a9f16da0 [shape="box", fillcolor="lightcoral", label="Fun: gcd()\n(int)\n[global]"];
+  node0x6269a9f16da0 -> node0x6269a9f16550;
+  node0x6269a9f16550 [shape="box", fillcolor="palegreen", label="Param: u\n(int)\n[gcd]"];
+  node0x6269a9f16550 -> node0x6269a9f165e0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f16550; node0x6269a9f165e0; }
+  node0x6269a9f165e0 [shape="box", fillcolor="palegreen", label="Param: v\n(int)\n[gcd]"];
+  node0x6269a9f16da0 -> node0x6269a9f16d50;
+  node0x6269a9f16d50 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x6269a9f16d50 -> node0x6269a9f16d00;
+  node0x6269a9f16d00 [shape="box", fillcolor="lightblue", label="if"];
+  node0x6269a9f16d00 -> node0x6269a9f16730;
+  node0x6269a9f16730 [shape="circle", fillcolor="plum", label="=="];
+  node0x6269a9f16730 -> node0x6269a9f16670;
+  node0x6269a9f16670 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f16730 -> node0x6269a9f166e0;
+  node0x6269a9f166e0 [shape="ellipse", fillcolor="lightgrey", label="0"];
+  node0x6269a9f16d00 -> node0x6269a9f16810;
+  node0x6269a9f16810 [shape="box", fillcolor="lightblue", label="return"];
+  node0x6269a9f16810 -> node0x6269a9f167a0;
+  node0x6269a9f167a0 [shape="ellipse", fillcolor="lightyellow", label="u"];
+  node0x6269a9f16d00 -> node0x6269a9f16cb0;
+  node0x6269a9f16cb0 [shape="box", fillcolor="lightblue", label="return"];
+  node0x6269a9f16cb0 -> node0x6269a9f16c40;
+  node0x6269a9f16c40 [shape="box", fillcolor="aquamarine", label="Call: gcd()"];
+  node0x6269a9f16c40 -> node0x6269a9f168a0;
+  node0x6269a9f168a0 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f168a0 -> node0x6269a9f16bf0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f168a0; node0x6269a9f16bf0; }
+  node0x6269a9f16bf0 [shape="circle", fillcolor="plum", label="-"];
+  node0x6269a9f16bf0 -> node0x6269a9f16930;
+  node0x6269a9f16930 [shape="ellipse", fillcolor="lightyellow", label="u"];
+  node0x6269a9f16bf0 -> node0x6269a9f16ba0;
+  node0x6269a9f16ba0 [shape="circle", fillcolor="plum", label="*"];
+  node0x6269a9f16ba0 -> node0x6269a9f16ac0;
+  node0x6269a9f16ac0 [shape="circle", fillcolor="plum", label="/"];
+  node0x6269a9f16ac0 -> node0x6269a9f169c0;
+  node0x6269a9f169c0 [shape="ellipse", fillcolor="lightyellow", label="u"];
+  node0x6269a9f16ac0 -> node0x6269a9f16a50;
+  node0x6269a9f16a50 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f16ba0 -> node0x6269a9f16b30;
+  node0x6269a9f16b30 [shape="ellipse", fillcolor="lightyellow", label="v"];
+  node0x6269a9f16da0 -> node0x6269a9f174c0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f16da0; node0x6269a9f174c0; }
+  node0x6269a9f174c0 [shape="box", fillcolor="lightcoral", label="Fun: main()\n(void)\n[global]"];
+  node0x6269a9f174c0 -> node0x6269a9f17470;
+  node0x6269a9f17470 [shape="box", fillcolor="lightblue", label="{ }"];
+  node0x6269a9f17470 -> node0x6269a9f16e50;
+  node0x6269a9f16e50 [shape="box", fillcolor="palegreen", label="Var: x\n(int)\n[main]"];
+  node0x6269a9f16e50 -> node0x6269a9f16ee0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f16e50; node0x6269a9f16ee0; }
+  node0x6269a9f16ee0 [shape="box", fillcolor="palegreen", label="Var: y\n(int)\n[main]"];
+  node0x6269a9f17470 -> node0x6269a9f17070;
+  node0x6269a9f17070 [shape="circle", fillcolor="gold", label="="];
+  node0x6269a9f17070 -> node0x6269a9f16f70;
+  node0x6269a9f16f70 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node0x6269a9f17070 -> node0x6269a9f17000;
+  node0x6269a9f17000 [shape="box", fillcolor="aquamarine", label="Call: input()"];
+  node0x6269a9f17070 -> node0x6269a9f171e0 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f17070; node0x6269a9f171e0; }
+  node0x6269a9f171e0 [shape="circle", fillcolor="gold", label="="];
+  node0x6269a9f171e0 -> node0x6269a9f170e0;
+  node0x6269a9f170e0 [shape="ellipse", fillcolor="lightyellow", label="y"];
+  node0x6269a9f171e0 -> node0x6269a9f17170;
+  node0x6269a9f17170 [shape="box", fillcolor="aquamarine", label="Call: input()"];
+  node0x6269a9f171e0 -> node0x6269a9f17400 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f171e0; node0x6269a9f17400; }
+  node0x6269a9f17400 [shape="box", fillcolor="aquamarine", label="Call: output()"];
+  node0x6269a9f17400 -> node0x6269a9f17390;
+  node0x6269a9f17390 [shape="box", fillcolor="aquamarine", label="Call: gcd()"];
+  node0x6269a9f17390 -> node0x6269a9f17290;
+  node0x6269a9f17290 [shape="ellipse", fillcolor="lightyellow", label="x"];
+  node0x6269a9f17290 -> node0x6269a9f17320 [style=dashed, color=gray40];
+  { rank=same; node0x6269a9f17290; node0x6269a9f17320; }
+  node0x6269a9f17320 [shape="ellipse", fillcolor="lightyellow", label="y"];
+}

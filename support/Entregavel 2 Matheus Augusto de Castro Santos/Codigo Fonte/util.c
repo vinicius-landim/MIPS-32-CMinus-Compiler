@@ -41,24 +41,6 @@ TreeNode *newExpNode(ExpKind kind)
 	}
 	return t;
 }
-
-void insereEscopo(TreeNode *tree, char *escopo)
-{
-    int i;
-
-  	while (tree != NULL) {
-  		tree->escopo = copyString(escopo);
-	    for (i=0;i<MAXCHILDREN;i++)
-	   	{
-	   		if(tree->child[i]!=NULL)
-	   		{
-	         	insereEscopo(tree->child[i],escopo);
-	   		}
-	   	}
-    	tree = tree->sibling;
-  	}
-}
-
 char *copyString(char *s)
 {
 	int n;
@@ -71,9 +53,6 @@ char *copyString(char *s)
 	}
 	return t;
 }
-
-
-
 
 char *printToken(TokenType token, const char* tokenString)
 {
@@ -178,15 +157,15 @@ char *getType(int x)
 	return tipo;
 }
 
-void printTree(TreeNode * tree )
+void printTree(TreeNode *t)
 { 
 	int i;
     INDENT;
-  while (tree != NULL) {
+  while (t != NULL) {
     printSpaces();
-    if (tree->nodeKind==StmtK)
+    if (t->nodeKind==StmtK)
     { 
-	    switch (tree->kind.stmt) {
+	    switch (t->kind.stmt) {
 	        case IfK:
 	          fprintf(listing,"If\n");
 	          break;
@@ -200,43 +179,43 @@ void printTree(TreeNode * tree )
 	          fprintf(listing,"Return\n");
 	          break;
 	        case CallK:
-	          fprintf(listing,"Call: %s Linha: %d\n",tree->attr.name,tree->lineno);
+	          fprintf(listing,"Call: %s Linha: %d\n",t->attr.name,t->lineno);
 	          break;
 			case FuncaoK:
-		      fprintf(listing,"Funcão - %s - %s - Linha: %d Escopo: %s\n",getType(tree->type),tree->attr.name,tree->lineno,tree->escopo);
+		      fprintf(listing,"Funcão - %s - %s - Linha: %d Escopo: %s\n",getType(t->type),t->attr.name,t->lineno,t->escopo);
 		      break;
    	   		case VarK:
-          	  fprintf(listing,"Var %s Linha: %d Escopo: %s\n",tree->attr.name,tree->lineno,tree->escopo);
+          	  fprintf(listing,"Var %s Linha: %d Escopo: %s\n",t->attr.name,t->lineno,t->escopo);
               break;
 			case VetK:
-          	  fprintf(listing,"Vetor %s Linha: %d Escopo: %s\n",tree->attr.name,tree->lineno,tree->escopo);
+          	  fprintf(listing,"Vetor %s Linha: %d Escopo: %s\n",t->attr.name,t->lineno,t->escopo);
 			  break;
 	        default:
 	          fprintf(listing,"Unknown ExpNode kind\n");
 	          break;
 	      }
     }
-    else if (tree->nodeKind==ExpK)
+    else if (t->nodeKind==ExpK)
     { 
 
-    	switch (tree->kind.exp) {
+    	switch (t->kind.exp) {
         case OpK:
-          fprintf(listing,"Op: %s\n",printToken(tree->attr.op,"\0"));
+          fprintf(listing,"Op: %s\n",printToken(t->attr.op,"\0"));
           break;
         case ConstK:
-          fprintf(listing,"Const: %d\n",tree->attr.val);
+          fprintf(listing,"Const: %d\n",t->attr.val);
           break;
         case IdK:
-          fprintf(listing,"Id: %s Line:%d\n",tree->attr.name,tree->lineno);
+          fprintf(listing,"Id: %s Line:%d\n",t->attr.name,t->lineno);
           break;
         case TypeK:
-          fprintf(listing,"Tipo: %s\n",getType(tree->type));
+          fprintf(listing,"Tipo: %s\n",getType(t->type));
           break;
         case VetIdK:
-          	fprintf(listing,"VetID: %s Line: %d Escopo: %s\n",tree->attr.name,tree->lineno,tree->escopo);
+          	fprintf(listing,"VetID: %s Line: %d Escopo: %s\n",t->attr.name,t->lineno,t->escopo);
           	break;
 		case VarIdK:
-			fprintf(listing,"VarID: %s Line: %d Escopo: %s\n",tree->attr.name, tree->lineno,tree->escopo);
+			fprintf(listing,"VarID: %s Line: %d Escopo: %s\n",t->attr.name, t->lineno,t->escopo);
 			break;
         default:
           fprintf(listing,"Unknown ExpNode kind\n");
@@ -246,24 +225,24 @@ void printTree(TreeNode * tree )
     else fprintf(listing,"Unknown node kind\n");
     for (i=0;i<MAXCHILDREN;i++)
    	{
-   		if(tree->child[i]!=NULL)
+   		if(t->child[i]!=NULL)
    		{
-         	printTree(tree->child[i]);
+         	printTree(t->child[i]);
    		}
    	}
 	
-    tree = tree->sibling;
+    t = t->sibling;
 
   }
 UNINDENT;
 }
 
-void printTreeR( TreeNode * tree )
+void printTreeR( TreeNode * t )
 {
 	listing = fopen("saidas/arvore.txt","w");
 	if(listing!=NULL)
 	{
-		printTree(tree);
+		printTree(t);
 	}
 	
 }
