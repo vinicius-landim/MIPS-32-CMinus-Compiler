@@ -12,6 +12,7 @@ typedef struct ParamListNode {
 
 typedef struct SymbolNode {
 	char *name;
+	char *scope;
 	ExpType type;
 	SymbolKind kind;
 	int memloc;

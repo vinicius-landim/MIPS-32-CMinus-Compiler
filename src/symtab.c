@@ -48,6 +48,7 @@ void popScope(){
 Symbol st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
     Symbol newS = (Symbol)malloc(sizeof(struct SymbolNode));
     newS->name = name;
+    newS->scope = copyString(currentScope->name);
     newS->type = type;
     newS->kind = kind;
     newS->memloc = loc;
