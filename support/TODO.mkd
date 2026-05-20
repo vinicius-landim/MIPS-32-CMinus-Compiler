@@ -16,3 +16,7 @@
 
 ## Gerador de Código Intermediário:
 - ~~Corrigir pendências da GCI do gcd()~~
+
+## Processador FPGA
+- Registrador de Input e Registrador de Output
+- Verificar se a gestão de pilha deve ser em hardware ou em software
