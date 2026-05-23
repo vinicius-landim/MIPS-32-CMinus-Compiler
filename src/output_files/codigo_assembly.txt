@@ -1,0 +1,35 @@
+    addi $sp, $sp, -1
+    addi $sp, $sp, -3
+processa:
+    sw $fp, 0($sp)
+    add $fp, $sp, $zero
+    addi $sp, $sp, -1
+    addi $t1, $zero, 0
+    sub $t28, $fp, $t1
+    lw $t2, -7($t28)
+    lw $t3, -6($fp)
+    add $t4, $t2, $t3
+    sw $t4, -8($fp)
+    lw $t5, -8($fp)
+    addi $t6, $zero, 1
+    add $t28, $zero, $t6
+    sw $t5, 3($t28)
+    add $sp, $fp, $zero
+    lw $fp, 0($sp)
+    jr $ra
+main:
+    sw $fp, 0($sp)
+    add $fp, $sp, $zero
+    addi $sp, $sp, -1
+    addi $t7, $zero, 10
+    sw $t7, 2($zero)
+    addi $t8, $zero, 5
+    addi $t9, $zero, 0
+    add $t28, $zero, $t9
+    sw $t8, 3($t28)
+    lw $t10, 2($zero)
+    lw $t11, 3($zero)
+    add $sp, $fp, $zero
+    lw $fp, 0($sp)
+    jr $ra
+    halt

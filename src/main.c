@@ -5,10 +5,12 @@
 #include "analyze.h" 
 #include "symtab.h"
 #include "cgen.h"
+#include "assembly.h"
 
 extern FILE *yyin;
 extern int yyparse(void);
 extern TreeNode *AST;
+extern Quad *headQuad;
 
 int lineNo = 1;
 FILE *source = NULL;
@@ -40,15 +42,16 @@ int main(int argc, char **argv) {
         return 1;
 
     if (AST != NULL) {
-		
 		//análise semântica
         buildSymtab(AST);
         typeCheck(AST);
         generateIntermediateCode(AST);
         printTreeGraphviz(AST);
+        generateAssembly(headQuad);
 
         FILE *symtabFile = fopen("output_files/tabela_simbolos.txt", "w");
         FILE *gciFile = fopen("output_files/codigo_intermediario.txt", "w");
+        FILE *assemblyFile = fopen("output_files/codigo_assembly.txt", "w");
         if (symtabFile == NULL || gciFile == NULL) {
             fprintf(stderr, "Erro ao criar arquivo. Verifique se a pasta 'output_files' existe\n");
         } else {
@@ -58,6 +61,8 @@ int main(int argc, char **argv) {
             printIntermediateCode(gciFile);
             fclose(gciFile);
             printf("Codigo intermediario gerado: output_files/codigo_intermediario.txt\n");
+            printAssembly(assemblyFile);
+            printf("Codigo assembly gerado: output_files/codigo_assembly.txt\n");
         }
     }
 
