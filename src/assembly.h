@@ -35,5 +35,8 @@ typedef struct AsmInstruction {
     struct AsmInstruction *next;
 } AsmInstr;
 
+void generateAssembly(Quad *headGCI);
+void printAssembly(FILE *listing);
+
 extern AsmInstr *headAsm;
 extern AsmInstr *currentAsm;
