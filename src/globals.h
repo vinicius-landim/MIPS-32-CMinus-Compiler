@@ -26,6 +26,7 @@ typedef struct treeNode{
     union {TokenType op; int val; char *name;} attr;
     ExpType type;
     char *scope;
+    struct SymbolNode *symb;
 } TreeNode;
 
 #endif
