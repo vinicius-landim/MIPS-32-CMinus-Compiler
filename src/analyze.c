@@ -35,7 +35,7 @@ static void insertNode(TreeNode *t) {
                         currentFuncSymbol = st_lookup_scope(t->attr.name); //fallback
                         t->symb = currentFuncSymbol;
                     } else {
-                        currentFuncSymbol = st_insert(t->attr.name, t->type, SYMB_FUNC, t->lineNo, location++);
+                        currentFuncSymbol = st_insert(t->attr.name, t->type, SYMB_FUNC, t->lineNo, -1);
                         t->symb = currentFuncSymbol;
                         if(strcmp(t->attr.name, "main") == 0)
                             hasMain = 1;
@@ -194,8 +194,8 @@ static void buildSymtabRec(TreeNode *t) {
 void buildSymtab(TreeNode *AST) {
     globalScope = pushScope("global");
     
-    st_insert("input", Integer, SYMB_FUNC, 0, location++);
-    Symbol out_node = st_insert("output", Void, SYMB_FUNC, 0, location++);
+    st_insert("input", Integer, SYMB_FUNC, 0, -1);
+    Symbol out_node = st_insert("output", Void, SYMB_FUNC, 0, -1);
     st_add_param(out_node, Integer);
 
     buildSymtabRec(AST); 
