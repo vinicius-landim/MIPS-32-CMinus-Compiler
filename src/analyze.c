@@ -42,6 +42,7 @@ static void insertNode(TreeNode *t) {
                     }
                     pushScope(t->attr.name);
                     blockCounter = 0;
+                    location = 0;
                     break;
                 }
 
@@ -75,8 +76,9 @@ static void insertNode(TreeNode *t) {
                     } else if(st_lookup_scope(t->attr.name) != NULL) {
                         printf("ERRO SEMANTICO: Variavel '%s' ja declarada neste escopo. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
-                        Symbol s_node = st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
+                        Symbol s_node = st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location);
                         t->symb = s_node;
+                        location += t->child[0]->attr.val; //memloc será deslocado de acordo com o tamanho do vetor
                     }
                     break;
                 }
