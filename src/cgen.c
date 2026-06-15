@@ -113,6 +113,8 @@ static const char* opKindToString(OpKind op){
         case OP_STOREVAR:   return "STOREVAR";
         case OP_STOREARR:   return "STOREARR";
         case OP_RETURN:     return "RETURN";
+        case OP_IN:         return "INPUT";
+        case OP_OUT:        return "OUTPUT";
         case OP_HALT:       return "HALT";
         default:            return "UNKNOWN";
     }
@@ -215,6 +217,19 @@ static Operand genExp(TreeNode *t){
                 break;
             }
             case CallK:{
+                char *funcName = t->symb->name;
+                if (strcmp(funcName, "input") == 0) {
+                    Operand resultTemp = newTemp();
+                    // (IN, $t_a, -, -)
+                    emitQuad(OP_IN, resultTemp, EMPTY_OPND, EMPTY_OPND);
+                    return resultTemp;
+                } 
+                else if (strcmp(funcName, "output") == 0) {
+                    Operand argVal = genExp(t->child[0]);
+                    // (OUT, -, arg, -)
+                    emitQuad(OP_OUT, EMPTY_OPND, argVal, EMPTY_OPND);
+                    return emptyOperand();
+                }
                 //emissão de quádruplas de params (percorrer t->child[0] e seus irmãos)
                 TreeNode *argNode = t->child[0];
                 int argCount = 0;

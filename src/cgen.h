@@ -28,6 +28,7 @@ typedef enum {
     OP_LOADVAR, OP_LOADARR, OP_LOADIMM,
     OP_STOREVAR, OP_STOREARR,
     OP_RETURN,
+    OP_IN, OP_OUT,
     OP_HALT
 } OpKind;
 
