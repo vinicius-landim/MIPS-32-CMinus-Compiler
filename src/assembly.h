@@ -23,12 +23,13 @@ typedef struct AsmInstruction {
             int rs;
             int rt;
             int imm;
+            char *label_name;
         } i;
         struct {
-            char* target_name;
+            char *target_name;
         } j;
         struct {
-            char* label_name;
+            char *label_name;
         } label;
     } type;
 
