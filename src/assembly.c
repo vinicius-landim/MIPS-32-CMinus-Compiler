@@ -25,7 +25,7 @@ static void insertParamList(int reg) {
 
 int getPhysicalReg(int virtual_reg) {
     if (virtual_reg <= 0) return 0; // Fallback
-    return ((virtual_reg - 1) % 27) + 1; 
+    return ((virtual_reg - 1) % 26) + 1; 
 }
 
 static AsmInstr* createNode(AsmOp op, AsmFormat format) {
@@ -83,17 +83,21 @@ void generateAssembly(Quad *headGCI){
     headAsm = NULL;
     currentAsm = NULL;
     pendingParamCount = 0;
+    char current_func_name[256] = "";
 
     // registradores especiais MIPS
     int zero = 0;
-    int temp = 28;
+    int temp = 27;
+    int ret = 28;
     int sp = 29;
     int fp = 30;
     int ra = 31;
 
     emitAsmI(ASM_ADDI, zero, sp, RAM_SIZE);
     emitAsmI(ASM_ADDI, zero, fp, RAM_SIZE);
-    emitAsmJ(ASM_J, "main");
+    emitAsmJ(ASM_JAL, "main");
+    emitAsmR(ASM_HALT, zero, zero, zero, 0); //TODO: minha ISA tem HALT como tipo J
+
     while(curr != NULL){
         switch(curr->op){
             case OP_PARAM: {
@@ -103,38 +107,40 @@ void generateAssembly(Quad *headGCI){
             }
             case OP_FUNC: {
                 Symbol s = curr->arg1.content.s_node;
+                strcpy(current_func_name, s->name);
                 emitAsmLabel(s->name);
-
-                //armazenar $ra (após jal) no primeiro slot do frame
+                //$ra salvo no slot 1 do frame
                 emitAsmI(ASM_SW, fp, ra, -1);
+                //alocação do frame
+                int frame_size = s->frameSize + 2;
+                emitAsmI(ASM_ADDI, sp, sp, -frame_size);
                 break;
             }
             case OP_ENDFUNC: {
+                char end_label[300];
+                sprintf(end_label, "END_%s", current_func_name);
+                emitAsmLabel(end_label);
+
                 //restaura $ra
                 emitAsmI(ASM_LW, fp, ra, -1);
-                
                 //ajusta sp para a posição: $sp original estava exata 1 posição acima do ofp
                 emitAsmI(ASM_ADDI, fp, sp, 1);
-                
                 //restaura $ofp
                 emitAsmI(ASM_LW, fp, fp, 0);
-                
                 //jr para retorno
                 emitAsmR(ASM_JR, ra, zero, zero, 0);
                 break;
             }
             case OP_RETURN: {
-                //registrador de retorno //TODO DEFINIR
                 if (curr->result.kind != OPND_EMPTY) {
                     int rt = getPhysicalReg(curr->result.content.reg_id);
-                    emitAsmR(ASM_ADD, rt, zero, temp, 0); 
+                    emitAsmR(ASM_ADD, rt, zero, ret, 0); 
                 }
 
-                //sequência de ENDFUNC
-                emitAsmI(ASM_LW, fp, ra, -1);
-                emitAsmI(ASM_ADDI, fp, sp, 1);
-                emitAsmI(ASM_LW, fp, fp, 0);
-                emitAsmR(ASM_JR, ra, zero, zero, 0);
+                //jump para fim de função
+                char end_label[300];
+                sprintf(end_label, "END_%s", current_func_name);
+                emitAsmJ(ASM_J, end_label);
                 break;
             }
             case OP_CALL: {
@@ -161,9 +167,10 @@ void generateAssembly(Quad *headGCI){
                 emitAsmJ(ASM_JAL, s->name);
 
                 //salvar valor retornado em um registrador
-                int rt_return = getPhysicalReg(curr->result.content.reg_id);
-                emitAsmR(ASM_ADD, temp, zero, rt_return, 0);
-
+                if(s->type != Void){
+                    int rt_return = getPhysicalReg(curr->result.content.reg_id);
+                    emitAsmR(ASM_ADD, temp, zero, rt_return, 0);
+                }
                 break;
             }
             case OP_ALLOCVAR: {
@@ -222,12 +229,20 @@ void generateAssembly(Quad *headGCI){
                 Symbol s = curr->arg1.content.s_node;
                 int rt_dest = getPhysicalReg(curr->result.content.reg_id);
                 
-                if (strcmp(s->scope, "global") == 0) {
-                    emitAsmI(ASM_LW, zero, rt_dest, s->memloc); //$gp = $zero
+                if (s->kind == SYMB_ARR) {
+                    if (strcmp(s->scope, "global") == 0) {
+                        emitAsmI(ASM_ADDI, zero, rt_dest, s->memloc); //endereço = 0 + memloc
+                    } else {
+                        int frameloc = -(s->memloc + 2);
+                        emitAsmI(ASM_LW, fp, rt_dest, frameloc); 
+                    }
                 } else {
-                    //duas primeiras posições destinadas para o $ofp e $ra
-                    int frameloc = -(s->memloc+2);
-                    emitAsmI(ASM_LW, fp, rt_dest, frameloc);
+                    if (strcmp(s->scope, "global") == 0) {
+                        emitAsmI(ASM_LW, zero, rt_dest, s->memloc); 
+                    } else {
+                        int frameloc = -(s->memloc+2);
+                        emitAsmI(ASM_LW, fp, rt_dest, frameloc);
+                    }
                 }
                 break;
             }
