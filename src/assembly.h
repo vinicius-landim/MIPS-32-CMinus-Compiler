@@ -1,3 +1,8 @@
+#ifndef ASSEMBLY_H
+#define ASSEMBLY_H
+
+#include "cgen.h"
+
 typedef enum {
     ASM_ADD, ASM_SUB, ASM_MUL, ASM_DIV,
     ASM_ADDI, ASM_LW, ASM_SW,
@@ -12,14 +17,14 @@ typedef struct AsmInstruction {
     AsmOp op;
     AsmFormat format; 
     
-    union{
-        struct{ 
+    union {
+        struct { 
             int rs;
             int rt;
             int rd;
             int shamt;
         } r;
-        struct{
+        struct {
             int rs;
             int rt;
             int imm;
@@ -36,8 +41,10 @@ typedef struct AsmInstruction {
     struct AsmInstruction *next;
 } AsmInstr;
 
+extern AsmInstr *headAsm;
+extern AsmInstr *currentAsm;
+
 void generateAssembly(Quad *headGCI);
 void printAssembly(FILE *listing);
 
-extern AsmInstr *headAsm;
-extern AsmInstr *currentAsm;
+#endif

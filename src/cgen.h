@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "parser.tab.h"
+#include "symtab.h"
 
 //Operações intermediárias
 typedef enum {
