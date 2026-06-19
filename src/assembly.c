@@ -7,7 +7,7 @@
 #include "assembly.h"
 #include "util.h"
 
-#define RAM_SIZE 4096
+#define RAM_SIZE 1024
 #define MAX_PENDING_PARAMS 8
 AsmInstr *headAsm = NULL;
 AsmInstr *currentAsm = NULL;
