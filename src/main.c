@@ -6,6 +6,7 @@
 #include "symtab.h"
 #include "cgen.h"
 #include "assembly.h"
+#include "binary.h"
 
 extern FILE *yyin;
 extern int yyparse(void);
@@ -52,6 +53,7 @@ int main(int argc, char **argv) {
         FILE *symtabFile = fopen("output_files/tabela_simbolos.txt", "w");
         FILE *gciFile = fopen("output_files/codigo_intermediario.txt", "w");
         FILE *assemblyFile = fopen("output_files/codigo_assembly.txt", "w");
+        FILE *binFile = fopen("output_files/codigo_binario.txt", "w");
         if (symtabFile == NULL || gciFile == NULL) {
             fprintf(stderr, "Erro ao criar arquivo. Verifique se a pasta 'output_files' existe\n");
         } else {
@@ -62,7 +64,11 @@ int main(int argc, char **argv) {
             fclose(gciFile);
             printf("Codigo intermediario gerado: output_files/codigo_intermediario.txt\n");
             printAssembly(assemblyFile);
+            fclose(assemblyFile);
             printf("Codigo assembly gerado: output_files/codigo_assembly.txt\n");
+            generateBinary(headAsm, binFile);
+            printf("Codigo binário gerado: output_files/codigo_binario.txt\n");
+            fclose(binFile);
         }
     }
 
