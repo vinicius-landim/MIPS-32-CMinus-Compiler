@@ -119,7 +119,7 @@ void generateAssembly(Quad *headGCI){
             }
             case OP_ENDFUNC: {
                 if (strcmp(current_func_name, "main") == 0) {
-                    emitAsmR(ASM_HALT, zero, zero, zero, 0); 
+                    emitAsmI(ASM_HALT, zero, zero, 0); 
                 } else {
                     char end_label[300];
                     sprintf(end_label, "END_%s", current_func_name);
@@ -364,7 +364,7 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_HALT: {
-                emitAsmR(ASM_HALT, zero, zero, zero, 0); //TODO: minha ISA tem HALT como tipo J
+                emitAsmI(ASM_HALT, zero, zero, 0);
                 break;
             }
             default: break;
