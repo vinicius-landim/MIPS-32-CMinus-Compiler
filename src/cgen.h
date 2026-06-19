@@ -57,6 +57,6 @@ extern Quad* headQuad;
 extern Quad* currentQuad;
 
 void printIntermediateCode(FILE *listing);
-void generateIntermediateCode();
+void generateIntermediateCode(TreeNode *AST);
 
 #endif
