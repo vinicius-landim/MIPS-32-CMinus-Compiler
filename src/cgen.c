@@ -425,9 +425,6 @@ void generateIntermediateCode(TreeNode *AST){
     labelOffset = 0;
 
     cGen(AST);
-
-    //emite instrução de parada ao final do programa
-    //emitQuad(OP_HALT, EMPTY_OPND, EMPTY_OPND, EMPTY_OPND); //TODO: VERIFICAR NECESSIDADE DE HALT FINAL
 }
 
 static void printOperand(FILE *listing, Operand op){

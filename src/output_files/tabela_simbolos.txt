@@ -1,11 +1,12 @@
 Nome do Simbolo   |  Tipo      |  Classificacao  |  Escopo          |  Loc  |  Linhas
 -----------------------------------------------------------------------------------------
 main              |  void      |  Funcao         |  global          |  -    |  34 
-sort              |  void      |  Funcao         |  global          |  -    |  21 42 
+sort              |  void      |  Funcao         |  global          |  -    |  21 43 
 minloc            |  int       |  Funcao         |  global          |  -    |  6 26 
-vet               |  int       |  Vetor          |  global          |  0    |  4 39 42 45 
-output            |  void      |  Funcao         |  global          |  -    |  0 45 
-input             |  int       |  Funcao         |  global          |  -    |  0 39 
+vet               |  int       |  Vetor          |  global          |  1    |  4 46 
+z                 |  int       |  Variavel       |  global          |  0    |  3 
+output            |  void      |  Funcao         |  global          |  -    |  0 46 
+input             |  int       |  Funcao         |  global          |  -    |  0 40 
 k                 |  int       |  Variavel       |  minloc          |  5    |  7 8 14 18 
 x                 |  int       |  Variavel       |  minloc          |  4    |  7 9 12 13 
 i                 |  int       |  Variavel       |  minloc          |  3    |  7 10 11 12 13 14 16 
@@ -18,4 +19,5 @@ high              |  int       |  Variavel       |  sort            |  2    |  2
 low               |  int       |  Variavel       |  sort            |  1    |  21 23 
 a                 |  int       |  Vetor          |  sort            |  0    |  21 26 27 28 29 
 t                 |  int       |  Variavel       |  sort:block1     |  5    |  25 27 29 
-i                 |  int       |  Variavel       |  main            |  0    |  36 37 38 39 40 43 44 45 46 
+vett              |  int       |  Vetor          |  main            |  1    |  37 40 43 
+i                 |  int       |  Variavel       |  main            |  0    |  36 38 39 40 41 44 45 46 47 

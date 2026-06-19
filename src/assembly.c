@@ -93,10 +93,10 @@ void generateAssembly(Quad *headGCI){
     int fp = 30;
     int ra = 31;
 
-    emitAsmI(ASM_ADDI, zero, sp, RAM_SIZE);
-    emitAsmI(ASM_ADDI, zero, fp, RAM_SIZE);
-    emitAsmJ(ASM_JAL, "main");
-    emitAsmR(ASM_HALT, zero, zero, zero, 0); //TODO: minha ISA tem HALT como tipo J
+    emitAsmI(ASM_ADDI, zero, sp, RAM_SIZE-1);
+    emitAsmI(ASM_ADDI, zero, fp, RAM_SIZE-1);
+    emitAsmI(ASM_ADDI, sp, sp, -1);
+    emitAsmJ(ASM_J, "main");
 
     while(curr != NULL){
         switch(curr->op){
@@ -110,25 +110,30 @@ void generateAssembly(Quad *headGCI){
                 strcpy(current_func_name, s->name);
                 emitAsmLabel(s->name);
                 //$ra salvo no slot 1 do frame
+                if(strcmp(s->name, "main") == 0) break;
                 emitAsmI(ASM_SW, fp, ra, -1);
                 //alocação do frame
-                int frame_size = s->frameSize + 2;
-                emitAsmI(ASM_ADDI, sp, sp, -frame_size);
+                //int frame_size = s->frameSize + 2;
+                //emitAsmI(ASM_ADDI, sp, sp, -frame_size);
                 break;
             }
             case OP_ENDFUNC: {
-                char end_label[300];
-                sprintf(end_label, "END_%s", current_func_name);
-                emitAsmLabel(end_label);
-
-                //restaura $ra
-                emitAsmI(ASM_LW, fp, ra, -1);
-                //ajusta sp para a posição: $sp original estava exata 1 posição acima do ofp
-                emitAsmI(ASM_ADDI, fp, sp, 1);
-                //restaura $ofp
-                emitAsmI(ASM_LW, fp, fp, 0);
-                //jr para retorno
-                emitAsmR(ASM_JR, ra, zero, zero, 0);
+                if (strcmp(current_func_name, "main") == 0) {
+                    emitAsmR(ASM_HALT, zero, zero, zero, 0); 
+                } else {
+                    char end_label[300];
+                    sprintf(end_label, "END_%s", current_func_name);
+                    emitAsmLabel(end_label);
+    
+                    //restaura $ra
+                    emitAsmI(ASM_LW, fp, ra, -1);
+                    //ajusta sp para a posição: $sp original estava exata 1 posição acima do ofp
+                    emitAsmI(ASM_ADDI, fp, sp, 1);
+                    //restaura $ofp
+                    emitAsmI(ASM_LW, fp, fp, 0);
+                    //jr para retorno
+                    emitAsmR(ASM_JR, ra, zero, zero, 0);
+                }
                 break;
             }
             case OP_RETURN: {
@@ -169,29 +174,32 @@ void generateAssembly(Quad *headGCI){
                 //salvar valor retornado em um registrador
                 if(s->type != Void){
                     int rt_return = getPhysicalReg(curr->result.content.reg_id);
-                    emitAsmR(ASM_ADD, temp, zero, rt_return, 0);
+                    emitAsmR(ASM_ADD, ret, zero, rt_return, 0);
                 }
                 break;
             }
             case OP_ALLOCVAR: {
-                // Symbol s = curr->result.content.s_node;
-                // if(strcmp(s->scope, "global") == 0){
-                //     //memloc da tabela define a posição a partir de $zero 
-                // } else {
-                //     // addi $sp, $sp, -1 
-                //     emitAsmI(ASM_ADDI, sp, sp, -1); //TODO: necessário?
-                // }
+                Symbol s = curr->result.content.s_node;
+                if(strcmp(s->scope, "global") == 0){
+                    //memloc da tabela define a posição a partir de $zero 
+                } else {
+                    // addi $sp, $sp, -1 
+                    emitAsmI(ASM_ADDI, sp, sp, -1);
+                }
                 break;
             }
             case OP_ALLOCARR: {
-                // Symbol s = curr->result.content.s_node;
-                // int size = curr->arg1.content.imm; 
-                // if(strcmp(s->scope, "global") == 0){
-                //     //memloc da tabela define a posição a partir de $zero 
-                // } else {
-                //     //addi $sp, $sp, -size
-                //     emitAsmI(ASM_ADDI, sp, sp, -size); //TODO: necessário?
-                // }
+                Symbol s = curr->result.content.s_node;
+                int size = curr->arg1.content.imm; 
+                if(strcmp(s->scope, "global") == 0){
+                    //global: o endereço é estático (s->memloc)
+                } else {
+                    emitAsmI(ASM_ADDI, sp, sp, -1);
+                    int frameloc = -(s->memloc + 2);
+                    //primeiro slot da array é o endereço base
+                    emitAsmI(ASM_SW, fp, sp, frameloc);
+                    emitAsmI(ASM_ADDI, sp, sp, -size);
+                }
                 break;
             }
             case OP_STOREVAR: {

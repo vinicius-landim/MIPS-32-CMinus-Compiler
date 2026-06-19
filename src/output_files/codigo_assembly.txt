@@ -1,35 +1,163 @@
+    addi $sp, $zero, 4095
+    addi $fp, $zero, 4095
     addi $sp, $sp, -1
-    addi $sp, $sp, -3
-processa:
+    j main
+minloc:
+    sw $ra, -1($fp)
+    addi $sp, $sp, -1
+    addi $sp, $sp, -1
+    addi $sp, $sp, -1
+    lw $t1, -3($fp)
+    sw $t1, -7($fp)
+    lw $t2, -3($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t2
+    lw $t3, 0($t27)
+    sw $t3, -6($fp)
+    lw $t4, -3($fp)
+    addi $t5, $zero, 1
+    add $t6, $t4, $t5
+    sw $t6, -5($fp)
+L1:
+    lw $t7, -5($fp)
+    lw $t8, -4($fp)
+    bge $t7, $t8, L2
+    lw $t9, -5($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t9
+    lw $t10, 0($t27)
+    lw $t11, -6($fp)
+    bge $t10, $t11, L3
+    lw $t12, -5($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t12
+    lw $t13, 0($t27)
+    sw $t13, -6($fp)
+    lw $t14, -5($fp)
+    sw $t14, -7($fp)
+L3:
+    lw $t15, -5($fp)
+    addi $t16, $zero, 1
+    add $t17, $t15, $t16
+    sw $t17, -5($fp)
+    j L1
+L2:
+    lw $t18, -7($fp)
+    add $t28, $t18, $zero
+    j END_minloc
+END_minloc:
+    lw $ra, -1($fp)
+    addi $sp, $fp, 1
+    lw $fp, 0($fp)
+    jr $ra
+sort:
+    sw $ra, -1($fp)
+    addi $sp, $sp, -1
+    addi $sp, $sp, -1
+    lw $t19, -3($fp)
+    sw $t19, -5($fp)
+L4:
+    lw $t20, -5($fp)
+    lw $t21, -4($fp)
+    addi $t22, $zero, 1
+    sub $t23, $t21, $t22
+    bge $t20, $t23, L5
+    addi $sp, $sp, -1
+    lw $t24, -2($fp)
+    lw $t25, -5($fp)
+    lw $t26, -4($fp)
+    addi $sp, $sp, -1
     sw $fp, 0($sp)
     add $fp, $sp, $zero
     addi $sp, $sp, -1
-    addi $t1, $zero, 0
-    sub $t28, $fp, $t1
-    lw $t2, -7($t28)
-    lw $t3, -6($fp)
-    add $t4, $t2, $t3
-    sw $t4, -8($fp)
-    lw $t5, -8($fp)
-    addi $t6, $zero, 1
-    add $t28, $zero, $t6
-    sw $t5, 3($t28)
-    add $sp, $fp, $zero
-    lw $fp, 0($sp)
+    addi $sp, $sp, -1
+    sw $t24, 0($sp)
+    addi $sp, $sp, -1
+    sw $t25, 0($sp)
+    addi $sp, $sp, -1
+    sw $t26, 0($sp)
+    jal minloc
+    add $t1, $t28, $zero
+    sw $t1, -6($fp)
+    lw $t2, -6($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t2
+    lw $t3, 0($t27)
+    sw $t3, -7($fp)
+    lw $t4, -5($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t4
+    lw $t5, 0($t27)
+    lw $t6, -6($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t6
+    sw $t5, 0($t27)
+    lw $t7, -7($fp)
+    lw $t8, -5($fp)
+    lw $t27, -2($fp)
+    add $t27, $t27, $t8
+    sw $t7, 0($t27)
+    lw $t9, -5($fp)
+    addi $t10, $zero, 1
+    add $t11, $t9, $t10
+    sw $t11, -5($fp)
+    j L4
+L5:
+END_sort:
+    lw $ra, -1($fp)
+    addi $sp, $fp, 1
+    lw $fp, 0($fp)
     jr $ra
 main:
+    addi $sp, $sp, -1
+    addi $sp, $sp, -1
+    sw $sp, -3($fp)
+    addi $sp, $sp, -10
+    addi $t12, $zero, 0
+    sw $t12, -2($fp)
+L6:
+    lw $t13, -2($fp)
+    addi $t14, $zero, 10
+    bge $t13, $t14, L7
+    in $t15
+    lw $t16, -2($fp)
+    lw $t27, -3($fp)
+    add $t27, $t27, $t16
+    sw $t15, 0($t27)
+    lw $t17, -2($fp)
+    addi $t18, $zero, 1
+    add $t19, $t17, $t18
+    sw $t19, -2($fp)
+    j L6
+L7:
+    lw $t20, -3($fp)
+    addi $t21, $zero, 0
+    addi $t22, $zero, 10
+    addi $sp, $sp, -1
     sw $fp, 0($sp)
     add $fp, $sp, $zero
     addi $sp, $sp, -1
-    addi $t7, $zero, 10
-    sw $t7, 2($zero)
-    addi $t8, $zero, 5
-    addi $t9, $zero, 0
-    add $t28, $zero, $t9
-    sw $t8, 3($t28)
-    lw $t10, 2($zero)
-    lw $t11, 3($zero)
-    add $sp, $fp, $zero
-    lw $fp, 0($sp)
-    jr $ra
+    addi $sp, $sp, -1
+    sw $t20, 0($sp)
+    addi $sp, $sp, -1
+    sw $t21, 0($sp)
+    addi $sp, $sp, -1
+    sw $t22, 0($sp)
+    jal sort
+    addi $t24, $zero, 0
+    sw $t24, -2($fp)
+L8:
+    lw $t25, -2($fp)
+    addi $t26, $zero, 10
+    bge $t25, $t26, L9
+    lw $t1, -2($fp)
+    add $t27, $zero, $t1
+    lw $t2, 1($t27)
+    out $t2
+    lw $t3, -2($fp)
+    addi $t4, $zero, 1
+    add $t5, $t3, $t4
+    sw $t5, -2($fp)
+    j L8
+L9:
     halt
