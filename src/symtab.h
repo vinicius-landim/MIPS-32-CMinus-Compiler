@@ -19,7 +19,6 @@ typedef struct SymbolNode {
 
 	//atributos de função
 	int numParams;
-	int frameSize;
 	ParamList params;
 
 	LineList lines;

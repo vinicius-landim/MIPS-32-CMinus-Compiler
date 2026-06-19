@@ -186,13 +186,6 @@ static void buildSymtabRec(TreeNode *t) {
         for(int i = 0; i < MAXCHILDREN; i++) {
             buildSymtabRec(t->child[i]);
         }
-
-        if (t->nodeKind == StmtK && t->kind.stmt == FunctDeclK) {
-            if (t->symb != NULL) {
-                t->symb->frameSize = location; 
-            }
-        }
-        
         leaveScope(t);
         buildSymtabRec(t->sibling); // Vai para o irmao
     }
