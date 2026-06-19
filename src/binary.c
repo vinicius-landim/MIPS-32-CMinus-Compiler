@@ -150,17 +150,17 @@ static void generateMachineCode(AsmInstr *head, FILE *out) {
                     }
                     case ASM_IN:{
                         opcode = OPCODE_IN;   
-                        imm = 0; // IN não usa imediato
+                        imm = 0;
                         break;
                     }   
                     case ASM_OUT:{
                         opcode = OPCODE_OUT;  
-                        imm = 0; // OUT não usa imediato
+                        imm = 0;
                         break;
                     }  
                     case ASM_HALT:{
                         opcode = OPCODE_HALT;  
-                        imm = 0; // HALT agora mora aqui e não usa imediato
+                        imm = 0;
                         break;
                     }
                     case ASM_BEQ:
@@ -190,7 +190,7 @@ static void generateMachineCode(AsmInstr *head, FILE *out) {
             }
             
             case FORMAT_J: {
-                // MIPS Tipo J: [opcode:6] [address:26]
+                //MIPS Tipo J: [opcode:6] [address:26]
                 switch (curr->op) {
                     case ASM_J:{
                         opcode = OPCODE_J;

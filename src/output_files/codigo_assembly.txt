@@ -1,5 +1,5 @@
-    addi $sp, $zero, 4095
-    addi $fp, $zero, 4095
+    addi $sp, $zero, 1023
+    addi $fp, $zero, 1023
     addi $sp, $sp, -1
     j main
 minloc:
@@ -110,9 +110,6 @@ END_sort:
     jr $ra
 main:
     addi $sp, $sp, -1
-    addi $sp, $sp, -1
-    sw $sp, -3($fp)
-    addi $sp, $sp, -10
     addi $t12, $zero, 0
     sw $t12, -2($fp)
 L6:
@@ -121,8 +118,7 @@ L6:
     bge $t13, $t14, L7
     in $t15
     lw $t16, -2($fp)
-    lw $t27, -3($fp)
-    add $t27, $t27, $t16
+    add $t27, $zero, $t16
     sw $t15, 0($t27)
     lw $t17, -2($fp)
     addi $t18, $zero, 1
@@ -130,7 +126,7 @@ L6:
     sw $t19, -2($fp)
     j L6
 L7:
-    lw $t20, -3($fp)
+    addi $t20, $zero, 0
     addi $t21, $zero, 0
     addi $t22, $zero, 10
     addi $sp, $sp, -1
@@ -152,7 +148,7 @@ L8:
     bge $t25, $t26, L9
     lw $t1, -2($fp)
     add $t27, $zero, $t1
-    lw $t2, 1($t27)
+    lw $t2, 0($t27)
     out $t2
     lw $t3, -2($fp)
     addi $t4, $zero, 1
@@ -160,4 +156,4 @@ L8:
     sw $t5, -2($fp)
     j L8
 L9:
-    halt
+    halt $zero, $zero, 0
