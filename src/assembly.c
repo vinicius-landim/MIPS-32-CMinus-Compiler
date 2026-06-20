@@ -181,7 +181,7 @@ void generateAssembly(Quad *headGCI){
             case OP_ALLOCVAR: {
                 Symbol s = curr->result.content.s_node;
                 if(strcmp(s->scope, "global") == 0){
-                    //memloc da tabela define a posição a partir de $zero 
+                    //global: o endereço é estático (s->memloc) 
                 } else {
                     // addi $sp, $sp, -1 
                     emitAsmI(ASM_ADDI, sp, sp, -1);
@@ -194,11 +194,11 @@ void generateAssembly(Quad *headGCI){
                 if(strcmp(s->scope, "global") == 0){
                     //global: o endereço é estático (s->memloc)
                 } else {
-                    emitAsmI(ASM_ADDI, sp, sp, -1);
+                    //reserva espaço do ponteiro e do array
+                    emitAsmI(ASM_ADDI, sp, sp, -(size+1));
+                    //primeiro slot da array (addr=fp+frameloc) é o endereço base (vet[0])
                     int frameloc = -(s->memloc + 2);
-                    //primeiro slot da array é o endereço base
                     emitAsmI(ASM_SW, fp, sp, frameloc);
-                    emitAsmI(ASM_ADDI, sp, sp, -size);
                 }
                 break;
             }
@@ -260,15 +260,15 @@ void generateAssembly(Quad *headGCI){
                 int rs_index = getPhysicalReg(curr->arg2.content.reg_id);
                 
                 if (strcmp(s->scope, "global") == 0) {
-                    emitAsmR(ASM_ADD, zero, rs_index, temp, 0); // temp = index
-                    emitAsmI(ASM_LW, temp, rt_dest, s->memloc); // dest = mem[index + memloc]
+                    emitAsmR(ASM_ADD, zero, rs_index, temp, 0); //temp = index
+                    emitAsmI(ASM_LW, temp, rt_dest, s->memloc); //dest = mem[index + memloc]
                 } else {
                     int frameloc = -(s->memloc+2);
                     //carrega o ponteiro do frame para o $temp
                     emitAsmI(ASM_LW, fp, temp, frameloc);
                     //temp = temp + index
                     emitAsmR(ASM_ADD, temp, rs_index, temp, 0);
-                    //lê o valor no endereço exato!
+                    //lê o valor no endereço exato
                     emitAsmI(ASM_LW, temp, rt_dest, 0); // lw dest, 0(temp)
                 }
                 break;

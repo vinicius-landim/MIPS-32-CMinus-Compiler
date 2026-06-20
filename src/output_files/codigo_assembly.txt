@@ -110,6 +110,8 @@ END_sort:
     jr $ra
 main:
     addi $sp, $sp, -1
+    addi $sp, $sp, -11
+    sw $sp, -3($fp)
     addi $t12, $zero, 0
     sw $t12, -2($fp)
 L6:
@@ -118,7 +120,8 @@ L6:
     bge $t13, $t14, L7
     in $t15
     lw $t16, -2($fp)
-    add $t27, $zero, $t16
+    lw $t27, -3($fp)
+    add $t27, $t27, $t16
     sw $t15, 0($t27)
     lw $t17, -2($fp)
     addi $t18, $zero, 1
@@ -126,7 +129,7 @@ L6:
     sw $t19, -2($fp)
     j L6
 L7:
-    addi $t20, $zero, 0
+    lw $t20, -3($fp)
     addi $t21, $zero, 0
     addi $t22, $zero, 10
     addi $sp, $sp, -1
@@ -147,7 +150,8 @@ L8:
     addi $t26, $zero, 10
     bge $t25, $t26, L9
     lw $t1, -2($fp)
-    add $t27, $zero, $t1
+    lw $t27, -3($fp)
+    add $t27, $t27, $t1
     lw $t2, 0($t27)
     out $t2
     lw $t3, -2($fp)
