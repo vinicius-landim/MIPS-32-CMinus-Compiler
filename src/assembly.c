@@ -195,7 +195,7 @@ void generateAssembly(Quad *headGCI){
                     //global: o endereço é estático (s->memloc)
                 } else {
                     //reserva espaço do ponteiro e do array
-                    emitAsmI(ASM_ADDI, sp, sp, -(size+1));
+                    emitAsmI(ASM_ADDI, sp, sp, -(size+2));
                     //primeiro slot da array (addr=fp+frameloc) é o endereço base (vet[0])
                     int frameloc = -(s->memloc + 2);
                     emitAsmI(ASM_SW, fp, sp, frameloc);
