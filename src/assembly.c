@@ -14,19 +14,7 @@ AsmInstr *currentAsm = NULL;
 
 static int pendingParams[MAX_PENDING_PARAMS];
 static int pendingParamCount = 0;
-
-static void insertParamList(int reg) {
-    if (pendingParamCount >= MAX_PENDING_PARAMS) {
-        fprintf(stderr, "Erro: quantidade maxima de parametros excedida (%d).\n", MAX_PENDING_PARAMS);
-        exit(1);
-    }
-    pendingParams[pendingParamCount++] = reg;
-}
-
-int getPhysicalReg(int virtual_reg) {
-    if (virtual_reg <= 0) return 0; // Fallback
-    return ((virtual_reg - 1) % 26) + 1; 
-}
+static int regInUse[27] = {0};
 
 static AsmInstr* createNode(AsmOp op, AsmFormat format) {
     AsmInstr *newA = (AsmInstr*)malloc(sizeof(AsmInstr));
@@ -76,6 +64,71 @@ void emitAsmJ(AsmOp op, char *target) {
 void emitAsmLabel(char *label) {
     AsmInstr *instr = createNode(ASM_LABEL, FORMAT_LABEL);
     instr->type.label.label_name = copyString(label);
+}
+
+int getPhysicalReg(int virtual_reg) {
+    if (virtual_reg <= 0) return 0; // Fallback
+    return ((virtual_reg - 1) % 26) + 1; 
+}
+
+static void freeTemp(Operand op){
+    if(op.kind == OPND_TEMP){
+        int regPhys = getPhysicalReg(op.content.reg_id);
+        if (regPhys >= 1 && regPhys <= 26) 
+            regInUse[regPhys] = 0;
+    }
+}
+
+static void markTemp(Operand op){
+    if(op.kind == OPND_TEMP){
+        int regPhys = getPhysicalReg(op.content.reg_id);
+        if (regPhys >= 1 && regPhys <= 26) 
+            regInUse[regPhys] = 1;
+    }
+}
+
+static void updateRegsInUse(Quad *curr){
+    //desmarcar registradores de uso único
+    switch(curr->op){
+        case OP_ADD: case OP_SUB: case OP_MUL: case OP_DIV:
+        case OP_LOADARR:
+            freeTemp(curr->arg1);
+            freeTemp(curr->arg2);
+        break;
+        case OP_BEQ: case OP_BNE: case OP_BLT: case OP_BGT: case OP_BLE: case OP_BGE:
+            freeTemp(curr->result); //rs de comparação
+            freeTemp(curr->arg1);   //rt de comparação
+            break;
+        case OP_STOREVAR: case OP_OUT:
+            freeTemp(curr->arg1);
+            break;
+        case OP_STOREARR:
+            freeTemp(curr->arg1); //valor
+            freeTemp(curr->arg2); //indice
+            break;
+        case OP_PARAM: case OP_RETURN:
+            freeTemp(curr->result); 
+            break;
+        default: break;
+    }
+
+    //marcar registradores com resultados
+    switch(curr->op) {
+        case OP_ADD: case OP_SUB: case OP_MUL: case OP_DIV:
+        case OP_LOADVAR: case OP_LOADARR: case OP_LOADIMM:
+        case OP_CALL: case OP_IN:
+            markTemp(curr->result);
+            break;
+        default: break;
+    }
+}
+
+static void insertParamList(int reg) {
+    if (pendingParamCount >= MAX_PENDING_PARAMS) {
+        fprintf(stderr, "Erro: quantidade maxima de parametros excedida (%d).\n", MAX_PENDING_PARAMS);
+        exit(1);
+    }
+    pendingParams[pendingParamCount++] = reg;
 }
 
 void generateAssembly(Quad *headGCI){
@@ -151,6 +204,28 @@ void generateAssembly(Quad *headGCI){
             case OP_CALL: {
                 Symbol s = curr->arg1.content.s_node;
                 int numParams = curr->arg2.content.imm;
+
+                int savedRegs[27] = {0};
+                int countSavedRegs = 0;
+
+                for(int i=1; i<=26; i++){
+                    if(regInUse[i] == 1){
+                        savedRegs[i] = 1;
+                        countSavedRegs++;
+                    }
+                }
+
+                if(countSavedRegs > 0){
+                    emitAsmI(ASM_ADDI, sp, sp, -countSavedRegs);
+                    int offset = 0;
+                    for(int i=1; i<=26; i++){
+                        if(savedRegs[i] == 1){
+                            emitAsmI(ASM_SW, sp, i, offset);
+                            offset++;
+                        }
+                    }
+                }
+
                 //$ofp armazenado 
                 emitAsmI(ASM_ADDI, sp, sp, -1);
                 emitAsmI(ASM_SW, sp, fp, 0);
@@ -175,6 +250,17 @@ void generateAssembly(Quad *headGCI){
                 if(s->type != Void){
                     int rt_return = getPhysicalReg(curr->result.content.reg_id);
                     emitAsmR(ASM_ADD, ret, zero, rt_return, 0);
+                }
+                
+                if(countSavedRegs > 0){
+                    int offset = 0;
+                    for(int i=1; i<=26; i++){
+                        if(savedRegs[i]==1){
+                            emitAsmI(ASM_LW, sp, i, offset);
+                            offset++;
+                        }
+                    }
+                    emitAsmI(ASM_ADDI, sp, sp, countSavedRegs);
                 }
                 break;
             }
@@ -369,6 +455,7 @@ void generateAssembly(Quad *headGCI){
             }
             default: break;
         }
+        updateRegsInUse(curr);
         curr = curr->next;
     }
 }
@@ -429,8 +516,6 @@ void printAssembly(FILE *listing){
                 case FORMAT_R:{
                     if (curr->op == ASM_JR) {
                         fprintf(listing, "%s %s\n", opName, printReg(curr->type.r.rs));
-                    } else if (curr->op == ASM_HALT) {
-                        fprintf(listing, "halt\n");
                     } else {
                         // op rd, rs, rt
                         fprintf(listing, "%s %s, %s, %s\n", opName, printReg(curr->type.r.rd), printReg(curr->type.r.rs), printReg(curr->type.r.rt));
@@ -451,6 +536,9 @@ void printAssembly(FILE *listing){
                     else if (curr->op == ASM_BEQ || curr->op == ASM_BNE || curr->op == ASM_BLT || curr->op == ASM_BGT || curr->op == ASM_BLE || curr->op == ASM_BGE) {
                         // branch: op rs, rt, offset (Ex: beq $1, $2, 15)
                         fprintf(listing, "%s %s, %s, %s\n", opName, printReg(curr->type.i.rs), printReg(curr->type.i.rt), curr->type.i.label_name);                    
+                    } 
+                    else if (curr->op == ASM_HALT) {
+                        fprintf(listing, "halt\n");
                     } else {
                         // imediato: op rt, rs, imm (Ex: addi $1, $0, 5)
                         fprintf(listing, "%s %s, %s, %d\n", opName, printReg(curr->type.i.rt), printReg(curr->type.i.rs), curr->type.i.imm);
