@@ -36,18 +36,18 @@ typedef struct LabelNode {
     struct LabelNode *next;
 } LabelNode;
 
-static LabelNode *labelTable = NULL;
+static LabelNode *labelList = NULL;
 
 static void insertLabel(char *name, int address) {
     LabelNode *newNode = (LabelNode*)malloc(sizeof(LabelNode));
     newNode->name = strdup(name);
     newNode->address = address;
-    newNode->next = labelTable;
-    labelTable = newNode;
+    newNode->next = labelList;
+    labelList = newNode;
 }
 
 static int getLabelAddress(char *name) {
-    LabelNode *curr = labelTable;
+    LabelNode *curr = labelList;
     while (curr != NULL) {
         if (strcmp(curr->name, name) == 0) 
             return curr->address;

@@ -71,7 +71,7 @@ int getPhysicalReg(int virtual_reg) {
     return ((virtual_reg - 1) % 26) + 1; 
 }
 
-static void freeTemp(Operand op){
+static void freeReg(Operand op){
     if(op.kind == OPND_TEMP){
         int regPhys = getPhysicalReg(op.content.reg_id);
         if (regPhys >= 1 && regPhys <= 26) 
@@ -79,7 +79,7 @@ static void freeTemp(Operand op){
     }
 }
 
-static void markTemp(Operand op){
+static void markReg(Operand op){
     if(op.kind == OPND_TEMP){
         int regPhys = getPhysicalReg(op.content.reg_id);
         if (regPhys >= 1 && regPhys <= 26) 
@@ -92,22 +92,22 @@ static void updateRegsInUse(Quad *curr){
     switch(curr->op){
         case OP_ADD: case OP_SUB: case OP_MUL: case OP_DIV:
         case OP_LOADARR:
-            freeTemp(curr->arg1);
-            freeTemp(curr->arg2);
+            freeReg(curr->arg1);
+            freeReg(curr->arg2);
         break;
         case OP_BEQ: case OP_BNE: case OP_BLT: case OP_BGT: case OP_BLE: case OP_BGE:
-            freeTemp(curr->result); //rs de comparação
-            freeTemp(curr->arg1);   //rt de comparação
+            freeReg(curr->result); //rs de comparação
+            freeReg(curr->arg1);   //rt de comparação
             break;
         case OP_STOREVAR: case OP_OUT:
-            freeTemp(curr->arg1);
+            freeReg(curr->arg1);
             break;
         case OP_STOREARR:
-            freeTemp(curr->arg1); //valor
-            freeTemp(curr->arg2); //indice
+            freeReg(curr->arg1); //valor
+            freeReg(curr->arg2); //indice
             break;
         case OP_PARAM: case OP_RETURN:
-            freeTemp(curr->result); 
+            freeReg(curr->result); 
             break;
         default: break;
     }
@@ -117,7 +117,7 @@ static void updateRegsInUse(Quad *curr){
         case OP_ADD: case OP_SUB: case OP_MUL: case OP_DIV:
         case OP_LOADVAR: case OP_LOADARR: case OP_LOADIMM:
         case OP_CALL: case OP_IN:
-            markTemp(curr->result);
+            markReg(curr->result);
             break;
         default: break;
     }
@@ -165,9 +165,6 @@ void generateAssembly(Quad *headGCI){
                 //$ra salvo no slot 1 do frame
                 if(strcmp(s->name, "main") == 0) break;
                 emitAsmI(ASM_SW, fp, ra, -1);
-                //alocação do frame
-                //int frame_size = s->frameSize + 2;
-                //emitAsmI(ASM_ADDI, sp, sp, -frame_size);
                 break;
             }
             case OP_ENDFUNC: {
@@ -235,7 +232,7 @@ void generateAssembly(Quad *headGCI){
                 //reservar espaço do $ra
                 emitAsmI(ASM_ADDI, sp, sp, -1);
                 
-                //empilhar os parâmetros sequencialmente
+                //armazenar os parâmetros sequencialmente
                 int startIdx = pendingParamCount - numParams;
                 for (int i = startIdx; i < pendingParamCount; i++) {
                     emitAsmI(ASM_ADDI, sp, sp, -1);
@@ -281,7 +278,7 @@ void generateAssembly(Quad *headGCI){
                     //global: o endereço é estático (s->memloc)
                 } else {
                     //reserva espaço do ponteiro e do array
-                    emitAsmI(ASM_ADDI, sp, sp, -(size+2));
+                    emitAsmI(ASM_ADDI, sp, sp, -(size+2)); //TODO verificar +2
                     //primeiro slot da array (addr=fp+frameloc) é o endereço base (vet[0])
                     int frameloc = -(s->memloc + 2);
                     emitAsmI(ASM_SW, fp, sp, frameloc);
