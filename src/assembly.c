@@ -92,22 +92,22 @@ static void updateRegsInUse(Quad *curr){
     switch(curr->op){
         case OP_ADD: case OP_SUB: case OP_MUL: case OP_DIV:
         case OP_LOADARR:
-            freeReg(curr->arg1);
             freeReg(curr->arg2);
+            freeReg(curr->arg3);
         break;
         case OP_BEQ: case OP_BNE: case OP_BLT: case OP_BGT: case OP_BLE: case OP_BGE:
-            freeReg(curr->result); //rs de comparação
-            freeReg(curr->arg1);   //rt de comparação
+            freeReg(curr->arg1); //rs de comparação
+            freeReg(curr->arg2);   //rt de comparação
             break;
         case OP_STOREVAR: case OP_OUT:
-            freeReg(curr->arg1);
+            freeReg(curr->arg2);
             break;
         case OP_STOREARR:
-            freeReg(curr->arg1); //valor
-            freeReg(curr->arg2); //indice
+            freeReg(curr->arg2); //valor
+            freeReg(curr->arg3); //indice
             break;
         case OP_PARAM: case OP_RETURN:
-            freeReg(curr->result); 
+            freeReg(curr->arg1); 
             break;
         default: break;
     }
@@ -117,7 +117,7 @@ static void updateRegsInUse(Quad *curr){
         case OP_ADD: case OP_SUB: case OP_MUL: case OP_DIV:
         case OP_LOADVAR: case OP_LOADARR: case OP_LOADIMM:
         case OP_CALL: case OP_IN:
-            markReg(curr->result);
+            markReg(curr->arg1);
             break;
         default: break;
     }
@@ -154,12 +154,12 @@ void generateAssembly(Quad *headGCI){
     while(curr != NULL){
         switch(curr->op){
             case OP_PARAM: {
-                int rt = getPhysicalReg(curr->result.content.reg_id);
+                int rt = getPhysicalReg(curr->arg1.content.reg_id);
                 insertParamList(rt);
                 break;
             }
             case OP_FUNC: {
-                Symbol s = curr->arg1.content.s_node;
+                Symbol s = curr->arg2.content.s_node;
                 strcpy(current_func_name, s->name);
                 emitAsmLabel(s->name);
                 //$ra salvo no slot 1 do frame
@@ -187,8 +187,8 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_RETURN: {
-                if (curr->result.kind != OPND_EMPTY) {
-                    int rt = getPhysicalReg(curr->result.content.reg_id);
+                if (curr->arg1.kind != OPND_EMPTY) {
+                    int rt = getPhysicalReg(curr->arg1.content.reg_id);
                     emitAsmR(ASM_ADD, rt, zero, ret, 0); 
                 }
 
@@ -199,8 +199,8 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_CALL: {
-                Symbol s = curr->arg1.content.s_node;
-                int numParams = curr->arg2.content.imm;
+                Symbol s = curr->arg2.content.s_node;
+                int numParams = curr->arg3.content.imm;
 
                 int savedRegs[27] = {0};
                 int countSavedRegs = 0;
@@ -245,7 +245,7 @@ void generateAssembly(Quad *headGCI){
 
                 //salvar valor retornado em um registrador
                 if(s->type != Void){
-                    int rt_return = getPhysicalReg(curr->result.content.reg_id);
+                    int rt_return = getPhysicalReg(curr->arg1.content.reg_id);
                     emitAsmR(ASM_ADD, ret, zero, rt_return, 0);
                 }
                 
@@ -262,7 +262,7 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_ALLOCVAR: {
-                Symbol s = curr->result.content.s_node;
+                Symbol s = curr->arg1.content.s_node;
                 if(strcmp(s->scope, "global") == 0){
                     //global: o endereço é estático (s->memloc) 
                 } else {
@@ -272,13 +272,13 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_ALLOCARR: {
-                Symbol s = curr->result.content.s_node;
-                int size = curr->arg1.content.imm; 
+                Symbol s = curr->arg1.content.s_node;
+                int size = curr->arg2.content.imm; 
                 if(strcmp(s->scope, "global") == 0){
                     //global: o endereço é estático (s->memloc)
                 } else {
                     //reserva espaço do ponteiro e do array
-                    emitAsmI(ASM_ADDI, sp, sp, -(size+2)); //TODO verificar +2
+                    emitAsmI(ASM_ADDI, sp, sp, -(size+2));
                     //primeiro slot da array (addr=fp+frameloc) é o endereço base (vet[0])
                     int frameloc = -(s->memloc + 2);
                     emitAsmI(ASM_SW, fp, sp, frameloc);
@@ -286,8 +286,8 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_STOREVAR: {
-                Symbol s = curr->result.content.s_node;
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
+                Symbol s = curr->arg1.content.s_node;
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
                 
                 if (strcmp(s->scope, "global") == 0) {
                     emitAsmI(ASM_SW, zero, rt, s->memloc); //inserção na base da memória
@@ -298,9 +298,9 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_STOREARR: {
-                Symbol s = curr->result.content.s_node;
-                int rs_value = getPhysicalReg(curr->arg1.content.reg_id);
-                int rs_index = getPhysicalReg(curr->arg2.content.reg_id);
+                Symbol s = curr->arg1.content.s_node;
+                int rs_value = getPhysicalReg(curr->arg2.content.reg_id);
+                int rs_index = getPhysicalReg(curr->arg3.content.reg_id);
                 
                 if (strcmp(s->scope, "global") == 0) {
                     emitAsmR(ASM_ADD, zero, rs_index, temp, 0); // temp = index
@@ -317,8 +317,8 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_LOADVAR: {
-                Symbol s = curr->arg1.content.s_node;
-                int rt_dest = getPhysicalReg(curr->result.content.reg_id);
+                Symbol s = curr->arg2.content.s_node;
+                int rt_dest = getPhysicalReg(curr->arg1.content.reg_id);
                 
                 if (s->kind == SYMB_ARR) {
                     if (strcmp(s->scope, "global") == 0) {
@@ -338,9 +338,9 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_LOADARR: {
-                Symbol s = curr->arg1.content.s_node;
-                int rt_dest = getPhysicalReg(curr->result.content.reg_id);
-                int rs_index = getPhysicalReg(curr->arg2.content.reg_id);
+                Symbol s = curr->arg2.content.s_node;
+                int rt_dest = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs_index = getPhysicalReg(curr->arg3.content.reg_id);
                 
                 if (strcmp(s->scope, "global") == 0) {
                     emitAsmR(ASM_ADD, zero, rs_index, temp, 0); //temp = index
@@ -357,92 +357,92 @@ void generateAssembly(Quad *headGCI){
                 break;
             }
             case OP_LOADIMM: {
-                int rt_dest = getPhysicalReg(curr->result.content.reg_id);
-                int value = curr->arg1.content.imm;
+                int rt_dest = getPhysicalReg(curr->arg1.content.reg_id);
+                int value = curr->arg2.content.imm;
                 // addi rt, $0, value
                 emitAsmI(ASM_ADDI, zero, rt_dest, value);
                 break;
             }
             case OP_ADD: {
-                int rd = getPhysicalReg(curr->result.content.reg_id);
-                int rs = getPhysicalReg(curr->arg1.content.reg_id);
-                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                int rd = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs = getPhysicalReg(curr->arg2.content.reg_id);
+                int rt = getPhysicalReg(curr->arg3.content.reg_id);
                 emitAsmR(ASM_ADD, rs, rt, rd, 0); 
                 break;
             }
             case OP_SUB: {
-                int rd = getPhysicalReg(curr->result.content.reg_id);
-                int rs = getPhysicalReg(curr->arg1.content.reg_id);
-                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                int rd = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs = getPhysicalReg(curr->arg2.content.reg_id);
+                int rt = getPhysicalReg(curr->arg3.content.reg_id);
                 emitAsmR(ASM_SUB, rs, rt, rd, 0); 
                 break;
             }
             case OP_MUL: {
-                int rd = getPhysicalReg(curr->result.content.reg_id);
-                int rs = getPhysicalReg(curr->arg1.content.reg_id);
-                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                int rd = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs = getPhysicalReg(curr->arg2.content.reg_id);
+                int rt = getPhysicalReg(curr->arg3.content.reg_id);
                 emitAsmR(ASM_MUL, rs, rt, rd, 0); 
                 break;
             }
             case OP_DIV: {
-                int rd = getPhysicalReg(curr->result.content.reg_id);
-                int rs = getPhysicalReg(curr->arg1.content.reg_id);
-                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                int rd = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs = getPhysicalReg(curr->arg2.content.reg_id);
+                int rt = getPhysicalReg(curr->arg3.content.reg_id);
                 emitAsmR(ASM_DIV, rs, rt, rd, 0); 
                 break;
             }
             case OP_JUMP: {
                 // j target
-                emitAsmJ(ASM_J, curr->result.content.label_name);
+                emitAsmJ(ASM_J, curr->arg1.content.label_name);
                 break;
             }
             case OP_LABEL: {
-                emitAsmLabel(curr->result.content.label_name);
+                emitAsmLabel(curr->arg1.content.label_name);
                 break;
             } 
             case OP_BEQ: {
-                int rs = getPhysicalReg(curr->result.content.reg_id);
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
-                emitAsmIBranch(ASM_BEQ, rs, rt, curr->arg2.content.label_name);
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                emitAsmIBranch(ASM_BEQ, rs, rt, curr->arg3.content.label_name);
                 break;
             }
             case OP_BNE: {
-                int rs = getPhysicalReg(curr->result.content.reg_id);
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
-                emitAsmIBranch(ASM_BNE, rs, rt, curr->arg2.content.label_name);
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                emitAsmIBranch(ASM_BNE, rs, rt, curr->arg3.content.label_name);
                 break;
             }
             case OP_BGT: {
-                int rs = getPhysicalReg(curr->result.content.reg_id);
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
-                emitAsmIBranch(ASM_BGT, rs, rt, curr->arg2.content.label_name);
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                emitAsmIBranch(ASM_BGT, rs, rt, curr->arg3.content.label_name);
                 break;
             }
             case OP_BLT: {
-                int rs = getPhysicalReg(curr->result.content.reg_id);
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
-                emitAsmIBranch(ASM_BLT, rs, rt, curr->arg2.content.label_name);
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                emitAsmIBranch(ASM_BLT, rs, rt, curr->arg3.content.label_name);
                 break;
             }
             case OP_BGE: {
-                int rs = getPhysicalReg(curr->result.content.reg_id);
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
-                emitAsmIBranch(ASM_BGE, rs, rt, curr->arg2.content.label_name);
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                emitAsmIBranch(ASM_BGE, rs, rt, curr->arg3.content.label_name);
                 break;
             }
             case OP_BLE: {
-                int rs = getPhysicalReg(curr->result.content.reg_id);
-                int rt = getPhysicalReg(curr->arg1.content.reg_id);
-                emitAsmIBranch(ASM_BLE, rs, rt, curr->arg2.content.label_name);
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                int rt = getPhysicalReg(curr->arg2.content.reg_id);
+                emitAsmIBranch(ASM_BLE, rs, rt, curr->arg3.content.label_name);
                 break;
             }
             case OP_IN: {
-                int rt_dest = getPhysicalReg(curr->result.content.reg_id);
+                int rt_dest = getPhysicalReg(curr->arg1.content.reg_id);
                 emitAsmI(ASM_IN, zero, rt_dest, 0);
                 break;
             }
             case OP_OUT: {
-                int rs_src = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs_src = getPhysicalReg(curr->arg2.content.reg_id);
                 emitAsmI(ASM_OUT, rs_src, zero, 0);
                 break;
             }

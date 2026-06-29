@@ -120,12 +120,12 @@ static const char* opKindToString(OpKind op){
     }
 }
 
-void emitQuad(OpKind op, Operand result, Operand arg1, Operand arg2){
+void emitQuad(OpKind op, Operand arg1, Operand arg2, Operand arg3){
     Quad* newQ = (Quad*)malloc(sizeof(Quad));
     newQ->op = op;
-    newQ->result = result;
     newQ->arg1 = arg1;
     newQ->arg2 = arg2;
+    newQ->arg3 = arg3;
     newQ->next = NULL;
 
     if(headQuad == NULL){
@@ -473,13 +473,13 @@ void printIntermediateCode(FILE *listing){
         fprintf(listing, "(");
         fprintf(listing, "%s, ", opKindToString(curr->op));
         
-        printOperand(listing, curr->result);
-        fprintf(listing, ", ");
-        
         printOperand(listing, curr->arg1);
         fprintf(listing, ", ");
         
         printOperand(listing, curr->arg2);
+        fprintf(listing, ", ");
+        
+        printOperand(listing, curr->arg3);
         fprintf(listing, ")\n");
 
         curr = curr->next;

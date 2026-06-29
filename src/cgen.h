@@ -47,9 +47,9 @@ typedef struct {
 
 typedef struct QuadList {
     OpKind op;
-    Operand result;
     Operand arg1;
     Operand arg2;
+    Operand arg3;
     struct QuadList* next;
 } Quad;
 
