@@ -19,10 +19,8 @@ static void cGen(TreeNode *t);
 static Operand newTemp(){
     Operand tempOpnd;
     tempOpnd.kind = OPND_TEMP;
-    char *tempName = (char*)malloc(10*sizeof(char));
     tempOffset++;
-    sprintf(tempName, "$t%d", tempOffset);
-    tempOpnd.content.str_val = tempName;
+    tempOpnd.content.reg_id = tempOffset;
     return tempOpnd;
 }
 
@@ -32,42 +30,35 @@ static Operand newLabel(){
     char *labelName = (char*)malloc(10*sizeof(char));
     labelOffset++;
     sprintf(labelName, "L%d", labelOffset);
-    labelOpnd.content.str_val = labelName;
+    labelOpnd.content.label_name = labelName;
     return labelOpnd;
 }
 
 static Operand emptyOperand(){
     Operand emptyOpnd;
     emptyOpnd.kind = OPND_EMPTY;
-    emptyOpnd.content.str_val = NULL;
+    emptyOpnd.content.s_node = NULL;
     return emptyOpnd;
+}
+
+static Operand symbOperand(Symbol symb){
+    Operand symbOpnd;
+    symbOpnd.kind = OPND_SYMB;
+    symbOpnd.content.s_node = symb;
+    return symbOpnd;
 }
 
 static Operand numOperand(int val){
     Operand numOpnd;
     numOpnd.kind = OPND_NUM;
-    numOpnd.content.val = val;
+    numOpnd.content.imm = val;
     return numOpnd;
 }
 
-static Operand varOperand(char *var_name){
-    Operand varOpnd;
-    varOpnd.kind = OPND_VAR;
-    varOpnd.content.str_val = copyString(var_name);
-    return varOpnd;
-}
-
-static Operand funcOperand(char *func_name){
-    Operand funcOpnd;
-    funcOpnd.kind = OPND_FUNC;
-    funcOpnd.content.str_val = copyString(func_name);
-    return funcOpnd;
-}
-
-static Operand scopeOperand(char *scope){
+static Operand scopeOperand(char *scope) {
     Operand scopeOpnd;
     scopeOpnd.kind = OPND_SCOPE;
-    scopeOpnd.content.str_val = copyString(scope);
+    scopeOpnd.content.scope_name = scope;
     return scopeOpnd;
 }
 
@@ -75,9 +66,9 @@ static Operand typeOperand(ExpType type){
     Operand typeOpnd;
     typeOpnd.kind = OPND_TYPE;
     if(type == Integer)
-        typeOpnd.content.str_val = "int";
+        typeOpnd.content.type_name = "int";
     else if(type == Void)
-        typeOpnd.content.str_val = "void";
+        typeOpnd.content.type_name = "void";
     return typeOpnd;
 }
 
@@ -113,6 +104,7 @@ static const char* opKindToString(OpKind op){
         case OP_PARAM:      return "PARAM";
         case OP_CALL:       return "CALL";
         case OP_ARG:        return "ARG";
+        case OP_ARG_ARR:    return "ARGARR";
         case OP_ALLOCVAR:   return "ALLOCVAR";
         case OP_ALLOCARR:   return "ALLOCARR";
         case OP_LOADVAR:    return "LOADVAR";
@@ -121,17 +113,19 @@ static const char* opKindToString(OpKind op){
         case OP_STOREVAR:   return "STOREVAR";
         case OP_STOREARR:   return "STOREARR";
         case OP_RETURN:     return "RETURN";
+        case OP_IN:         return "INPUT";
+        case OP_OUT:        return "OUTPUT";
         case OP_HALT:       return "HALT";
         default:            return "UNKNOWN";
     }
 }
 
-void emitQuad(OpKind op, Operand result, Operand arg1, Operand arg2){
+void emitQuad(OpKind op, Operand arg1, Operand arg2, Operand arg3){
     Quad* newQ = (Quad*)malloc(sizeof(Quad));
     newQ->op = op;
-    newQ->result = result;
     newQ->arg1 = arg1;
     newQ->arg2 = arg2;
+    newQ->arg3 = arg3;
     newQ->next = NULL;
 
     if(headQuad == NULL){
@@ -156,12 +150,12 @@ static Operand genExp(TreeNode *t){
             case VarK:{
                 //(LOAD, $t_a, var, -)
                 Operand resultTemp = newTemp();
-                Operand argVar = varOperand(t->attr.name);
+                Operand argVar = symbOperand(t->symb);
                 emitQuad(OP_LOADVAR, resultTemp, argVar, EMPTY_OPND);
                 return resultTemp;
             }
             case ArrK:{
-                Operand argArr = varOperand(t->attr.name);
+                Operand argArr = symbOperand(t->symb);
                 Operand argIdx = genExp(t->child[0]); //tratamento de constantes, operações matemáticas ou uso de variáveis
                 Operand resultTemp = newTemp();
                 //(LOAD, $t_a, var, index)
@@ -170,14 +164,14 @@ static Operand genExp(TreeNode *t){
             }
             case VarDeclK:{
                 //(ALLOCVAR, var, scope, -)
-                Operand resultVar = varOperand(t->attr.name);
+                Operand resultVar = symbOperand(t->symb);
                 Operand argScope = scopeOperand(t->scope);
                 emitQuad(OP_ALLOCVAR, resultVar, argScope, EMPTY_OPND);
                 return emptyOperand();
             }
             case ArrDeclK:{
                 //(ALLOCARR, var, arr_size, scope)
-                Operand resultArr = varOperand(t->attr.name);
+                Operand resultArr = symbOperand(t->symb);
                 Operand argNum = numOperand(t->child[0]->attr.val); //C- não permite declaração de array usando [variável]
                 Operand argScope = scopeOperand(t->scope);
                 emitQuad(OP_ALLOCARR, resultArr, argNum, argScope);
@@ -195,12 +189,12 @@ static Operand genExp(TreeNode *t){
                 Operand argVal = genExp(t->child[1]); //tratamento de constantes, operações matemáticas, uso de variáveis ou calls
                 TreeNode *l_tree = t->child[0];
                 if(l_tree->kind.exp == VarK){
-                    Operand argVar = varOperand(l_tree->attr.name);
+                    Operand argVar = symbOperand(l_tree->symb);
                     //(STORE, var, $t_a, -)
                     emitQuad(OP_STOREVAR, argVar, argVal, EMPTY_OPND);
                 }
                 else if(l_tree->kind.exp == ArrK){
-                    Operand argArr = varOperand(l_tree->attr.name);
+                    Operand argArr = symbOperand(l_tree->symb);
                     Operand argIdx = genExp(l_tree->child[0]);
                     //(STORE, var, $t_a, index)
                     emitQuad(OP_STOREARR, argArr, argVal, argIdx);
@@ -209,22 +203,33 @@ static Operand genExp(TreeNode *t){
             }
             case ParamK:{
                 Operand argType = typeOperand(t->type);
-                Operand argName = varOperand(t->attr.name);
-                Operand argScope = varOperand(t->scope);
+                Operand argVar = symbOperand(t->symb);
+                Operand argScope = scopeOperand(t->scope);
                 //(ARG, type, param, scope)
-                emitQuad(OP_ARG, argType, argName, argScope);
+                emitQuad(OP_ARG, argType, argVar, argScope);
                 break;
             }
             case ParamArrK: {
                 Operand argType = typeOperand(t->type);
-                char arrName[50];
-                sprintf(arrName, "%s[]", t->attr.name);
-                Operand argName = varOperand(arrName);
-                Operand argScope = varOperand(t->scope);
-                emitQuad(OP_ARG, argType, argName, argScope);
+                Operand argArr = symbOperand(t->symb);
+                Operand argScope = scopeOperand(t->scope);
+                emitQuad(OP_ARG_ARR, argType, argArr, argScope);
                 break;
             }
             case CallK:{
+                char *funcName = t->symb->name;
+                if (strcmp(funcName, "input") == 0) {
+                    Operand resultTemp = newTemp();
+                    // (IN, $t_a, -, -)
+                    emitQuad(OP_IN, resultTemp, EMPTY_OPND, EMPTY_OPND);
+                    return resultTemp;
+                } 
+                else if (strcmp(funcName, "output") == 0) {
+                    Operand argVal = genExp(t->child[0]);
+                    // (OUT, -, arg, -)
+                    emitQuad(OP_OUT, EMPTY_OPND, argVal, EMPTY_OPND);
+                    return emptyOperand();
+                }
                 //emissão de quádruplas de params (percorrer t->child[0] e seus irmãos)
                 TreeNode *argNode = t->child[0];
                 int argCount = 0;
@@ -234,7 +239,7 @@ static Operand genExp(TreeNode *t){
                     argCount++;
                     argNode = argNode->sibling;
                 }
-                Operand argFunc = funcOperand(t->attr.name);
+                Operand argFunc = symbOperand(t->symb);
                 Operand argNum = numOperand(argCount);
                 Operand resultTemp = newTemp();
                 //(CALL, $t_a, func, numParams)
@@ -373,7 +378,7 @@ static void genStmt(TreeNode *t){
             }
             case FunctDeclK:{
                 Operand argType = typeOperand(t->type);
-                Operand argFunc = funcOperand(t->attr.name);
+                Operand argFunc = symbOperand(t->symb);
                 emitQuad(OP_FUNC, argType, argFunc, EMPTY_OPND);
                 cGen(t->child[0]);
                 cGen(t->child[1]);
@@ -420,9 +425,6 @@ void generateIntermediateCode(TreeNode *AST){
     labelOffset = 0;
 
     cGen(AST);
-
-    //emite instrução de parada ao final do programa
-    emitQuad(OP_HALT, EMPTY_OPND, EMPTY_OPND, EMPTY_OPND);
 }
 
 static void printOperand(FILE *listing, Operand op){
@@ -430,47 +432,54 @@ static void printOperand(FILE *listing, Operand op){
         case OPND_EMPTY:
             fprintf(listing, "-");
             break;
+            
         case OPND_NUM:
-            fprintf(listing, "%d", op.content.val); 
+            fprintf(listing, "%d", op.content.imm); 
             break;
-        case OPND_VAR:
-            fprintf(listing, "%s", op.content.str_val); 
-            break;
+            
         case OPND_TEMP:
-            fprintf(listing, "%s", op.content.str_val); 
+            fprintf(listing, "$t%d", op.content.reg_id); 
             break;
+            
         case OPND_LABEL:
-            fprintf(listing, "%s", op.content.str_val); 
+            fprintf(listing, "%s", op.content.label_name); 
             break;
-        case OPND_FUNC:
-            fprintf(listing, "%s", op.content.str_val); 
-            break;
-        case OPND_SCOPE:
-            fprintf(listing, "%s", op.content.str_val); 
-            break;
+            
         case OPND_TYPE:
-            fprintf(listing, "%s", op.content.str_val); 
+            fprintf(listing, "%s", op.content.type_name); 
             break;
+            
+        case OPND_SCOPE:
+            fprintf(listing, "%s", op.content.scope_name); 
+            break;
+            
+        case OPND_SYMB:
+            if (op.content.s_node != NULL) {
+                fprintf(listing, "%s", op.content.s_node->name);
+            } else {
+                fprintf(listing, "?NULL_SYM?");
+            }
+            break;
+            
         default:
             fprintf(listing, "?");
             break;
     }
 }
-
 void printIntermediateCode(FILE *listing){
-    Quad* curr = headQuad;
+    Quad *curr = headQuad;
 
-    while (curr != NULL){        
+    while(curr != NULL){        
         fprintf(listing, "(");
         fprintf(listing, "%s, ", opKindToString(curr->op));
-        
-        printOperand(listing, curr->result);
-        fprintf(listing, ", ");
         
         printOperand(listing, curr->arg1);
         fprintf(listing, ", ");
         
         printOperand(listing, curr->arg2);
+        fprintf(listing, ", ");
+        
+        printOperand(listing, curr->arg3);
         fprintf(listing, ")\n");
 
         curr = curr->next;

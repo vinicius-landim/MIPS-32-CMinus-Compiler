@@ -1,10 +1,21 @@
 Nome do Simbolo   |  Tipo      |  Classificacao  |  Escopo          |  Loc  |  Linhas
 -----------------------------------------------------------------------------------------
-main              |  void      |  Funcao         |  global          |  5    |  11 
-gcd               |  int       |  Funcao         |  global          |  2    |  4 7 14 
-output            |  void      |  Funcao         |  global          |  1    |  0 14 
-input             |  int       |  Funcao         |  global          |  0    |  0 13 
-v                 |  int       |  Variavel       |  gcd             |  4    |  4 6 7 
-u                 |  int       |  Variavel       |  gcd             |  3    |  4 6 7 
-y                 |  int       |  Variavel       |  main            |  7    |  12 13 14 
-x                 |  int       |  Variavel       |  main            |  6    |  12 13 14 
+main              |  void      |  Funcao         |  global          |  -    |  33 
+sort              |  void      |  Funcao         |  global          |  -    |  20 41 
+minloc            |  int       |  Funcao         |  global          |  -    |  5 25 
+vet               |  int       |  Vetor          |  global          |  0    |  3 38 41 44 
+output            |  void      |  Funcao         |  global          |  -    |  0 44 
+input             |  int       |  Funcao         |  global          |  -    |  0 38 
+k                 |  int       |  Variavel       |  minloc          |  5    |  6 7 13 17 
+x                 |  int       |  Variavel       |  minloc          |  4    |  6 8 11 12 
+i                 |  int       |  Variavel       |  minloc          |  3    |  6 9 10 11 12 13 15 
+high              |  int       |  Variavel       |  minloc          |  2    |  5 10 
+low               |  int       |  Variavel       |  minloc          |  1    |  5 7 8 9 
+a                 |  int       |  Vetor          |  minloc          |  0    |  5 8 11 12 
+k                 |  int       |  Variavel       |  sort            |  4    |  21 25 26 27 
+i                 |  int       |  Variavel       |  sort            |  3    |  21 22 23 25 27 28 29 
+high              |  int       |  Variavel       |  sort            |  2    |  20 23 25 
+low               |  int       |  Variavel       |  sort            |  1    |  20 22 
+a                 |  int       |  Vetor          |  sort            |  0    |  20 25 26 27 28 
+t                 |  int       |  Variavel       |  sort:block1     |  5    |  24 26 28 
+i                 |  int       |  Variavel       |  main            |  0    |  35 36 37 38 39 42 43 44 45 

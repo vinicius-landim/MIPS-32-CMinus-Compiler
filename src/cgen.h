@@ -3,17 +3,17 @@
 
 #include "globals.h"
 #include "parser.tab.h"
+#include "symtab.h"
 
 //Operações intermediárias
 typedef enum {
     OPND_EMPTY,
     OPND_NUM,
-    OPND_VAR,
     OPND_TEMP,
-    OPND_LABEL,
-    OPND_FUNC,
     OPND_SCOPE,
-    OPND_TYPE
+    OPND_LABEL,
+    OPND_TYPE,
+    OPND_SYMB
 } OpndKind;
 
 typedef enum {
@@ -23,28 +23,33 @@ typedef enum {
     OP_BEQ, OP_BNE, OP_BLT, OP_BGT, OP_BLE, OP_BGE,
     OP_LABEL,
     OP_FUNC, OP_ENDFUNC, 
-    OP_ARG, OP_PARAM,
+    OP_ARG, OP_ARG_ARR, OP_PARAM,
     OP_CALL,
     OP_ALLOCVAR, OP_ALLOCARR,
     OP_LOADVAR, OP_LOADARR, OP_LOADIMM,
     OP_STOREVAR, OP_STOREARR,
     OP_RETURN,
+    OP_IN, OP_OUT,
     OP_HALT
 } OpKind;
 
 typedef struct {
-    OpndKind kind; //especifica o que val/str_val diz respeito
+    OpndKind kind;
     union {
-        int val;
-        char *str_val; //nome variável/função, tipo, escopo, label, registradores
+        int imm; //valor de registrador e imediato
+        int reg_id;
+        char *label_name;
+        char *type_name;
+        char *scope_name;
+        Symbol s_node;
     } content;
 } Operand;
 
 typedef struct QuadList {
     OpKind op;
-    Operand result;
     Operand arg1;
     Operand arg2;
+    Operand arg3;
     struct QuadList* next;
 } Quad;
 
@@ -52,6 +57,6 @@ extern Quad* headQuad;
 extern Quad* currentQuad;
 
 void printIntermediateCode(FILE *listing);
-void generateIntermediateCode();
+void generateIntermediateCode(TreeNode *AST);
 
 #endif

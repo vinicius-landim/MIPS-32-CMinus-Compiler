@@ -33,13 +33,16 @@ static void insertNode(TreeNode *t) {
                     if(st_lookup_scope(t->attr.name) != NULL){
                         fprintf(stderr, "ERRO SEMANTICO: Funcao '%s' ja declarada - LINHA: %d\n", t->attr.name, t->lineNo);
                         currentFuncSymbol = st_lookup_scope(t->attr.name); //fallback
+                        t->symb = currentFuncSymbol;
                     } else {
-                        currentFuncSymbol = st_insert(t->attr.name, t->type, SYMB_FUNC, t->lineNo, location++);
+                        currentFuncSymbol = st_insert(t->attr.name, t->type, SYMB_FUNC, t->lineNo, -1);
+                        t->symb = currentFuncSymbol;
                         if(strcmp(t->attr.name, "main") == 0)
                             hasMain = 1;
                     }
                     pushScope(t->attr.name);
                     blockCounter = 0;
+                    location = 0;
                     break;
                 }
 
@@ -62,7 +65,8 @@ static void insertNode(TreeNode *t) {
                     } else if(st_lookup_scope(t->attr.name) != NULL) {
                         printf("ERRO SEMANTICO: Variavel '%s' ja declarada neste escopo. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
-                        st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
+                        Symbol s_node = st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
+                        t->symb = s_node;
                     }
                     break;
                 }
@@ -72,7 +76,9 @@ static void insertNode(TreeNode *t) {
                     } else if(st_lookup_scope(t->attr.name) != NULL) {
                         printf("ERRO SEMANTICO: Variavel '%s' ja declarada neste escopo. - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
-                        st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
+                        Symbol s_node = st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location);
+                        t->symb = s_node;
+                        location += t->child[0]->attr.val; //memloc será deslocado de acordo com o tamanho do vetor
                     }
                     break;
                 }
@@ -82,14 +88,16 @@ static void insertNode(TreeNode *t) {
                         if(t->attr.name != NULL) {
                             fprintf(stderr, "ERRO SEMANTICO: Parametro '%s' nao pode ser do tipo 'void' - LINHA: %d\n", t->attr.name, t->lineNo);
                             //fallback
-                            st_insert(t->attr.name, Integer, SYMB_VAR, t->lineNo, location++);
+                            Symbol s_node = st_insert(t->attr.name, Integer, SYMB_VAR, t->lineNo, location++);
+                            t->symb = s_node;
                             st_add_param(currentFuncSymbol, Integer);
                         }
                     } 
                     else if(st_lookup_scope(t->attr.name) != NULL) {
                         fprintf(stderr, "ERRO SEMANTICO: Parametro '%s' ja declarado nesta funcao - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
-                        st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
+                        Symbol s_node = st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
+                        t->symb = s_node;
                         st_add_param(currentFuncSymbol, t->type);
 
                     }
@@ -99,12 +107,14 @@ static void insertNode(TreeNode *t) {
                     if(t->type == Void) {
                         fprintf(stderr, "ERRO SEMANTICO: Parametro de vetor '%s' nao pode ser do tipo 'void' - LINHA: %d\n", t->attr.name, t->lineNo);
                         //fallback
-                        st_insert(t->attr.name, Integer, SYMB_ARR, t->lineNo, location++);
+                        Symbol s_node = st_insert(t->attr.name, Integer, SYMB_ARR, t->lineNo, location++);
+                        t->symb = s_node;
                         st_add_param(currentFuncSymbol, Integer);
                     } else if(st_lookup_scope(t->attr.name) != NULL) {
                         fprintf(stderr, "ERRO SEMANTICO: Parametro '%s' ja declarado nesta funcao - LINHA: %d\n", t->attr.name, t->lineNo);
                     } else {
-                        st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
+                        Symbol s_node = st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location++);
+                        t->symb = s_node;
                         st_add_param(currentFuncSymbol, t->type);
                     }
                     break;
@@ -117,6 +127,7 @@ static void insertNode(TreeNode *t) {
                     } else {
                         t->type = s_node->type;
                         st_add_line(s_node, t->lineNo);
+                        t->symb = s_node;
                     }
                     break;
                 }
@@ -130,6 +141,7 @@ static void insertNode(TreeNode *t) {
 
                         t->type = s_node->type;
                         st_add_line(s_node, t->lineNo);
+                        t->symb = s_node;
                     }
                     break;
                 }
@@ -144,6 +156,7 @@ static void insertNode(TreeNode *t) {
                             fprintf(stderr,"ERRO SEMANTICO: '%s' nao é uma funcao - LINHA: %d\n",t->attr.name, t->lineNo);
 
                         t->type = s_node->type;
+                        t->symb = s_node;
                         st_add_line(s_node, t->lineNo);
                     }
                     break;
@@ -181,8 +194,8 @@ static void buildSymtabRec(TreeNode *t) {
 void buildSymtab(TreeNode *AST) {
     globalScope = pushScope("global");
     
-    st_insert("input", Integer, SYMB_FUNC, 0, location++);
-    Symbol out_node = st_insert("output", Void, SYMB_FUNC, 0, location++);
+    st_insert("input", Integer, SYMB_FUNC, 0, -1);
+    Symbol out_node = st_insert("output", Void, SYMB_FUNC, 0, -1);
     st_add_param(out_node, Integer);
 
     buildSymtabRec(AST); 

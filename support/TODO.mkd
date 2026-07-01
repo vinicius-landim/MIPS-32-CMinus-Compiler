@@ -13,6 +13,14 @@
 - ~~Parâmetros void são aceitos?~~
 - ~~Funções void não devem ter retorno de variável e funções int devem ter ao menos um retorno~~
 - ~~Verificar total de parâmetros passados na chamada de uma função~~
+- Zerar o Contador de Escopo Local (location = 0) para uso correto no gerenciamento da memória em um stack frame 
 
 ## Gerador de Código Intermediário:
 - ~~Corrigir pendências da GCI do gcd()~~
+
+## Tradutor Assembly
+- Ajustar parâmetros de vetores para considerar variáveis locais e globais
+
+## Processador FPGA
+- Registrador de Input e Registrador de Output
+- Verificar se a gestão de pilha deve ser em hardware ou em software

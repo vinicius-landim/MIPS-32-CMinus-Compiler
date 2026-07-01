@@ -48,6 +48,7 @@ void popScope(){
 Symbol st_insert(char *name, ExpType type, SymbolKind kind, int lineNo, int loc){
     Symbol newS = (Symbol)malloc(sizeof(struct SymbolNode));
     newS->name = name;
+    newS->scope = copyString(currentScope->name);
     newS->type = type;
     newS->kind = kind;
     newS->memloc = loc;
@@ -169,7 +170,11 @@ void printSymTab(FILE * listing){
             fprintf(listing, "%-8s  |  ", typeToString(sym->type));
             fprintf(listing, "%-13s  |  ", kindToString(sym->kind));
             fprintf(listing, "%-14s  |  ", scp->name);
-            fprintf(listing, "%-3d  |  ", sym->memloc);
+            if(sym->memloc == -1){
+                fprintf(listing, "%-3s  |  ", "-");
+            } else {
+                fprintf(listing, "%-3d  |  ", sym->memloc);
+            }
 
             //imprime todas as linhas onde o símbolo apareceu
             LineList line = sym->lines;
