@@ -1,5 +1,6 @@
 /* programa para ordenacao por selecao de 
    uma matriz com dez elementos. */
+
 int vet[ 10 ];
 
 int minloc ( int a[], int low, int high )
@@ -34,6 +35,7 @@ void main(void)
 {
 	int i;
 	i = 0;
+
 	while (i < 10){
 		vet[i] = input();
 		i = i + 1;
