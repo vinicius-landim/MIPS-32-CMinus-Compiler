@@ -89,6 +89,8 @@ coverage/
 
 *.pdf
 **/*.pdf
+!docs/report/report.pdf
+
 
 # Arquivos do sistema
 .DS_Store
