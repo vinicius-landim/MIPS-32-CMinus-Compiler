@@ -15,7 +15,7 @@ extern int lineNo;
 /* Definições*/
 DIGITO  [0-9]
 LETRA   [a-zA-Z]
-ID      {LETRA}+
+ID      ({LETRA}|_)({LETRA}|{DIGITO}|_)*
 NUM     {DIGITO}+
 ESPACO  [ \t\r]+
 

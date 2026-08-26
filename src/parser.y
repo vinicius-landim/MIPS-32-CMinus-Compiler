@@ -383,6 +383,11 @@ fator:
             $$ = newExpNode(ConstK);
             $$->attr.val = $1;
     }
+    | SUB fator {
+            $$ = newExpNode(OpK);
+            $$->attr.op = SUB;
+            $$->child[0] = $2; 
+    }
 ;
 
 //27. ativação -> ID ( args ) 
