@@ -386,8 +386,8 @@ fator:
     | SUB fator {
             $$ = newExpNode(OpK);
             $$->attr.op = SUB;
-            $$->child[0] = $2;
-    };
+            $$->child[0] = $2; 
+    }
 ;
 
 //27. ativação -> ID ( args ) 

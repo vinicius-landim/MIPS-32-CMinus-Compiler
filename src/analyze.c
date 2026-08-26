@@ -211,12 +211,13 @@ static void checkNode(TreeNode *t) {
         case ExpK:
             switch (t->kind.exp) {
                 case OpK: {
-                    if(t->child[1] != NULL && (t->child[0]->type != Integer || t->child[1]->type != Integer))
+                    if(t->child[1] != NULL && (t->child[0]->type != Integer || t->child[1]->type != Integer)) {
                         fprintf(stderr, "ERRO SEMANTICO: Operandos de '%s' devem ser do tipo 'int' - LINHA: %d\n",  opStr(t->attr.op), t->lineNo);
-                    else if(t->child[1] == NULL && t->child[0]->type != Integer)
-                      fprintf(stderr, "ERRO SEMANTICO: Operando unário deve ser do tipo 'int' - LINHA: %d\n", t->lineNo);
-
-                    t->type = Integer; //resultado int
+                    } else if(t->child[1] == NULL && t->child[0]->type != Integer) {
+                        fprintf(stderr, "ERRO SEMANTICO: Operando unario deve ser do tipo 'int' - LINHA: %d\n", t->lineNo);
+                    }
+                    
+                    t->type = Integer; // resultado int
                     break;
                 }
                 case ConstK:{

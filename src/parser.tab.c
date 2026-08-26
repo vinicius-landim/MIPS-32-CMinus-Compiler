@@ -1774,7 +1774,7 @@ yyreduce:
                 {
             (yyval.tree) = newExpNode(OpK);
             (yyval.tree)->attr.op = SUB;
-            (yyval.tree)->child[0] = (yyvsp[0].tree);
+            (yyval.tree)->child[0] = (yyvsp[0].tree); 
     }
 #line 1780 "parser.tab.c"
     break;
