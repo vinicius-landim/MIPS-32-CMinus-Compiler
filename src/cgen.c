@@ -179,10 +179,16 @@ static Operand genExp(TreeNode *t){
             }
             case OpK:{
                 Operand arg1 = genExp(t->child[0]);
-                Operand arg2 = genExp(t->child[1]);
                 Operand resultTemp = newTemp();
-                //(OP, $t_a, $t_b, $t_c)
-                emitQuad(opTokenToOpKind(t->attr.op), resultTemp, arg1, arg2);
+                if(t->child[1] != NULL){
+                    Operand arg2 = genExp(t->child[1]);
+                    //(OP, $t_a, $t_b, $t_c)
+                    emitQuad(opTokenToOpKind(t->attr.op), resultTemp, arg1, arg2);
+                }
+                else{
+                    Operand arg2 = numOperand(0);
+                    emitQuad(opTokenToOpKind(t->attr.op), resultTemp, arg2, arg1);
+                }
                 return resultTemp;
             }
             case AssignK:{
