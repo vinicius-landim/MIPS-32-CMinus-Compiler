@@ -78,7 +78,13 @@ static void insertNode(TreeNode *t) {
                     } else {
                         Symbol s_node = st_insert(t->attr.name, t->type, SYMB_ARR, t->lineNo, location);
                         t->symb = s_node;
-                        location += t->child[0]->attr.val; //memloc será deslocado de acordo com o tamanho do vetor
+                        
+                        if (strcmp(currentScope->name, "global") == 0) {
+                            location += t->child[0]->attr.val; 
+                        } else {
+                            //vetores locais precisam de espaço para ponteiro
+                            location += t->child[0]->attr.val+1;
+                        }
                     }
                     break;
                 }
