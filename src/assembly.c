@@ -102,6 +102,9 @@ static void updateRegsInUse(Quad *curr){
         case OP_STOREVAR: case OP_OUT:
             freeReg(curr->arg2);
             break;
+        case OP_SETBASE:
+            freeReg(curr->arg1);
+            break;
         case OP_STOREARR:
             freeReg(curr->arg2); //valor
             freeReg(curr->arg3); //indice
@@ -169,7 +172,7 @@ void generateAssembly(Quad *headGCI){
             }
             case OP_ENDFUNC: {
                 if (strcmp(current_func_name, "main") == 0) {
-                    emitAsmI(ASM_HALT, zero, zero, 0); 
+                    emitAsmI(ASM_ENDP, zero, zero, 0); 
                 } else {
                     char end_label[300];
                     sprintf(end_label, "END_%s", current_func_name);
@@ -451,6 +454,28 @@ void generateAssembly(Quad *headGCI){
                 emitAsmI(ASM_HALT, zero, zero, 0);
                 break;
             }
+            case OP_HDREAD: {
+                int rd = getPhysicalReg(curr->arg1.content.reg_id);
+                int rs = getPhysicalReg(curr->arg2.content.reg_id);
+                int rt = getPhysicalReg(curr->arg3.content.reg_id);
+                emitAsmR(ASM_HDR, rs, rt, rd, 0);
+                break;
+            }
+            case OP_SAVEINST: {
+                int rs = getPhysicalReg(curr->arg2.content.reg_id);
+                int rt = getPhysicalReg(curr->arg1.content.reg_id);
+                emitAsmI(ASM_SINST, rs, rt, 0);
+                break;
+            }
+            case OP_RUNP: {
+                emitAsmI(ASM_RUNP, zero, zero, 0);
+                break;
+            }
+            case OP_SETBASE: {
+                int rs = getPhysicalReg(curr->arg1.content.reg_id);
+                emitAsmI(ASM_SDMB, rs, zero, 0);
+                break;
+            }
             default: break;
         }
         updateRegsInUse(curr);
@@ -479,6 +504,11 @@ static const char* asmOpToString(AsmOp op){
         case ASM_HALT:  return "halt";
         case ASM_IN:    return "in";
         case ASM_OUT:   return "out";
+        case ASM_HDR:   return "hdr";
+        case ASM_SINST: return "sinst";
+        case ASM_ENDP:  return "endp";
+        case ASM_RUNP:  return "runp";
+        case ASM_SDMB:  return "sdmb";
         default:        return "unknown";
     }
 }
@@ -524,10 +554,10 @@ void printAssembly(FILE *listing){
                     if (curr->op == ASM_IN) {
                         fprintf(listing, "%s %s\n", opName, printReg(curr->type.i.rt));
                     } 
-                    else if (curr->op == ASM_OUT) {
+                    else if (curr->op == ASM_OUT || curr->op == ASM_SDMB) {
                         fprintf(listing, "%s %s\n", opName, printReg(curr->type.i.rs));
                     }
-                    else if (curr->op == ASM_LW || curr->op == ASM_SW) {
+                    else if (curr->op == ASM_LW || curr->op == ASM_SW || curr->op == ASM_SINST) {
                         // memória: op rt, offset(rs) (Ex: lw $1, -2($30))
                         fprintf(listing, "%s %s, %d(%s)\n", opName, printReg(curr->type.i.rt), curr->type.i.imm, printReg(curr->type.i.rs));
                     }
@@ -537,6 +567,12 @@ void printAssembly(FILE *listing){
                     } 
                     else if (curr->op == ASM_HALT) {
                         fprintf(listing, "halt\n");
+                    }
+                    else if (curr->op == ASM_RUNP){
+                        fprintf(listing, "runp\n");
+                    }
+                    else if (curr->op == ASM_ENDP){
+                        fprintf(listing, "endp\n");
                     } else {
                         // imediato: op rt, rs, imm (Ex: addi $1, $0, 5)
                         fprintf(listing, "%s %s, %s, %d\n", opName, printReg(curr->type.i.rt), printReg(curr->type.i.rs), curr->type.i.imm);

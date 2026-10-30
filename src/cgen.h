@@ -30,7 +30,11 @@ typedef enum {
     OP_STOREVAR, OP_STOREARR,
     OP_RETURN,
     OP_IN, OP_OUT,
-    OP_HALT
+    OP_HALT,
+    OP_HDREAD,
+    OP_SAVEINST,
+    OP_RUNP,
+    OP_SETBASE
 } OpKind;
 
 typedef struct {

@@ -116,6 +116,10 @@ static const char* opKindToString(OpKind op){
         case OP_IN:         return "INPUT";
         case OP_OUT:        return "OUTPUT";
         case OP_HALT:       return "HALT";
+        case OP_HDREAD:     return "HDREAD";
+        case OP_SAVEINST:   return "SAVEINST";
+        case OP_RUNP:       return "RUNP";
+        case OP_SETBASE:    return "SETBASE";
         default:            return "UNKNOWN";
     }
 }
@@ -247,6 +251,28 @@ static Operand genExp(TreeNode *t){
                     Operand argVal = genExp(t->child[0]);
                     // (OUT, -, arg, -)
                     emitQuad(OP_OUT, EMPTY_OPND, argVal, EMPTY_OPND);
+                    return emptyOperand();
+                }
+                else if (strcmp(funcName, "hd_read") == 0) {
+                    Operand argTrilha = genExp(t->child[0]);
+                    Operand argSetor = genExp(t->child[0]->sibling);
+                    Operand destTemp = newTemp();
+                    emitQuad(OP_HDREAD, destTemp, argTrilha, argSetor);
+                    return destTemp;
+                }
+                else if (strcmp(funcName, "save_inst") == 0) {
+                    Operand argInst = genExp(t->child[0]);
+                    Operand argAddr = genExp(t->child[0]->sibling);
+                    emitQuad(OP_SAVEINST, argInst, argAddr, EMPTY_OPND);
+                    return emptyOperand();
+                }
+                else if (strcmp(funcName, "runp") == 0){
+                    emitQuad(OP_RUNP, EMPTY_OPND, EMPTY_OPND, EMPTY_OPND);
+                    return emptyOperand();
+                }
+                else if(strcmp(funcName, "setbase") == 0){
+                    Operand argBase = genExp(t->child[0]);
+                    emitQuad(OP_SETBASE, argBase, EMPTY_OPND, EMPTY_OPND);
                     return emptyOperand();
                 }
                 //emissão de quádruplas de params (percorrer t->child[0] e seus irmãos)

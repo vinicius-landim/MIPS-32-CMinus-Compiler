@@ -105,7 +105,6 @@ static void insertNode(TreeNode *t) {
                         Symbol s_node = st_insert(t->attr.name, t->type, SYMB_VAR, t->lineNo, location++);
                         t->symb = s_node;
                         st_add_param(currentFuncSymbol, t->type);
-
                     }
                     break;
                 }
@@ -203,6 +202,15 @@ void buildSymtab(TreeNode *AST) {
     st_insert("input", Integer, SYMB_FUNC, 0, -1);
     Symbol out_node = st_insert("output", Void, SYMB_FUNC, 0, -1);
     st_add_param(out_node, Integer);
+    Symbol hd_node = st_insert("hd_read", Integer, SYMB_FUNC, 0, -1);
+    st_add_param(hd_node, Integer);
+    st_add_param(hd_node, Integer);
+    Symbol sinst_node = st_insert("save_inst", Void, SYMB_FUNC, 0, -1);
+    st_add_param(sinst_node, Integer);
+    st_add_param(sinst_node, Integer);
+    Symbol runp_node = st_insert("runp", Void, SYMB_FUNC, 0, -1);
+    Symbol setbase_node = st_insert("setbase", Void, SYMB_FUNC, 0, -1);
+    st_add_param(setbase_node, Integer);
 
     buildSymtabRec(AST); 
 

@@ -6,6 +6,7 @@
 
 //tipo R
 #define OPCODE_R_TYPE 0b000000
+#define OPCODE_HDR    0b010101
 #define FUNCT_ADD     0b000000
 #define FUNCT_SUB     0b000001
 #define FUNCT_MUL     0b000010
@@ -25,10 +26,15 @@
 #define OPCODE_IN     0b001110
 #define OPCODE_OUT    0b001111
 #define OPCODE_HALT   0b010011
+#define OPCODE_SINST  0b010110
+#define OPCODE_RUNP   0b010111
+#define OPCODE_ENDP   0b011000
+#define OPCODE_SDMB   0b011001
 
 //tipo J
 #define OPCODE_J      0b010000
 #define OPCODE_JAL    0b010001
+
 
 typedef struct LabelNode {
     char *name;
@@ -94,31 +100,40 @@ static void generateMachineCode(AsmInstr *head, FILE *out) {
         switch (curr->format) {
             case FORMAT_R: {
                 // MIPS Tipo R: [opcode:6] [rs:5] [rt:5] [rd:5] [shamt:5] [funct:6]
-                opcode = OPCODE_R_TYPE;
                 rs = curr->type.r.rs;
                 rt = curr->type.r.rt;
                 rd = curr->type.r.rd;
                 shamt = curr->type.r.shamt;
-
+                
                 switch (curr->op) {
                     case ASM_ADD:{
+                        opcode = OPCODE_R_TYPE;
                         funct = FUNCT_ADD;
                         break;
                     }
                     case ASM_SUB:{
+                        opcode = OPCODE_R_TYPE;
                         funct = FUNCT_SUB;
                         break;
                     }
                     case ASM_MUL:{
+                        opcode = OPCODE_R_TYPE;
                         funct = FUNCT_MUL;
                         break;
                     }
                     case ASM_DIV:{
+                        opcode = OPCODE_R_TYPE;
                         funct = FUNCT_DIV;
                         break;
                     }
                     case ASM_JR:{
+                        opcode = OPCODE_R_TYPE;
                         funct = FUNCT_JR;
+                        break;
+                    }
+                    case ASM_HDR:{
+                        opcode = OPCODE_HDR;
+                        funct = 0b000000;
                         break;
                     }
                     default: break;
@@ -160,6 +175,26 @@ static void generateMachineCode(AsmInstr *head, FILE *out) {
                     }  
                     case ASM_HALT:{
                         opcode = OPCODE_HALT;  
+                        imm = 0;
+                        break;
+                    }
+                    case ASM_ENDP:{
+                        opcode = OPCODE_ENDP;
+                        imm = 0;
+                        break;
+                    }
+                    case ASM_RUNP:{
+                        opcode = OPCODE_RUNP;
+                        imm = 0;
+                        break;
+                    }
+                    case ASM_SINST:{
+                        opcode = OPCODE_SINST;  
+                        imm = curr->type.i.imm & 0xFFFF;
+                        break;
+                    }
+                    case ASM_SDMB: {
+                        opcode = OPCODE_SDMB;
                         imm = 0;
                         break;
                     }
